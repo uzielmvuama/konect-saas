@@ -1,4 +1,4 @@
-export interface PageProps {
+export interface PagePropsType {
     auth: {
         user: {
             id: number;
