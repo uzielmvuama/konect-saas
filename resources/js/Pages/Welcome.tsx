@@ -1,11 +1,9 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Footer from "@/Components/_Partials/Footer";
 import Banner from "@/Components/_Partials/Banner";
-import { Head, Link, usePage } from '@inertiajs/react';
-import { useEffect } from 'react';
+import {Head, usePage} from '@inertiajs/react';
 import Header from "@/Components/_Partials/Header";
 import TeamSection from "@/Components/_Partials/TeamSection";
-
 interface PageProps {
     auth: {
         user: any;
@@ -18,14 +16,20 @@ interface PageProps {
 
 export default function Welcome() {
     // @ts-ignore
-    const { props } = usePage<PageProps>();
-    const { auth, laravelVersion, phpVersion, canLogin, canRegister } = props;
+    const {props} = usePage<PageProps>();
+    const {auth, laravelVersion, phpVersion, canLogin, canRegister} = props;
+
+    const page = usePage();
+
+
     return (
         <>
+
             <Head title="Welcome"/>
-            <Header />
+            <Header/>
             <Banner/>
-            <TeamSection />
+            <TeamSection/>
+
             <Footer/>
         </>
     );
