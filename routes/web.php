@@ -12,6 +12,23 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+Route::get('/kuser', function () {
+    return Inertia::render('Kuser');
+});
+
+Route::get('/plans', function () {
+    return Inertia::render('Plans');
+});
+
+Route::prefix("/product")->group(function (){
+    Route::get('/list', function () {
+        return Inertia::render('Products');
+    });
+    Route::get('/{uuid}', function () {
+        return Inertia::render('ProductDetails');
+    });
+});
+
 
 Route::middleware([
     'auth:sanctum',
