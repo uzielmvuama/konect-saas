@@ -34,7 +34,7 @@ export default function GuestLayout({title, children, showHeader = true, showFoo
 function ContactChat() {
     return <>
         {/* Welcome Dropdown */}
-        <div className="hs-dropdown [--auto-close:inside] [--placement:bottom-right] fixed inline-flex right-4 bottom-6">
+        <div className="hs-dropdown [--auto-close:inside] [--placement:bottom-right] fixed inline-flex md:right-8 right-4 md:bottom-8 bottom-6">
             {/* Dropdown */}
             <div
                 className="hs-dropdown-menu hs-dropdown-open:opacity-100 w-full sm:w-96 transition-[opacity,margin] duration opacity-0 hidden z-10 bg-white overflow-hidden rounded-xl shadow-md sm:shadow-xl dark:bg-neutral-900"
