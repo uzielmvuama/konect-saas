@@ -4,6 +4,7 @@ import Banner from "@/Components/_Partials/Banner";
 import {Head, usePage} from '@inertiajs/react';
 import Header from "@/Components/_Partials/Header";
 import TeamSection from "@/Components/_Partials/TeamSection";
+import PrelineProviderLayout from "@/Layouts/PrelineProviderLayout";
 interface PageProps {
     auth: {
         user: any;
@@ -23,14 +24,13 @@ export default function Welcome() {
 
 
     return (
-        <>
-
+        <PrelineProviderLayout>
             <Head title="Welcome"/>
             <Header/>
             <Banner/>
             <TeamSection/>
 
             <Footer/>
-        </>
+        </PrelineProviderLayout>
     );
 }

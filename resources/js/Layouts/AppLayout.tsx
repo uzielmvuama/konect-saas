@@ -1,5 +1,6 @@
 import {useState, FormEvent, useEffect} from 'react';
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import PrelineProviderLayout from "@/Layouts/PrelineProviderLayout";
 // import {initializePreline} from "@/preline-init";
 
 
@@ -24,11 +25,12 @@ export default function AppLayout({ title, children }: Props) {
         });
     };
 
-    const logout = () => {
+    const logout = ( e: React.FormEvent ) => {
+        e.preventDefault();
         router.post('/logout');
     };
     return (
-        <div>
+        <PrelineProviderLayout>
             <Head title={title} />
             {/* ========== HEADER ========== */}
             <header className="flex flex-col z-50">
@@ -612,7 +614,7 @@ export default function AppLayout({ title, children }: Props) {
                                         <a className="flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" href="#">
                                             Manage team
                                         </a>
-                                        <a className="flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" href="#">
+                                        <a className="flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" href="#" onClick={logout}>
                                             Sign out
                                         </a>
                                     </div>
@@ -1015,6 +1017,6 @@ export default function AppLayout({ title, children }: Props) {
                 </div>
             </div>
             {/* End Search Modal */}
-        </div>
+        </PrelineProviderLayout>
     );
 }

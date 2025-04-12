@@ -10,16 +10,22 @@ export {};
 
 declare global {
     interface Window {
-        HSOverlay?: {
-            autoInit: () => void;
-        };
-        HSDropdown?: {
-            autoInit: () => void;
-        };
-        HSAccordion?: {
-            autoInit: () => void;
-        };
-        HSTooltip?: {
+        // HSOverlay?: {
+        //     autoInit: () => void;
+        // };
+        // HSDropdown?: {
+        //     autoInit: () => void;
+        // };
+        // HSAccordion?: {
+        //     autoInit: () => void;
+        // };
+        // HSTooltip?: {
+        //     autoInit: () => void;
+        // };
+        // HSStepper?: {
+        //     autoInit: () => void;
+        // };
+        HSStaticMethods?: {
             autoInit: () => void;
         };
     }

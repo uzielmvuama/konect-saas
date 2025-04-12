@@ -1,5 +1,6 @@
 import {useForm} from '@inertiajs/react';
 import FormError from "@/Components/Errors/FormError";
+import PrelineProviderLayout from "@/Layouts/PrelineProviderLayout";
 
 
 export default function Register({jetstream}: { jetstream: { hasTermsAndPrivacyPolicyFeature: boolean } }) {
@@ -22,7 +23,7 @@ export default function Register({jetstream}: { jetstream: { hasTermsAndPrivacyP
 
 
     return (
-        <>
+        <PrelineProviderLayout>
             {/* ========== MAIN CONTENT ========== */}
             <main className="flex min-h-full">
                 {/* Sidebar */}
@@ -382,6 +383,6 @@ export default function Register({jetstream}: { jetstream: { hasTermsAndPrivacyP
             </main>
             {/* ========== END MAIN CONTENT ========== */}
 
-        </>
+        </PrelineProviderLayout>
     );
 }

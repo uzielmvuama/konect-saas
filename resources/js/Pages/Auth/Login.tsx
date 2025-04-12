@@ -1,5 +1,6 @@
 import {Head, useForm} from '@inertiajs/react';
 import FormError from "@/Components/Errors/FormError";
+import PrelineProviderLayout from "@/Layouts/PrelineProviderLayout";
 
 
 interface LoginProps {
@@ -29,7 +30,7 @@ export default function Login({canResetPassword, status}: LoginProps) {
     };
 
     return (
-        <>
+        <PrelineProviderLayout>
             <Head title="Log in"/>
             {/* ========== MAIN CONTENT ========== */}
             <main className="flex min-h-full">
@@ -322,6 +323,6 @@ export default function Login({canResetPassword, status}: LoginProps) {
             {/* ========== END MAIN CONTENT ========== */}
 
 
-        </>
+        </PrelineProviderLayout>
     );
 }
