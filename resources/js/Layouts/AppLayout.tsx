@@ -14,6 +14,8 @@ export default function AppLayout({ title, children }: Props) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
     const { auth, jetstream } = usePage().props as any;
 
+    console.log(usePage())
+
     // useEffect(() => {
     //     initializePreline();
     // }, []);
@@ -568,7 +570,7 @@ export default function AppLayout({ title, children }: Props) {
 
                                             <div className="grow">
                   <span className="text-sm font-semibold text-gray-800 dark:text-neutral-300">
-                    James Collison
+                    {`${auth.firstname} ${auth.name}`}
                   </span>
                                                 <p className="text-xs text-gray-500 dark:text-neutral-500">
                                                     Preline@HS
