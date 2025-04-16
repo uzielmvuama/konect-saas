@@ -6,6 +6,7 @@ import Header from "@/Components/_Partials/Header";
 import TeamSection from "@/Components/_Partials/TeamSection";
 import PrelineProviderLayout from "@/Layouts/PrelineProviderLayout";
 import GuestLayout from "@/Layouts/GuestLayout";
+import CookieConsentModal from "@/Components/Modals/CookieConsentModal";
 interface PageProps {
     auth: {
         user: any;
@@ -3374,7 +3375,7 @@ export default function Welcome() {
                 </main>
                 {/* ========== END MAIN CONTENT ========== */}
             </>
-
+<CookieConsentModal />
             {/*<Banner/>*/}
             {/*<TeamSection/>*/}
 
