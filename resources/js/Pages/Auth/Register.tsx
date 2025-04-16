@@ -41,7 +41,7 @@ export default function Register({jetstream}: { jetstream: { hasTermsAndPrivacyP
 
                     {/* Button Group */}
                     <div className="flex flex-col sm:flex-row gap-2">
-                        <button type="button"
+                        <a href="/auth/google"
                                 className="py-2.5 px-3 w-full inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700">
                             <svg className="shrink-0 size-4" width="33" height="32" viewBox="0 0 33 32" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
@@ -66,7 +66,7 @@ export default function Register({jetstream}: { jetstream: { hasTermsAndPrivacyP
                                 </defs>
                             </svg>
                             Sign up with Google
-                        </button>
+                        </a>
 
                         <button type="button"
                                 className="py-2.5 px-3 w-full inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700">
