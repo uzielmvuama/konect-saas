@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('provider_name')->nullable();
-            $table->string('provider_id')->nullable();
+        Schema::table('ko_gadgets', function (Blueprint $table) {
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('set null');
         });
     }
 
@@ -22,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-          Schema::dropColumns('users', ['provider_name', 'provider_id']);
+        Schema::table('ko_gadgets', function (Blueprint $table) {
+            $table->dropColumn('team_id');
         });
     }
 };

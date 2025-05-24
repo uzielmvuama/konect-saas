@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\Core\Constants;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,8 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('provider_name')->nullable();
-            $table->string('provider_id')->nullable();
+            $table->string('role')->default(Constants::ROLE_PERSONAL_ROLE);
         });
     }
 
@@ -23,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-          Schema::dropColumns('users', ['provider_name', 'provider_id']);
+            $table->dropColumn('role');
         });
     }
 };

@@ -16,6 +16,18 @@ return new class extends Migration
             $table->foreignId('user_id')->index();
             $table->string('name');
             $table->boolean('personal_team');
+            $table->string('email')->unique()->nullable();
+            $table->string('industry')->nullable();
+            $table->string('tax_id')->nullable(); # Numéro d’identification fiscale (utile pour la facturation B2B).
+            $table->string('website')->nullable();
+            $table->string('brand_logo_img')->nullable();
+            $table->string('address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('country')->nullable();
+            $table->string('description')->nullable();
+            $table->string('phone')->nullable();
+            $table->json('videos')->nullable();
+            $table->json('socialProfils')->nullable();
             $table->timestamps();
         });
     }

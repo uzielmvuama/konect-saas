@@ -16,6 +16,11 @@ return new class extends Migration
             $table->foreignId('team_id');
             $table->foreignId('user_id');
             $table->string('role')->nullable();
+            $table->timestamp('joined_at')->nullable();
+            $table->string("team_email")->nullable();
+            $table->string('phone_ext')->nullable();
+            $table->boolean('active')->default(true); # Statut pour savoir si l’utilisateur est toujours membre dans cette entreprise.
+            $table->enum("request_status", array_map(fn($status) => $status->value, \App\Helpers\Core\MemberRequestStatus::cases()))->default(\App\Helpers\Core\MemberRequestStatus::PENDING->value);
             $table->timestamps();
 
             $table->unique(['team_id', 'user_id']);

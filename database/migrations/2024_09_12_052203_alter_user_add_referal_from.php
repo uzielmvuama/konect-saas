@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('provider_name')->nullable();
-            $table->string('provider_id')->nullable();
+            //
+            $table->string("referal_from")->nullable();
         });
     }
 
@@ -23,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-          Schema::dropColumns('users', ['provider_name', 'provider_id']);
+            //
+            $table->dropColumn("referal_from");
         });
     }
 };

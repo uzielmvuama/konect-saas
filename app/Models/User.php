@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
+use Laravel\Cashier\Billable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
@@ -13,7 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens;
+    use HasApiTokens, Billable;
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
@@ -21,6 +23,7 @@ class User extends Authenticatable
     use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
+
 
     /**
      * The attributes that are mass assignable.
@@ -66,5 +69,22 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    protected static function booted ()
+    {
+        static::creating(function ($user) {
+            $user->uuid = Str::uuid()->toString();
+        });
+    }
+
+    public function hasPaidOneTime()
+    {
+        return $this->payments()->where('type', 'onetime')->exists();
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Paymentt::class);
     }
 }

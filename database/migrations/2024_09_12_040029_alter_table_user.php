@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('provider_name')->nullable();
-            $table->string('provider_id')->nullable();
+            $table->integer("kpoint")->default(0);
         });
     }
 
@@ -23,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-          Schema::dropColumns('users', ['provider_name', 'provider_id']);
+            $table->dropColumn("kpoint");
         });
     }
 };

@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('provider_name')->nullable();
-            $table->string('provider_id')->nullable();
+        Schema::create('konect_categories', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->string('kc_label');
         });
     }
 
@@ -22,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-          Schema::dropColumns('users', ['provider_name', 'provider_id']);
-        });
+        Schema::dropIfExists('konect_categories');
     }
 };
