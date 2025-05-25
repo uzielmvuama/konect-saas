@@ -3,15 +3,16 @@ import { Head, Link, router, usePage } from "@inertiajs/react";
 import PrelineProviderLayout from "@/Layouts/PrelineProviderLayout";
 import { TeamProps } from "@/Types/types";
 import { ucfirst } from "@/Utils/Functions/globals";
-
+import AppLogo from "@/Components/_Partials/AppLogo";
 // import {initializePreline} from "@/preline-init";
 
 interface Props {
   title?: string;
   children?: React.ReactNode;
+  showNavbarMenu?: boolean;
 }
 
-export default function AppLayout({ title, children }: Props) {
+export default function AppLayout({ title, showNavbarMenu = true, children }: Props) {
   const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
   const {
     auth: { user },
@@ -47,41 +48,7 @@ export default function AppLayout({ title, children }: Props) {
         <div className="bg-gray-800 border-b border-gray-700 dark:bg-black dark:border-neutral-800">
           <div className="max-w-[85rem] flex justify-between lg:grid lg:grid-cols-3 basis-full items-center w-full mx-auto py-2.5 px-2 sm:px-6 lg:px-8">
             <div className="flex items-center">
-              {/* Logo */}
-              <Link
-                className="flex-none rounded-md text-xl inline-block font-semibold focus:outline-hidden focus:opacity-80"
-                href="/dashboard"
-                aria-label="Preline"
-              >
-                <svg
-                  className="w-28 h-auto"
-                  width="116"
-                  height="32"
-                  viewBox="0 0 116 32"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M33.5696 30.8182V11.3182H37.4474V13.7003H37.6229C37.7952 13.3187 38.0445 12.9309 38.3707 12.5369C38.7031 12.1368 39.134 11.8045 39.6634 11.5398C40.1989 11.2689 40.8636 11.1335 41.6577 11.1335C42.6918 11.1335 43.6458 11.4044 44.5199 11.946C45.3939 12.4815 46.0926 13.291 46.6158 14.3743C47.139 15.4515 47.4006 16.8026 47.4006 18.4276C47.4006 20.0095 47.1451 21.3452 46.6342 22.4347C46.1295 23.518 45.4401 24.3397 44.5661 24.8999C43.6982 25.4538 42.7256 25.7308 41.6484 25.7308C40.8852 25.7308 40.2358 25.6046 39.7003 25.3523C39.1709 25.0999 38.737 24.7829 38.3984 24.4013C38.0599 24.0135 37.8014 23.6226 37.6229 23.2287H37.5028V30.8182H33.5696ZM37.4197 18.4091C37.4197 19.2524 37.5367 19.9879 37.7706 20.6158C38.0045 21.2436 38.343 21.733 38.7862 22.0838C39.2294 22.4285 39.768 22.6009 40.402 22.6009C41.0421 22.6009 41.5838 22.4254 42.027 22.0746C42.4702 21.7176 42.8056 21.2251 43.0334 20.5973C43.2673 19.9633 43.3842 19.2339 43.3842 18.4091C43.3842 17.5904 43.2704 16.8703 43.0426 16.2486C42.8149 15.6269 42.4794 15.1406 42.0362 14.7898C41.593 14.4389 41.0483 14.2635 40.402 14.2635C39.7618 14.2635 39.2202 14.4328 38.777 14.7713C38.34 15.1098 38.0045 15.59 37.7706 16.2116C37.5367 16.8333 37.4197 17.5658 37.4197 18.4091ZM49.2427 25.5V11.3182H53.0559V13.7926H53.2037C53.4622 12.9124 53.8961 12.2476 54.5055 11.7983C55.1149 11.3428 55.8166 11.1151 56.6106 11.1151C56.8076 11.1151 57.02 11.1274 57.2477 11.152C57.4754 11.1766 57.6755 11.2105 57.8478 11.2536V14.7436C57.6632 14.6882 57.4077 14.639 57.0815 14.5959C56.7553 14.5528 56.4567 14.5312 56.1859 14.5312C55.6073 14.5312 55.0903 14.6574 54.6348 14.9098C54.1854 15.156 53.8284 15.5007 53.5638 15.9439C53.3052 16.3871 53.176 16.898 53.176 17.4766V25.5H49.2427ZM64.9043 25.777C63.4455 25.777 62.1898 25.4815 61.1373 24.8906C60.0909 24.2936 59.2845 23.4503 58.7182 22.3608C58.1519 21.2652 57.8688 19.9695 57.8688 18.4737C57.8688 17.0149 58.1519 15.7346 58.7182 14.6328C59.2845 13.531 60.0816 12.6723 61.1096 12.0568C62.1437 11.4413 63.3563 11.1335 64.7474 11.1335C65.683 11.1335 66.5539 11.2843 67.3603 11.5859C68.1728 11.8814 68.8806 12.3277 69.4839 12.9247C70.0932 13.5218 70.5672 14.2727 70.9057 15.1776C71.2443 16.0762 71.4135 17.1288 71.4135 18.3352V19.4155H59.4384V16.978H67.7111C67.7111 16.4117 67.588 15.91 67.3418 15.473C67.0956 15.036 66.754 14.6944 66.317 14.4482C65.8861 14.1958 65.3844 14.0696 64.812 14.0696C64.2149 14.0696 63.6856 14.2081 63.2239 14.4851C62.7684 14.7559 62.4114 15.1222 62.1529 15.5838C61.8944 16.0393 61.762 16.5471 61.7559 17.1072V19.4247C61.7559 20.1264 61.8851 20.7327 62.1437 21.2436C62.4083 21.7545 62.7807 22.1484 63.2608 22.4254C63.741 22.7024 64.3103 22.8409 64.9689 22.8409C65.406 22.8409 65.8061 22.7794 66.1692 22.6562C66.5324 22.5331 66.8432 22.3485 67.1018 22.1023C67.3603 21.8561 67.5572 21.5545 67.6927 21.1974L71.3304 21.4375C71.1458 22.3116 70.7672 23.0748 70.1948 23.7273C69.6285 24.3736 68.896 24.8783 67.9974 25.2415C67.1048 25.5985 66.0738 25.777 64.9043 25.777ZM77.1335 6.59091V25.5H73.2003V6.59091H77.1335ZM79.5043 25.5V11.3182H83.4375V25.5H79.5043ZM81.4801 9.49006C80.8954 9.49006 80.3937 9.29616 79.9752 8.90838C79.5628 8.51444 79.3566 8.04356 79.3566 7.49574C79.3566 6.95407 79.5628 6.48935 79.9752 6.10156C80.3937 5.70762 80.8954 5.51065 81.4801 5.51065C82.0649 5.51065 82.5635 5.70762 82.9759 6.10156C83.3944 6.48935 83.6037 6.95407 83.6037 7.49574C83.6037 8.04356 83.3944 8.51444 82.9759 8.90838C82.5635 9.29616 82.0649 9.49006 81.4801 9.49006ZM89.7415 17.3011V25.5H85.8083V11.3182H89.5569V13.8203H89.723C90.037 12.9955 90.5632 12.343 91.3019 11.8629C92.0405 11.3767 92.9361 11.1335 93.9887 11.1335C94.9735 11.1335 95.8322 11.349 96.5647 11.7798C97.2971 12.2107 97.8665 12.8262 98.2728 13.6264C98.679 14.4205 98.8821 15.3684 98.8821 16.4702V25.5H94.9489V17.1719C94.9551 16.304 94.7335 15.6269 94.2841 15.1406C93.8348 14.6482 93.2162 14.402 92.4283 14.402C91.8989 14.402 91.4311 14.5159 91.0249 14.7436C90.6248 14.9714 90.3109 15.3037 90.0831 15.7408C89.8615 16.1716 89.7477 16.6918 89.7415 17.3011ZM107.665 25.777C106.206 25.777 104.951 25.4815 103.898 24.8906C102.852 24.2936 102.045 23.4503 101.479 22.3608C100.913 21.2652 100.63 19.9695 100.63 18.4737C100.63 17.0149 100.913 15.7346 101.479 14.6328C102.045 13.531 102.842 12.6723 103.87 12.0568C104.905 11.4413 106.117 11.1335 107.508 11.1335C108.444 11.1335 109.315 11.2843 110.121 11.5859C110.934 11.8814 111.641 12.3277 112.245 12.9247C112.854 13.5218 113.328 14.2727 113.667 15.1776C114.005 16.0762 114.174 17.1288 114.174 18.3352V19.4155H102.199V16.978H110.472C110.472 16.4117 110.349 15.91 110.103 15.473C109.856 15.036 109.515 14.6944 109.078 14.4482C108.647 14.1958 108.145 14.0696 107.573 14.0696C106.976 14.0696 106.446 14.2081 105.985 14.4851C105.529 14.7559 105.172 15.1222 104.914 15.5838C104.655 16.0393 104.523 16.5471 104.517 17.1072V19.4247C104.517 20.1264 104.646 20.7327 104.905 21.2436C105.169 21.7545 105.542 22.1484 106.022 22.4254C106.502 22.7024 107.071 22.8409 107.73 22.8409C108.167 22.8409 108.567 22.7794 108.93 22.6562C109.293 22.5331 109.604 22.3485 109.863 22.1023C110.121 21.8561 110.318 21.5545 110.454 21.1974L114.091 21.4375C113.907 22.3116 113.528 23.0748 112.956 23.7273C112.389 24.3736 111.657 24.8783 110.758 25.2415C109.866 25.5985 108.835 25.777 107.665 25.777Z"
-                    className="fill-white"
-                    fill="currentColor"
-                  />
-                  <path
-                    d="M1 29.5V16.5C1 9.87258 6.37258 4.5 13 4.5C19.6274 4.5 25 9.87258 25 16.5C25 23.1274 19.6274 28.5 13 28.5H12"
-                    className="stroke-white"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  />
-                  <path
-                    d="M5 29.5V16.66C5 12.1534 8.58172 8.5 13 8.5C17.4183 8.5 21 12.1534 21 16.66C21 21.1666 17.4183 24.82 13 24.82H12"
-                    className="stroke-white"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  />
-                  <circle cx="13" cy="16.5214" r="5" className="fill-white" fill="currentColor" />
-                </svg>
-              </Link>
-              {/* End Logo */}
+              <AppLogo />
 
               <div className="ms-2"></div>
 
@@ -1663,377 +1630,380 @@ export default function AppLayout({ title, children }: Props) {
           </div>
         </div>
 
-        <nav className="relative bg-white border-b border-gray-200 dark:bg-neutral-900 dark:border-neutral-800">
-          <div className="max-w-[85rem] flex flex-wrap basis-full items-center w-full mx-auto md:py-2.5 px-4 sm:px-6 lg:px-8">
-            {/* Nav Links */}
-            <div className="basis-full grow md:basis-auto md:grow-0 md:w-full">
-              {/* Collapse */}
-              <div
-                id="hs-pro-dmh"
-                className="hs-collapse hidden overflow-hidden transition-all duration-300 md:block"
-                aria-labelledby="hs-pro-dmh-collapse"
-              >
-                <div className="md:flex md:flex-wrap md:items-center md:gap-x-1 py-2 md:py-0 space-y-0.5 md:space-y-0">
-                  <a
-                    className="py-2 px-3 md:px-2.5 xl:px-2 flex items-center gap-x-2 text-sm text-start text-nowrap text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800/40 dark:focus:bg-neutral-800 bg-gray-100 focus:bg-gray-200 dark:bg-neutral-800 dark:focus:bg-neutral-600 "
-                    href="../../pro/saas/index.html"
-                  >
-                    <svg
-                      className="shrink-0 size-4"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+        {showNavbarMenu && (
+          <nav className="relative bg-white border-b border-gray-200 dark:bg-neutral-900 dark:border-neutral-800">
+            <div className="max-w-[85rem] flex flex-wrap basis-full items-center w-full mx-auto md:py-2.5 px-4 sm:px-6 lg:px-8">
+              {/* Nav Links */}
+              <div className="basis-full grow md:basis-auto md:grow-0 md:w-full">
+                {/* Collapse */}
+                <div
+                  id="hs-pro-dmh"
+                  className="hs-collapse hidden overflow-hidden transition-all duration-300 md:block"
+                  aria-labelledby="hs-pro-dmh-collapse"
+                >
+                  <div className="md:flex md:flex-wrap md:items-center md:gap-x-1 py-2 md:py-0 space-y-0.5 md:space-y-0">
+                    <a
+                      className="py-2 px-3 md:px-2.5 xl:px-2 flex items-center gap-x-2 text-sm text-start text-nowrap text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800/40 dark:focus:bg-neutral-800 bg-gray-100 focus:bg-gray-200 dark:bg-neutral-800 dark:focus:bg-neutral-600 "
+                      href="../../pro/saas/index.html"
                     >
-                      <rect width="18" height="18" x="3" y="3" rx="2" />
-                      <path d="M8 7v7" />
-                      <path d="M12 7v4" />
-                      <path d="M16 7v9" />
-                    </svg>
-                    Dashboard
-                  </a>
+                      <svg
+                        className="shrink-0 size-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <rect width="18" height="18" x="3" y="3" rx="2" />
+                        <path d="M8 7v7" />
+                        <path d="M12 7v4" />
+                        <path d="M16 7v9" />
+                      </svg>
+                      Dashboard
+                    </a>
 
-                  <a
-                    className="py-2 px-3 md:px-2.5 xl:px-2 flex items-center gap-x-2 text-sm text-start text-nowrap text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800/40 dark:focus:bg-neutral-800"
-                    href="#"
-                  >
-                    <svg
-                      className="shrink-0 size-4"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                    <a
+                      className="py-2 px-3 md:px-2.5 xl:px-2 flex items-center gap-x-2 text-sm text-start text-nowrap text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800/40 dark:focus:bg-neutral-800"
+                      href="#"
                     >
-                      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-                      <path d="M12 9v4" />
-                      <path d="M12 17h.01" />
-                    </svg>
-                    Alerts
-                  </a>
+                      <svg
+                        className="shrink-0 size-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                        <path d="M12 9v4" />
+                        <path d="M12 17h.01" />
+                      </svg>
+                      Alerts
+                    </a>
 
-                  <a
-                    className="py-2 px-3 md:px-2.5 xl:px-2 flex items-center gap-x-2 text-sm text-start text-nowrap text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800/40 dark:focus:bg-neutral-800"
-                    href="#"
-                  >
-                    <svg
-                      className="shrink-0 size-4"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                    <a
+                      className="py-2 px-3 md:px-2.5 xl:px-2 flex items-center gap-x-2 text-sm text-start text-nowrap text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800/40 dark:focus:bg-neutral-800"
+                      href="#"
                     >
-                      <rect width="7" height="7" x="14" y="3" rx="1" />
-                      <path d="M10 21V8a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H3" />
-                    </svg>
-                    Integrations
-                  </a>
+                      <svg
+                        className="shrink-0 size-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <rect width="7" height="7" x="14" y="3" rx="1" />
+                        <path d="M10 21V8a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H3" />
+                      </svg>
+                      Integrations
+                    </a>
 
-                  <a
-                    className="py-2 px-3 md:px-2.5 xl:px-2 flex items-center gap-x-2 text-sm text-start text-nowrap text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800/40 dark:focus:bg-neutral-800  "
-                    href="../../pro/saas/search.html"
-                  >
-                    <svg
-                      className="shrink-0 size-4"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                    <a
+                      className="py-2 px-3 md:px-2.5 xl:px-2 flex items-center gap-x-2 text-sm text-start text-nowrap text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800/40 dark:focus:bg-neutral-800  "
+                      href="../../pro/saas/search.html"
                     >
-                      <path d="M21 6H3" />
-                      <path d="M10 12H3" />
-                      <path d="M10 18H3" />
-                      <circle cx="17" cy="15" r="3" />
-                      <path d="m21 19-1.9-1.9" />
-                    </svg>
-                    Search{" "}
-                    <span className="py-0.5 px-2 inline-flex items-center gap-x-1.5 text-xs font-medium bg-violet-100 text-violet-800 rounded-md dark:bg-violet-500/10 dark:text-violet-500">
-                      New
-                    </span>
-                  </a>
+                      <svg
+                        className="shrink-0 size-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M21 6H3" />
+                        <path d="M10 12H3" />
+                        <path d="M10 18H3" />
+                        <circle cx="17" cy="15" r="3" />
+                        <path d="m21 19-1.9-1.9" />
+                      </svg>
+                      Search{" "}
+                      <span className="py-0.5 px-2 inline-flex items-center gap-x-1.5 text-xs font-medium bg-violet-100 text-violet-800 rounded-md dark:bg-violet-500/10 dark:text-violet-500">
+                        New
+                      </span>
+                    </a>
 
-                  <a
-                    className="py-2 px-3 md:px-2.5 xl:px-2 flex items-center gap-x-2 text-sm text-start text-nowrap text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800/40 dark:focus:bg-neutral-800  "
-                    href="../../pro/saas/empty-states.html"
-                  >
-                    <svg
-                      className="shrink-0 size-4"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                    <a
+                      className="py-2 px-3 md:px-2.5 xl:px-2 flex items-center gap-x-2 text-sm text-start text-nowrap text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800/40 dark:focus:bg-neutral-800  "
+                      href="../../pro/saas/empty-states.html"
                     >
-                      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-                      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-                    </svg>
-                    Empty Contents
-                  </a>
+                      <svg
+                        className="shrink-0 size-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                        <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                      </svg>
+                      Empty Contents
+                    </a>
 
-                  <div className="md:flex md:justify-end md:items-center md:gap-x-2 md:ms-auto">
-                    {/*<a*/}
-                    {/*  className="flex items-center gap-x-2 p-2 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:hover:bg-neutral-800 dark:text-neutral-300 dark:focus:bg-neutral-800"*/}
-                    {/*  href="../../pro/index.html"*/}
-                    {/*>*/}
-                    {/*  <span className="flex justify-center items-center size-5 bg-indigo-600 text-white rounded-md dark:bg-indigo-500">*/}
-                    {/*    <svg*/}
-                    {/*      className="shrink-0 size-3"*/}
-                    {/*      xmlns="http://www.w3.org/2000/svg"*/}
-                    {/*      width="24"*/}
-                    {/*      height="24"*/}
-                    {/*      viewBox="0 0 24 24"*/}
-                    {/*      fill="none"*/}
-                    {/*      stroke="currentColor"*/}
-                    {/*      strokeWidth="2"*/}
-                    {/*      strokeLinecap="round"*/}
-                    {/*      strokeLinejoin="round"*/}
-                    {/*    >*/}
-                    {/*      <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path>*/}
-                    {/*      <path d="m3.3 7 8.7 5 8.7-5"></path>*/}
-                    {/*      <path d="M12 22V12"></path>*/}
-                    {/*    </svg>*/}
-                    {/*  </span>*/}
-                    {/*  PRO*/}
-                    {/*</a>*/}
+                    <div className="md:flex md:justify-end md:items-center md:gap-x-2 md:ms-auto">
+                      {/*<a*/}
+                      {/*  className="flex items-center gap-x-2 p-2 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:hover:bg-neutral-800 dark:text-neutral-300 dark:focus:bg-neutral-800"*/}
+                      {/*  href="../../pro/index.html"*/}
+                      {/*>*/}
+                      {/*  <span className="flex justify-center items-center size-5 bg-indigo-600 text-white rounded-md dark:bg-indigo-500">*/}
+                      {/*    <svg*/}
+                      {/*      className="shrink-0 size-3"*/}
+                      {/*      xmlns="http://www.w3.org/2000/svg"*/}
+                      {/*      width="24"*/}
+                      {/*      height="24"*/}
+                      {/*      viewBox="0 0 24 24"*/}
+                      {/*      fill="none"*/}
+                      {/*      stroke="currentColor"*/}
+                      {/*      strokeWidth="2"*/}
+                      {/*      strokeLinecap="round"*/}
+                      {/*      strokeLinejoin="round"*/}
+                      {/*    >*/}
+                      {/*      <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path>*/}
+                      {/*      <path d="m3.3 7 8.7 5 8.7-5"></path>*/}
+                      {/*      <path d="M12 22V12"></path>*/}
+                      {/*    </svg>*/}
+                      {/*  </span>*/}
+                      {/*  PRO*/}
+                      {/*</a>*/}
 
-                    {jetstream && (
-                      <>
-                        {/* Project Dropdown */}
-                        <div className="hs-dropdown [--auto-close:inside] [--placement:top-right] relative flex">
-                          {/* Project Button */}
-                          <button
-                            id="hs-pro-dnwpd"
-                            type="button"
-                            className="inline-flex items-center text-start text-sm font-medium text-stone-800 align-middle disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:text-stone-500 dark:text-white dark:focus:text-neutral-200 cursor-pointer"
-                            aria-haspopup="menu"
-                            aria-expanded="false"
-                            aria-label="Dropdown"
-                          >
-                            <svg
-                              className="shrink-0 size-5 me-1.5"
-                              width="33"
-                              height="32"
-                              viewBox="0 0 33 32"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
+                      {jetstream && (
+                        <>
+                          {/* Project Dropdown */}
+                          <div className="hs-dropdown [--auto-close:inside] [--placement:top-right] relative flex">
+                            {/* Project Button */}
+                            <button
+                              id="hs-pro-dnwpd"
+                              type="button"
+                              className="inline-flex items-center text-start text-sm font-medium text-stone-800 align-middle disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:text-stone-500 dark:text-white dark:focus:text-neutral-200 cursor-pointer"
+                              aria-haspopup="menu"
+                              aria-expanded="false"
+                              aria-label="Dropdown"
                             >
-                              <path
-                                d="M32.8875 15.3054C32.9242 16.2093 32.8209 17.1099 32.5811 17.9792C32.3447 18.8486 31.9716 19.6695 31.4787 20.4141C30.989 21.1593 30.3861 21.8167 29.6935 22.3607L29.6769 22.3745L23.019 27.563L19.7451 30.1433L17.7501 31.7089C17.6335 31.8024 17.5036 31.8716 17.3671 31.9201C17.2305 31.9686 17.084 31.9929 16.9374 31.9929C16.7942 31.9929 16.6477 31.9686 16.5111 31.9201C16.3745 31.8716 16.2447 31.8024 16.1281 31.7089L14.1331 30.1433L10.8591 27.563L4.24125 22.4057L4.20129 22.378L4.18796 22.3641C3.49187 21.8203 2.88904 21.1623 2.39611 20.4176C1.90319 19.6729 1.53016 18.8486 1.29036 17.9792C1.05056 17.1099 0.947313 16.2059 0.98395 15.3019C1.02392 14.3979 1.20044 13.5078 1.51018 12.6626L1.55348 12.5414L5.90654 0.747936C5.92875 0.69021 5.95539 0.634792 5.98648 0.581684C6.01534 0.528576 6.04976 0.478931 6.08972 0.43275C6.12747 0.38426 6.16855 0.339234 6.21295 0.297671C6.25736 0.258417 6.30399 0.221472 6.35284 0.186836C6.45609 0.121028 6.56267 0.0725381 6.67924 0.0448295C6.79248 0.0136573 6.91238 -0.000196993 7.02895 0.00673016C7.14885 0.0136573 7.26542 0.0379024 7.37533 0.0829289C7.48524 0.124492 7.59181 0.186836 7.68507 0.263035C7.72948 0.302289 7.77278 0.343852 7.81496 0.387724C7.85493 0.433905 7.89046 0.483549 7.92154 0.536658C7.95485 0.587457 7.98371 0.641719 8.00814 0.699446C8.03256 0.754863 8.05254 0.812589 8.06809 0.872625L11.0023 10.2139H22.8792L25.8134 0.872625C25.8289 0.812589 25.85 0.754863 25.8767 0.699446C25.9011 0.644029 25.93 0.589766 25.9633 0.536658C25.9944 0.485858 26.0299 0.437368 26.0699 0.391187C26.1098 0.345006 26.1531 0.302289 26.1997 0.263035C26.293 0.186836 26.3962 0.127955 26.5062 0.0829289C26.6194 0.0413659 26.736 0.0171209 26.8525 0.0101937C26.9724 0.00326659 27.089 0.0136573 27.2056 0.0448295C27.3188 0.0760017 27.4287 0.124492 27.5286 0.1903C27.5797 0.222627 27.6275 0.259571 27.6719 0.301134C27.7163 0.340388 27.7573 0.38426 27.7951 0.43275C27.8328 0.48124 27.8673 0.532039 27.8983 0.585148C27.9272 0.638256 27.9527 0.693673 27.9749 0.751399L32.3213 12.5483L32.3646 12.6696C32.6744 13.5112 32.8509 14.4014 32.8875 15.3054Z"
-                                fill="#E24329"
-                              />
-                              <path
-                                d="M32.8909 15.309C32.9275 16.2095 32.8243 17.1135 32.5845 17.9829C32.3447 18.8523 31.9717 19.6766 31.4787 20.4213C30.9858 21.1659 30.383 21.824 29.6902 22.3678L29.6736 22.3816L23.0157 27.5701C23.0157 27.5701 20.1881 25.3499 16.9374 22.7903L26.4795 15.2813C26.9092 14.9453 27.3588 14.6371 27.8218 14.3531C28.2847 14.0656 28.7643 13.8093 29.2539 13.5807C29.7468 13.3521 30.2498 13.1477 30.7593 12.978C31.2722 12.8049 31.7918 12.6628 32.3214 12.5485L32.3647 12.6698C32.6744 13.5149 32.8509 14.405 32.8909 15.309Z"
-                                fill="#FC6D26"
-                              />
-                              <path
-                                d="M16.9374 22.7903C20.1881 25.343 23.0191 27.5701 23.0191 27.5701L19.7451 30.1504L17.7501 31.716C17.6335 31.8095 17.5036 31.8788 17.3671 31.9273C17.2305 31.9758 17.084 32 16.9374 32C16.7942 32 16.6477 31.9758 16.5111 31.9273C16.3746 31.8788 16.2447 31.8095 16.1281 31.716L14.1331 30.1504L10.8591 27.5701C10.8591 27.5701 13.6868 25.343 16.9374 22.7903Z"
-                                fill="#FCA326"
-                              />
-                              <path
-                                d="M16.9374 22.7834C13.6834 25.343 10.8591 27.5632 10.8591 27.5632L4.24125 22.4059L4.20129 22.3782L4.18796 22.3643C3.49187 21.8205 2.88904 21.1625 2.39611 20.4178C1.90319 19.6731 1.53016 18.8488 1.29036 17.9794C1.05056 17.1101 0.947313 16.2061 0.98395 15.3021C1.02392 14.3981 1.20044 13.508 1.51018 12.6628L1.55348 12.5416C2.08304 12.6559 2.60261 12.7979 3.11552 12.9711C3.6251 13.1443 4.12801 13.3452 4.62094 13.5772C5.11053 13.8058 5.59014 14.0656 6.05309 14.3496C6.51604 14.6336 6.96233 14.9453 7.39531 15.2813L16.9374 22.7834Z"
-                                fill="#FC6D26"
-                              />
-                            </svg>
-                            {ucfirst(user.current_team?.name ?? "Aucune Organisation")}
-                            <svg
-                              className="shrink-0 size-4 ms-1"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="m6 9 6 6 6-6" />
-                            </svg>
-                          </button>
-                          {/* End Project Button */}
+                              <svg
+                                className="shrink-0 size-5 me-1.5"
+                                width="33"
+                                height="32"
+                                viewBox="0 0 33 32"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M32.8875 15.3054C32.9242 16.2093 32.8209 17.1099 32.5811 17.9792C32.3447 18.8486 31.9716 19.6695 31.4787 20.4141C30.989 21.1593 30.3861 21.8167 29.6935 22.3607L29.6769 22.3745L23.019 27.563L19.7451 30.1433L17.7501 31.7089C17.6335 31.8024 17.5036 31.8716 17.3671 31.9201C17.2305 31.9686 17.084 31.9929 16.9374 31.9929C16.7942 31.9929 16.6477 31.9686 16.5111 31.9201C16.3745 31.8716 16.2447 31.8024 16.1281 31.7089L14.1331 30.1433L10.8591 27.563L4.24125 22.4057L4.20129 22.378L4.18796 22.3641C3.49187 21.8203 2.88904 21.1623 2.39611 20.4176C1.90319 19.6729 1.53016 18.8486 1.29036 17.9792C1.05056 17.1099 0.947313 16.2059 0.98395 15.3019C1.02392 14.3979 1.20044 13.5078 1.51018 12.6626L1.55348 12.5414L5.90654 0.747936C5.92875 0.69021 5.95539 0.634792 5.98648 0.581684C6.01534 0.528576 6.04976 0.478931 6.08972 0.43275C6.12747 0.38426 6.16855 0.339234 6.21295 0.297671C6.25736 0.258417 6.30399 0.221472 6.35284 0.186836C6.45609 0.121028 6.56267 0.0725381 6.67924 0.0448295C6.79248 0.0136573 6.91238 -0.000196993 7.02895 0.00673016C7.14885 0.0136573 7.26542 0.0379024 7.37533 0.0829289C7.48524 0.124492 7.59181 0.186836 7.68507 0.263035C7.72948 0.302289 7.77278 0.343852 7.81496 0.387724C7.85493 0.433905 7.89046 0.483549 7.92154 0.536658C7.95485 0.587457 7.98371 0.641719 8.00814 0.699446C8.03256 0.754863 8.05254 0.812589 8.06809 0.872625L11.0023 10.2139H22.8792L25.8134 0.872625C25.8289 0.812589 25.85 0.754863 25.8767 0.699446C25.9011 0.644029 25.93 0.589766 25.9633 0.536658C25.9944 0.485858 26.0299 0.437368 26.0699 0.391187C26.1098 0.345006 26.1531 0.302289 26.1997 0.263035C26.293 0.186836 26.3962 0.127955 26.5062 0.0829289C26.6194 0.0413659 26.736 0.0171209 26.8525 0.0101937C26.9724 0.00326659 27.089 0.0136573 27.2056 0.0448295C27.3188 0.0760017 27.4287 0.124492 27.5286 0.1903C27.5797 0.222627 27.6275 0.259571 27.6719 0.301134C27.7163 0.340388 27.7573 0.38426 27.7951 0.43275C27.8328 0.48124 27.8673 0.532039 27.8983 0.585148C27.9272 0.638256 27.9527 0.693673 27.9749 0.751399L32.3213 12.5483L32.3646 12.6696C32.6744 13.5112 32.8509 14.4014 32.8875 15.3054Z"
+                                  fill="#E24329"
+                                />
+                                <path
+                                  d="M32.8909 15.309C32.9275 16.2095 32.8243 17.1135 32.5845 17.9829C32.3447 18.8523 31.9717 19.6766 31.4787 20.4213C30.9858 21.1659 30.383 21.824 29.6902 22.3678L29.6736 22.3816L23.0157 27.5701C23.0157 27.5701 20.1881 25.3499 16.9374 22.7903L26.4795 15.2813C26.9092 14.9453 27.3588 14.6371 27.8218 14.3531C28.2847 14.0656 28.7643 13.8093 29.2539 13.5807C29.7468 13.3521 30.2498 13.1477 30.7593 12.978C31.2722 12.8049 31.7918 12.6628 32.3214 12.5485L32.3647 12.6698C32.6744 13.5149 32.8509 14.405 32.8909 15.309Z"
+                                  fill="#FC6D26"
+                                />
+                                <path
+                                  d="M16.9374 22.7903C20.1881 25.343 23.0191 27.5701 23.0191 27.5701L19.7451 30.1504L17.7501 31.716C17.6335 31.8095 17.5036 31.8788 17.3671 31.9273C17.2305 31.9758 17.084 32 16.9374 32C16.7942 32 16.6477 31.9758 16.5111 31.9273C16.3746 31.8788 16.2447 31.8095 16.1281 31.716L14.1331 30.1504L10.8591 27.5701C10.8591 27.5701 13.6868 25.343 16.9374 22.7903Z"
+                                  fill="#FCA326"
+                                />
+                                <path
+                                  d="M16.9374 22.7834C13.6834 25.343 10.8591 27.5632 10.8591 27.5632L4.24125 22.4059L4.20129 22.3782L4.18796 22.3643C3.49187 21.8205 2.88904 21.1625 2.39611 20.4178C1.90319 19.6731 1.53016 18.8488 1.29036 17.9794C1.05056 17.1101 0.947313 16.2061 0.98395 15.3021C1.02392 14.3981 1.20044 13.508 1.51018 12.6628L1.55348 12.5416C2.08304 12.6559 2.60261 12.7979 3.11552 12.9711C3.6251 13.1443 4.12801 13.3452 4.62094 13.5772C5.11053 13.8058 5.59014 14.0656 6.05309 14.3496C6.51604 14.6336 6.96233 14.9453 7.39531 15.2813L16.9374 22.7834Z"
+                                  fill="#FC6D26"
+                                />
+                              </svg>
+                              {ucfirst(user.current_team?.name ?? "Aucune Organisation")}
+                              <svg
+                                className="shrink-0 size-4 ms-1"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="m6 9 6 6 6-6" />
+                              </svg>
+                            </button>
+                            {/* End Project Button */}
 
-                          {/* Dropdown */}
-                          <div
-                            className="hs-dropdown-menu hs-dropdown-open:opacity-100 w-60 transition-[opacity,margin] duration opacity-0 hidden z-20 bg-white rounded-xl shadow-xl dark:bg-neutral-900"
-                            role="menu"
-                            aria-orientation="vertical"
-                            aria-labelledby="hs-pro-dnwpd"
-                          >
-                            <div className="p-1 space-y-0.5">
-                              {all_teams.map((team) => (
-                                <span key={team.name} className={"cursor-pointer"}>
-                                  {/* Item */}
-                                  <a
-                                    className={`py-2 px-3 block w-full text-start ${team.name === user.current_team.name ? "bg-stone-100 dark:bg-neutral-800" : "hover:bg-stone-100 dark:hover:bg-neutral-800"} rounded-lg disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-stone-100 dark:focus:bg-neutral-800`}
-                                    onClick={(e: any) => {
-                                      e.preventDefault();
-                                      switchToTeam(team);
-                                    }}
-                                  >
-                                    <div className="flex items-center gap-x-2">
-                                      <svg
-                                        className="shrink-0 size-5 text-stone-500 dark:text-neutral-500"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        fill="currentColor"
-                                        viewBox="0 0 16 16"
-                                      >
-                                        <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                      </svg>
-                                      <svg
-                                        className="shrink-0 size-7"
-                                        width="33"
-                                        height="32"
-                                        viewBox="0 0 33 32"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <path
-                                          d="M32.8875 15.3054C32.9242 16.2093 32.8209 17.1099 32.5811 17.9792C32.3447 18.8486 31.9716 19.6695 31.4787 20.4141C30.989 21.1593 30.3861 21.8167 29.6935 22.3607L29.6769 22.3745L23.019 27.563L19.7451 30.1433L17.7501 31.7089C17.6335 31.8024 17.5036 31.8716 17.3671 31.9201C17.2305 31.9686 17.084 31.9929 16.9374 31.9929C16.7942 31.9929 16.6477 31.9686 16.5111 31.9201C16.3745 31.8716 16.2447 31.8024 16.1281 31.7089L14.1331 30.1433L10.8591 27.563L4.24125 22.4057L4.20129 22.378L4.18796 22.3641C3.49187 21.8203 2.88904 21.1623 2.39611 20.4176C1.90319 19.6729 1.53016 18.8486 1.29036 17.9792C1.05056 17.1099 0.947313 16.2059 0.98395 15.3019C1.02392 14.3979 1.20044 13.5078 1.51018 12.6626L1.55348 12.5414L5.90654 0.747936C5.92875 0.69021 5.95539 0.634792 5.98648 0.581684C6.01534 0.528576 6.04976 0.478931 6.08972 0.43275C6.12747 0.38426 6.16855 0.339234 6.21295 0.297671C6.25736 0.258417 6.30399 0.221472 6.35284 0.186836C6.45609 0.121028 6.56267 0.0725381 6.67924 0.0448295C6.79248 0.0136573 6.91238 -0.000196993 7.02895 0.00673016C7.14885 0.0136573 7.26542 0.0379024 7.37533 0.0829289C7.48524 0.124492 7.59181 0.186836 7.68507 0.263035C7.72948 0.302289 7.77278 0.343852 7.81496 0.387724C7.85493 0.433905 7.89046 0.483549 7.92154 0.536658C7.95485 0.587457 7.98371 0.641719 8.00814 0.699446C8.03256 0.754863 8.05254 0.812589 8.06809 0.872625L11.0023 10.2139H22.8792L25.8134 0.872625C25.8289 0.812589 25.85 0.754863 25.8767 0.699446C25.9011 0.644029 25.93 0.589766 25.9633 0.536658C25.9944 0.485858 26.0299 0.437368 26.0699 0.391187C26.1098 0.345006 26.1531 0.302289 26.1997 0.263035C26.293 0.186836 26.3962 0.127955 26.5062 0.0829289C26.6194 0.0413659 26.736 0.0171209 26.8525 0.0101937C26.9724 0.00326659 27.089 0.0136573 27.2056 0.0448295C27.3188 0.0760017 27.4287 0.124492 27.5286 0.1903C27.5797 0.222627 27.6275 0.259571 27.6719 0.301134C27.7163 0.340388 27.7573 0.38426 27.7951 0.43275C27.8328 0.48124 27.8673 0.532039 27.8983 0.585148C27.9272 0.638256 27.9527 0.693673 27.9749 0.751399L32.3213 12.5483L32.3646 12.6696C32.6744 13.5112 32.8509 14.4014 32.8875 15.3054Z"
-                                          fill="#E24329"
-                                        />
-                                        <path
-                                          d="M32.8909 15.309C32.9275 16.2095 32.8243 17.1135 32.5845 17.9829C32.3447 18.8523 31.9717 19.6766 31.4787 20.4213C30.9858 21.1659 30.383 21.824 29.6902 22.3678L29.6736 22.3816L23.0157 27.5701C23.0157 27.5701 20.1881 25.3499 16.9374 22.7903L26.4795 15.2813C26.9092 14.9453 27.3588 14.6371 27.8218 14.3531C28.2847 14.0656 28.7643 13.8093 29.2539 13.5807C29.7468 13.3521 30.2498 13.1477 30.7593 12.978C31.2722 12.8049 31.7918 12.6628 32.3214 12.5485L32.3647 12.6698C32.6744 13.5149 32.8509 14.405 32.8909 15.309Z"
-                                          fill="#FC6D26"
-                                        />
-                                        <path
-                                          d="M16.9374 22.7903C20.1881 25.343 23.0191 27.5701 23.0191 27.5701L19.7451 30.1504L17.7501 31.716C17.6335 31.8095 17.5036 31.8788 17.3671 31.9273C17.2305 31.9758 17.084 32 16.9374 32C16.7942 32 16.6477 31.9758 16.5111 31.9273C16.3746 31.8788 16.2447 31.8095 16.1281 31.716L14.1331 30.1504L10.8591 27.5701C10.8591 27.5701 13.6868 25.343 16.9374 22.7903Z"
-                                          fill="#FCA326"
-                                        />
-                                        <path
-                                          d="M16.9374 22.7834C13.6834 25.343 10.8591 27.5632 10.8591 27.5632L4.24125 22.4059L4.20129 22.3782L4.18796 22.3643C3.49187 21.8205 2.88904 21.1625 2.39611 20.4178C1.90319 19.6731 1.53016 18.8488 1.29036 17.9794C1.05056 17.1101 0.947313 16.2061 0.98395 15.3021C1.02392 14.3981 1.20044 13.508 1.51018 12.6628L1.55348 12.5416C2.08304 12.6559 2.60261 12.7979 3.11552 12.9711C3.6251 13.1443 4.12801 13.3452 4.62094 13.5772C5.11053 13.8058 5.59014 14.0656 6.05309 14.3496C6.51604 14.6336 6.96233 14.9453 7.39531 15.2813L16.9374 22.7834Z"
-                                          fill="#FC6D26"
-                                        />
-                                      </svg>
-                                      <div className="grow">
-                                        <p className="text-sm font-medium text-stone-800 dark:text-neutral-200">
-                                          {ucfirst(team.name ?? "Aucune Organisation")}
-                                        </p>
-                                        <p className="text-xs text-stone-500 dark:text-neutral-500">
-                                          {ucfirst(team.email ?? "")}
-                                        </p>
-                                      </div>
-                                      <div className="ms-auto self-center">
+                            {/* Dropdown */}
+                            <div
+                              className="hs-dropdown-menu hs-dropdown-open:opacity-100 w-60 transition-[opacity,margin] duration opacity-0 hidden z-20 bg-white rounded-xl shadow-xl dark:bg-neutral-900"
+                              role="menu"
+                              aria-orientation="vertical"
+                              aria-labelledby="hs-pro-dnwpd"
+                            >
+                              <div className="p-1 space-y-0.5">
+                                {all_teams.map((team) => (
+                                  <span key={team.name} className={"cursor-pointer"}>
+                                    {/* Item */}
+                                    <a
+                                      className={`py-2 px-3 block w-full text-start ${team.name === user.current_team.name ? "bg-stone-100 dark:bg-neutral-800" : "hover:bg-stone-100 dark:hover:bg-neutral-800"} rounded-lg disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-stone-100 dark:focus:bg-neutral-800`}
+                                      onClick={(e: any) => {
+                                        e.preventDefault();
+                                        switchToTeam(team);
+                                      }}
+                                    >
+                                      <div className="flex items-center gap-x-2">
                                         <svg
-                                          className="shrink-0 size-4 text-stone-800 dark:text-neutral-200"
+                                          className="shrink-0 size-5 text-stone-500 dark:text-neutral-500"
                                           xmlns="http://www.w3.org/2000/svg"
-                                          width="24"
-                                          height="24"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          stroke="currentColor"
-                                          strokeWidth="2"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
+                                          width="16"
+                                          height="16"
+                                          fill="currentColor"
+                                          viewBox="0 0 16 16"
                                         >
-                                          <polyline points="20 6 9 17 4 12" />
+                                          <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                                         </svg>
+                                        <svg
+                                          className="shrink-0 size-7"
+                                          width="33"
+                                          height="32"
+                                          viewBox="0 0 33 32"
+                                          fill="none"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                          <path
+                                            d="M32.8875 15.3054C32.9242 16.2093 32.8209 17.1099 32.5811 17.9792C32.3447 18.8486 31.9716 19.6695 31.4787 20.4141C30.989 21.1593 30.3861 21.8167 29.6935 22.3607L29.6769 22.3745L23.019 27.563L19.7451 30.1433L17.7501 31.7089C17.6335 31.8024 17.5036 31.8716 17.3671 31.9201C17.2305 31.9686 17.084 31.9929 16.9374 31.9929C16.7942 31.9929 16.6477 31.9686 16.5111 31.9201C16.3745 31.8716 16.2447 31.8024 16.1281 31.7089L14.1331 30.1433L10.8591 27.563L4.24125 22.4057L4.20129 22.378L4.18796 22.3641C3.49187 21.8203 2.88904 21.1623 2.39611 20.4176C1.90319 19.6729 1.53016 18.8486 1.29036 17.9792C1.05056 17.1099 0.947313 16.2059 0.98395 15.3019C1.02392 14.3979 1.20044 13.5078 1.51018 12.6626L1.55348 12.5414L5.90654 0.747936C5.92875 0.69021 5.95539 0.634792 5.98648 0.581684C6.01534 0.528576 6.04976 0.478931 6.08972 0.43275C6.12747 0.38426 6.16855 0.339234 6.21295 0.297671C6.25736 0.258417 6.30399 0.221472 6.35284 0.186836C6.45609 0.121028 6.56267 0.0725381 6.67924 0.0448295C6.79248 0.0136573 6.91238 -0.000196993 7.02895 0.00673016C7.14885 0.0136573 7.26542 0.0379024 7.37533 0.0829289C7.48524 0.124492 7.59181 0.186836 7.68507 0.263035C7.72948 0.302289 7.77278 0.343852 7.81496 0.387724C7.85493 0.433905 7.89046 0.483549 7.92154 0.536658C7.95485 0.587457 7.98371 0.641719 8.00814 0.699446C8.03256 0.754863 8.05254 0.812589 8.06809 0.872625L11.0023 10.2139H22.8792L25.8134 0.872625C25.8289 0.812589 25.85 0.754863 25.8767 0.699446C25.9011 0.644029 25.93 0.589766 25.9633 0.536658C25.9944 0.485858 26.0299 0.437368 26.0699 0.391187C26.1098 0.345006 26.1531 0.302289 26.1997 0.263035C26.293 0.186836 26.3962 0.127955 26.5062 0.0829289C26.6194 0.0413659 26.736 0.0171209 26.8525 0.0101937C26.9724 0.00326659 27.089 0.0136573 27.2056 0.0448295C27.3188 0.0760017 27.4287 0.124492 27.5286 0.1903C27.5797 0.222627 27.6275 0.259571 27.6719 0.301134C27.7163 0.340388 27.7573 0.38426 27.7951 0.43275C27.8328 0.48124 27.8673 0.532039 27.8983 0.585148C27.9272 0.638256 27.9527 0.693673 27.9749 0.751399L32.3213 12.5483L32.3646 12.6696C32.6744 13.5112 32.8509 14.4014 32.8875 15.3054Z"
+                                            fill="#E24329"
+                                          />
+                                          <path
+                                            d="M32.8909 15.309C32.9275 16.2095 32.8243 17.1135 32.5845 17.9829C32.3447 18.8523 31.9717 19.6766 31.4787 20.4213C30.9858 21.1659 30.383 21.824 29.6902 22.3678L29.6736 22.3816L23.0157 27.5701C23.0157 27.5701 20.1881 25.3499 16.9374 22.7903L26.4795 15.2813C26.9092 14.9453 27.3588 14.6371 27.8218 14.3531C28.2847 14.0656 28.7643 13.8093 29.2539 13.5807C29.7468 13.3521 30.2498 13.1477 30.7593 12.978C31.2722 12.8049 31.7918 12.6628 32.3214 12.5485L32.3647 12.6698C32.6744 13.5149 32.8509 14.405 32.8909 15.309Z"
+                                            fill="#FC6D26"
+                                          />
+                                          <path
+                                            d="M16.9374 22.7903C20.1881 25.343 23.0191 27.5701 23.0191 27.5701L19.7451 30.1504L17.7501 31.716C17.6335 31.8095 17.5036 31.8788 17.3671 31.9273C17.2305 31.9758 17.084 32 16.9374 32C16.7942 32 16.6477 31.9758 16.5111 31.9273C16.3746 31.8788 16.2447 31.8095 16.1281 31.716L14.1331 30.1504L10.8591 27.5701C10.8591 27.5701 13.6868 25.343 16.9374 22.7903Z"
+                                            fill="#FCA326"
+                                          />
+                                          <path
+                                            d="M16.9374 22.7834C13.6834 25.343 10.8591 27.5632 10.8591 27.5632L4.24125 22.4059L4.20129 22.3782L4.18796 22.3643C3.49187 21.8205 2.88904 21.1625 2.39611 20.4178C1.90319 19.6731 1.53016 18.8488 1.29036 17.9794C1.05056 17.1101 0.947313 16.2061 0.98395 15.3021C1.02392 14.3981 1.20044 13.508 1.51018 12.6628L1.55348 12.5416C2.08304 12.6559 2.60261 12.7979 3.11552 12.9711C3.6251 13.1443 4.12801 13.3452 4.62094 13.5772C5.11053 13.8058 5.59014 14.0656 6.05309 14.3496C6.51604 14.6336 6.96233 14.9453 7.39531 15.2813L16.9374 22.7834Z"
+                                            fill="#FC6D26"
+                                          />
+                                        </svg>
+                                        <div className="grow">
+                                          <p className="text-sm font-medium text-stone-800 dark:text-neutral-200">
+                                            {ucfirst(team.name ?? "Aucune Organisation")}
+                                          </p>
+                                          <p className="text-xs text-stone-500 dark:text-neutral-500">
+                                            {ucfirst(team.email ?? "")}
+                                          </p>
+                                        </div>
+                                          {team.name === user.current_team.name &&
+                                        <div className="ms-auto self-center">
+                                          <svg
+                                            className="shrink-0 size-4 text-stone-800 dark:text-neutral-200"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          >
+                                            <polyline points="20 6 9 17 4 12" />
+                                          </svg>
+                                        </div>}
                                       </div>
-                                    </div>
-                                  </a>
-                                  {/* End Item */}
-                                </span>
-                              ))}
-                            </div>
+                                    </a>
+                                    {/* End Item */}
+                                  </span>
+                                ))}
+                              </div>
 
-                            <div className="p-1 border-t border-stone-200 dark:border-neutral-800">
-                              <Link
-                                href={"/teams/create"}
-                                className="w-full flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-stone-800 hover:bg-stone-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-stone-100 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
-                              >
-                                <svg
-                                  className="shrink-0 size-4"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="24"
-                                  height="24"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
+                              <div className="p-1 border-t border-stone-200 dark:border-neutral-800">
+                                <Link
+                                  href={"/teams/create"}
+                                  className="w-full flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-stone-800 hover:bg-stone-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-stone-100 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                                 >
-                                  <circle cx="12" cy="12" r="10" />
-                                  <path d="M8 12h8" />
-                                  <path d="M12 8v8" />
-                                </svg>
-                                Add another team
-                              </Link>
-                            </div>
+                                  <svg
+                                    className="shrink-0 size-4"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  >
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M8 12h8" />
+                                    <path d="M12 8v8" />
+                                  </svg>
+                                  Add another team
+                                </Link>
+                              </div>
 
-                            <div className="p-1 border-t border-stone-200 dark:border-neutral-800">
-                              <button
-                                type="button"
-                                className="w-full flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-stone-800 hover:bg-stone-100 disabled:opacity-50 focus:outline-hidden focus:bg-stone-100 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
-                              >
-                                Sign out
-                                <span className="ms-auto text-xs text-stone-500 dark:text-neutral-500">
-                                  {ucfirst(user.current_team?.name ?? "Aucune Organisation")}
-                                </span>
-                              </button>
+                              <div className="p-1 border-t border-stone-200 dark:border-neutral-800">
+                                <button
+                                  type="button"
+                                  className="w-full flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-stone-800 hover:bg-stone-100 disabled:opacity-50 focus:outline-hidden focus:bg-stone-100 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
+                                >
+                                  Sign out
+                                  <span className="ms-auto text-xs text-stone-500 dark:text-neutral-500">
+                                    {ucfirst(user.current_team?.name ?? "Aucune Organisation")}
+                                  </span>
+                                </button>
+                              </div>
                             </div>
+                            {/* End Dropdown */}
                           </div>
-                          {/* End Dropdown */}
-                        </div>
-                        {/* End Project Dropdown */}
-                      </>
-                    )}
-                    {/*<a*/}
-                    {/*  className="flex items-center gap-x-2 p-2 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:hover:bg-neutral-800 dark:text-neutral-300 dark:focus:bg-neutral-800"*/}
-                    {/*  href="../../pro/examples.html"*/}
-                    {/*>*/}
-                    {/*  <span className="flex justify-center items-center size-5 bg-indigo-600 text-white rounded-md dark:bg-indigo-500">*/}
-                    {/*    <svg*/}
-                    {/*      className="shrink-0 size-3"*/}
-                    {/*      xmlns="http://www.w3.org/2000/svg"*/}
-                    {/*      width="24"*/}
-                    {/*      height="24"*/}
-                    {/*      viewBox="0 0 24 24"*/}
-                    {/*      fill="none"*/}
-                    {/*      stroke="currentColor"*/}
-                    {/*      strokeWidth="2"*/}
-                    {/*      strokeLinecap="round"*/}
-                    {/*      strokeLinejoin="round"*/}
-                    {/*    >*/}
-                    {/*      <rect width="18" height="7" x="3" y="3" rx="1"></rect>*/}
-                    {/*      <rect width="9" height="7" x="3" y="14" rx="1"></rect>*/}
-                    {/*      <rect width="5" height="7" x="16" y="14" rx="1"></rect>*/}
-                    {/*    </svg>*/}
-                    {/*  </span>*/}
-                    {/*  Examples*/}
-                    {/*</a>*/}
+                          {/* End Project Dropdown */}
+                        </>
+                      )}
+                      {/*<a*/}
+                      {/*  className="flex items-center gap-x-2 p-2 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:hover:bg-neutral-800 dark:text-neutral-300 dark:focus:bg-neutral-800"*/}
+                      {/*  href="../../pro/examples.html"*/}
+                      {/*>*/}
+                      {/*  <span className="flex justify-center items-center size-5 bg-indigo-600 text-white rounded-md dark:bg-indigo-500">*/}
+                      {/*    <svg*/}
+                      {/*      className="shrink-0 size-3"*/}
+                      {/*      xmlns="http://www.w3.org/2000/svg"*/}
+                      {/*      width="24"*/}
+                      {/*      height="24"*/}
+                      {/*      viewBox="0 0 24 24"*/}
+                      {/*      fill="none"*/}
+                      {/*      stroke="currentColor"*/}
+                      {/*      strokeWidth="2"*/}
+                      {/*      strokeLinecap="round"*/}
+                      {/*      strokeLinejoin="round"*/}
+                      {/*    >*/}
+                      {/*      <rect width="18" height="7" x="3" y="3" rx="1"></rect>*/}
+                      {/*      <rect width="9" height="7" x="3" y="14" rx="1"></rect>*/}
+                      {/*      <rect width="5" height="7" x="16" y="14" rx="1"></rect>*/}
+                      {/*    </svg>*/}
+                      {/*  </span>*/}
+                      {/*  Examples*/}
+                      {/*</a>*/}
+                    </div>
                   </div>
                 </div>
+                {/* End Collapse */}
               </div>
-              {/* End Collapse */}
+              {/* End Nav Links */}
             </div>
-            {/* End Nav Links */}
-          </div>
-        </nav>
+          </nav>
+        )}
       </header>
       {/* ========== END HEADER ========== */}
 
