@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\Classes\Vcard\UserVcard;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $vcard = new \App\Helpers\Classes\Vcard\UserVcard();
+            $vcard = new UserVcard();
 
             $table->id();
             $table->uuid()->default(null)->unique();

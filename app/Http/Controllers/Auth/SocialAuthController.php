@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +21,7 @@ class SocialAuthController extends Controller
     {
         $socialUser = Socialite::driver($provider)->stateless()->user();
 
-        $user = \App\Models\User::updateOrCreate(
+        $user = User::updateOrCreate(
             ['email' => $socialUser->getEmail()],
             [
                 'name' => explode(" ",$socialUser->getName() ?? $socialUser->getNickname())[1],

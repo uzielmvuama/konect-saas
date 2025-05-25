@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\Core\MemberRequestStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,7 +21,7 @@ return new class extends Migration
             $table->string("team_email")->nullable();
             $table->string('phone_ext')->nullable();
             $table->boolean('active')->default(true); # Statut pour savoir si l’utilisateur est toujours membre dans cette entreprise.
-            $table->enum("request_status", array_map(fn($status) => $status->value, \App\Helpers\Core\MemberRequestStatus::cases()))->default(\App\Helpers\Core\MemberRequestStatus::PENDING->value);
+            $table->enum("request_status", array_map(fn($status) => $status->value, MemberRequestStatus::cases()))->default(MemberRequestStatus::PENDING->value);
             $table->timestamps();
 
             $table->unique(['team_id', 'user_id']);

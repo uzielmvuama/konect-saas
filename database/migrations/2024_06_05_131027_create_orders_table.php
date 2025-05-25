@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\Enums\ActionStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,8 +17,8 @@ return new class extends Migration
             $table->timestamps();
             $table->string('payment_method');
             $table->json('provider_order_id');
-            $table->enum("status", array_map(fn($status) => $status->value, \App\Helpers\Enums\ActionStatus::cases())
-            )->default(\App\Helpers\Enums\ActionStatus::INITIALIZED->value);
+            $table->enum("status", array_map(fn($status) => $status->value, ActionStatus::cases())
+            )->default(ActionStatus::INITIALIZED->value);
         });
     }
 

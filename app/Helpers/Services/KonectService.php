@@ -38,7 +38,7 @@ class KonectService
             if (!Konect::where('ko_ip_konect', $ip)->where('user_id', $user_id)->exists()) {
                 $konect = new Konect();
                 $konect->ko_ip_konect = $ip;
-                $konect->ko_ip_locations = Utils::getUserLocation(ip: $ip);;
+                $konect->ko_ip_locations = Utils::getUserLocation(ip: $ip);
                 $konect->ko_social_clicked = $social_clicked;
                 $konect->ko_phone_clicked = $phone_clicked;
                 $konect->user_id = $user_id;
@@ -103,7 +103,7 @@ class KonectService
             "email" => $email,
             "phone" => $phone
         ]);
-        
+
         $cf->user_id = $user->id;
         $cf->save();
         KonectFeedbackDoneEvent::dispatch(User::find($user->id), $name, $firstname, $email, $phone, $cf->id);

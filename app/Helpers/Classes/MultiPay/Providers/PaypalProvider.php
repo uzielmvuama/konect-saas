@@ -9,9 +9,11 @@ use App\Helpers\Core\Constants;
 use App\Helpers\Enums\ActionStatus;
 use App\Helpers\Services\GadgetService;
 use App\Models\Order;
+use Exception;
 use Illuminate\Http\Request;
 use Laravel\Cashier\Cashier;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
+use Throwable;
 
 class PaypalProvider implements MultiPayProviderInterface
 {
@@ -104,7 +106,7 @@ class PaypalProvider implements MultiPayProviderInterface
                     }
                 }
             }
-        } catch (\Exception|\Throwable $e) {
+        } catch (Exception|Throwable $e) {
             return new MultiPayResponse(status: ActionStatus::FAILED, isSuccess: false, message: $e->getMessage());
         }
 
@@ -141,7 +143,7 @@ class PaypalProvider implements MultiPayProviderInterface
             return new MultiPayResponse(status: ActionStatus::FAILED,
                 transactionId: $order_payload->session_id, isSuccess: false, message: 'Paiement failed', raw: $order_payload);
 
-        } catch (\Exception|\Throwable $e) {
+        } catch (Exception|Throwable $e) {
             return new MultiPayResponse(status: ActionStatus::FAILED, isSuccess: false, message: $e->getMessage());
         }
 

@@ -2,7 +2,15 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
+
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, config('app.allowed_locales'))) {
+        Session::put('locale', $locale);
+    }
+    return redirect()->back();
+});
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -12,6 +20,7 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
 Route::get('/kuser', function () {
     return Inertia::render('Kuser');
 });
@@ -38,6 +47,13 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Profile/Dashboard');
     })->name('dashboard');
+
+    Route::prefix("/teams")->group(function (){
+       Route::name('teams.')->group(function (){
+           Route::get('/create', [\App\Http\Controllers\TeamsController::class, 'create'])->name('create');
+           Route::post('/create', [\App\Http\Controllers\TeamsController::class, 'doCreate'])->name('create');
+       });
+    });
 });
 
 require_once "includes/socialite.php";

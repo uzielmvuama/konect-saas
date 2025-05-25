@@ -60,7 +60,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Here you may specify the default timezone for your application, which
-    | will be used by the PHP date and date-time functions. The timezone
+    | will be used by the PHP date and date-time Functions. The timezone
     | is set to "UTC" by default as it is suitable for most use cases.
     |
     */
@@ -79,6 +79,7 @@ return [
     */
 
     'locale' => env('APP_LOCALE', 'en'),
+    'allowed_locales' => explode(',', env('APP_ALLOWED_LOCALES', 'en,fr')),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 

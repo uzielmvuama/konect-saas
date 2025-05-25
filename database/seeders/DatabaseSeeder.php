@@ -15,10 +15,16 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->withPersonalTeam()->create();
 
-        User::factory()->withPersonalTeam()->create([
-            'name' => 'Test',
-            'firstname'=> 'User',
-            'email' => 'test@example.com',
+        $this->call([
+            IndustrySeeder::class,
         ]);
+
+//        User::factory()->withPersonalTeam()->create([
+//            'name' => 'Test',
+//            'firstname'=> 'User',
+//            'email' => 'test@example.com',
+//        ]);
+
+
     }
 }
