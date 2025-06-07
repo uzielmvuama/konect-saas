@@ -15,6 +15,8 @@ interface PageProps {
 export default function Dashboard() {
   // @ts-ignore
   const { props } = usePage<PageProps>();
-  const { auth, laravelVersion, phpVersion, canLogin, canRegister } = props;
+    // console.log(props)
+
+    const { auth, laravelVersion, phpVersion, canLogin, canRegister } = props;
   return <AppLayout title="Dashboard"></AppLayout>;
 }

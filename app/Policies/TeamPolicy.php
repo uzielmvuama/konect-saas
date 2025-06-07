@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Plan;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -15,7 +16,7 @@ class TeamPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -31,7 +32,15 @@ class TeamPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        $allowedPlans = Plan::whereIn('name', ['team', 'entreprise'])
+            ->pluck('stripe_product_id')
+            ->toArray();
+
+        if ( $user->subscribedToProduct($allowedPlans, config('cashier.subscription_type')) ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

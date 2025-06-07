@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Plan;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
@@ -32,25 +34,34 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $user= $request->user();
+        $user = $request->user();
+        $allowedPlans = Plan::whereIn('name', ['entreprise'])
+            ->pluck('stripe_product_id')
+            ->toArray();
+
         return [
             'locale' => App::getLocale(),
             'translations' => $this->loadAllTranslations(App::getLocale()),
-            'app_email'=> config('mail.from.address'),
+            'app_email' => config('mail.from.address'),
             'flash' => [
-                'success' => fn () => $request->session()->get('success'),
-                'errors' => fn () => $request->session()->get('errors')
+                'success' => fn() => $request->session()->get('success'),
+                'errors' => fn() => $request->session()->get('errors')
             ],
             ...parent::share($request),
-            'ziggy' => fn () => [
+            'ziggy' => fn() => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
+            'subscription' => [
+                'current' => $user ? ($user->currentSubscriptionName()) : null,
+                'upgrade_plan' => $user ? $user->nextUpgrade() : null,
+            ],
             'permissions' => [
                 'team' => [
-                    'create' => $user && $user->can('create', Post::class),
+                    'create' => $user ? $user->can('create', Team::class) : null,
                 ],
-
+                'analytics' => $user ? $user->subscribed(config('cashier.subscription_type')) : null,
+                'premium_gadget' => $user ? $user->subscribedToProduct($allowedPlans, config('cashier.subscription_type')) : null
             ],
         ];
     }

@@ -105,7 +105,8 @@ class StripeProvider implements MultiPayProviderInterface
 
 //        dd($user);
 
-        $checkout =  $user->newSubscription($plan->stripe_product_id, $plan->stripe_price_id)->checkout([        'success_url' => route('checkout.subscribe.success', ['session_id' => ':session.id']),
+        $checkout =  $user->newSubscription(config('cashier.subscription_type'), $plan->stripe_price_id)->checkout([        'success_url' =>
+            route('checkout.subscribe.success', ['session_id' => ':session.id']),
             'cancel_url' =>route('checkout.cancel')]);
 
 //        ->trialDays(config('cashier.trial_days'))

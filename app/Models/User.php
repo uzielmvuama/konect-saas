@@ -88,4 +88,48 @@ class User extends Authenticatable
     {
         return $this->hasMany(Paymentt::class);
     }
+
+    public function currentSubscription(): ?\Laravel\Cashier\Subscription
+    {
+        return $this->subscriptions()
+            ->whereNull('ends_at')          // encore actif (non annulé)
+            ->orderByDesc('created_at')     // le plus récent si plusieurs
+            ->first();                      // retourne l'objet Subscription
+    }
+
+    public function currentSubscriptionName(): ?string
+    {
+        return $this->subscriptions()
+            ->whereNull('ends_at') // Abonnement actif (non annulé)
+            ->orderByDesc('created_at') // Prend le plus récent si plusieurs
+            ->value('type'); // Retourne juste le nom
+    }
+
+    public function currentPlan(): ?Plan
+    {
+        $type = $this->currentSubscription()?->stripe_price;
+        return $type
+            ? Plan::where('stripe_price_id', $type)->first()
+            : null;
+    }
+
+    public function availableUpgrades()
+    {
+        $current = $this->currentPlan();
+
+        if (!$current) {
+            return Plan::orderBy('id')->get(); // Pas d’abonnement → tous les plans disponibles
+        }
+
+        return Plan::where('id', '>', $current->id)
+            ->orderBy('id')
+            ->get();
+    }
+
+
+    public function nextUpgrade(): ?Plan
+    {
+        return $this->availableUpgrades()->first();
+    }
+
 }

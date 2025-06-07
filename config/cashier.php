@@ -125,5 +125,6 @@ return [
     'logger' => env('CASHIER_LOGGER'),
 
     'trial_days' => env('CASHIER_TRIAL_DAYS', 0),
+    'subscription_type' => env('STRIPE_SUBSCRIPTION_TYPE', 'premium'),
 
 ];
