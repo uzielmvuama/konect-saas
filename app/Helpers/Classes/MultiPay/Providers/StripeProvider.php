@@ -9,8 +9,10 @@ use App\Helpers\Core\Constants;
 use App\Helpers\Enums\ActionStatus;
 use App\Helpers\Services\GadgetService;
 use App\Models\Order;
+use App\Models\Plan;
 use Illuminate\Http\Request;
 use Laravel\Cashier\Cashier;
+use Laravel\Cashier\Checkout;
 
 class StripeProvider implements MultiPayProviderInterface
 {
@@ -61,7 +63,6 @@ class StripeProvider implements MultiPayProviderInterface
         if ($sessionId === null) {
             return new MultiPayResponse(status: ActionStatus::FAILED, isSuccess: false, message: 'Stripe Session not found');
         }
-
         $session = Cashier::stripe()->checkout->sessions->retrieve($sessionId);
 
         $orderId = $session['metadata']['order_id'] ?? null;
@@ -97,5 +98,26 @@ class StripeProvider implements MultiPayProviderInterface
         return ActionStatus::COMPLETED;
     }
 
+
+    final public function subscriptionCreate(Plan $plan, Request $request): Checkout
+    {
+        $user = $request->user();
+
+//        dd($user);
+
+        $checkout =  $user->newSubscription($plan->stripe_product_id, $plan->stripe_price_id)->checkout([        'success_url' => route('checkout.subscribe.success', ['session_id' => ':session.id']),
+            'cancel_url' =>route('checkout.cancel')]);
+
+//        ->trialDays(config('cashier.trial_days'))
+//        ->allowPromotionCodes()
+        return $checkout;
+
+    }
+
+    public function subscriptionSuccess (mixed $data, Request $request) : MultiPayResponse
+    {
+        $sessionId = $data;
+        return new MultiPayResponse(status: ActionStatus::PROGRESS, transactionId: '', isSuccess: true, message: 'Subscriptions successfully done', raw: $sessionId);
+    }
 
 }

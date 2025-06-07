@@ -15,25 +15,25 @@ class PlanSeeder extends Seeder
     {
         Plan::insert([
             [
-                'name' => 'Starter',
-                'slug' => 'starter',
-                'price_cents' => 0,
-                'interval' => null,
-                'stripe_price_id' => '',
+                'name' => 'Pro',
+                'slug' => 'pro',
+                'price' => 15,
+                'stripe_product_id' => 'prod_SS8j3dNNU3HhyT',
+                'stripe_price_id' => 'price_1RXESDBCFuQSEi30z2RtA15P',
             ],
             [
-                'name' => 'Premium Mensuel',
-                'slug' => 'premium-monthly',
-                'price_cents' => 990,
-                'interval' => 'month',
-                'stripe_price_id' => 'price_xxx_monthly',
+                'name' => 'Team',
+                'slug' => 'team',
+                'price' => 45,
+                'stripe_product_id' => 'prod_SS8kSinzqCKvry',
+                'stripe_price_id' => 'price_1RXESiBCFuQSEi30TNvtxEjK',
             ],
             [
-                'name' => 'Pro NFC Unique',
-                'slug' => 'pro-onetime',
-                'price_cents' => 4999,
-                'interval' => 'onetime',
-                'stripe_price_id' => 'price_xxx_onetime',
+                'name' => 'Entreprise',
+                'slug' => 'entreprise',
+                'price' => 199,
+                'stripe_product_id' => 'prod_SS8k8Dy9sZoJn6',
+                'stripe_price_id' => 'price_1RXET8BCFuQSEi30qRpaYiMq',
             ],
         ]);
     }

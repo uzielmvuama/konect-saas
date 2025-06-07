@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
+
 Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, config('app.allowed_locales'))) {
         Session::put('locale', $locale);
@@ -12,21 +13,30 @@ Route::get('/lang/{locale}', function ($locale) {
     return redirect()->back();
 });
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+Route::middleware('guest')->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
+        ]);
+    });
+
+    require_once "includes/socialite.php";
 });
+
 
 Route::get('/kuser', function () {
     return Inertia::render('Kuser');
 });
 
 Route::get('/plans', function () {
-    return Inertia::render('Plans');
+
+    return Inertia::render('Plans',
+    [
+        'plans' => \App\Models\Plan::all()
+    ]);
 });
 
 Route::prefix("/product")->group(function (){
@@ -54,6 +64,7 @@ Route::middleware([
            Route::post('/create', [\App\Http\Controllers\TeamsController::class, 'doCreate'])->name('create');
        });
     });
+    require_once "includes/checkout.php";
 });
 
-require_once "includes/socialite.php";
+

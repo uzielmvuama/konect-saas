@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             IndustrySeeder::class,
+            PlanSeeder::class
         ]);
 
 //        User::factory()->withPersonalTeam()->create([

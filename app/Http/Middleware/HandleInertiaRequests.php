@@ -32,6 +32,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user= $request->user();
         return [
             'locale' => App::getLocale(),
             'translations' => $this->loadAllTranslations(App::getLocale()),
@@ -44,6 +45,12 @@ class HandleInertiaRequests extends Middleware
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
+            ],
+            'permissions' => [
+                'team' => [
+                    'create' => $user && $user->can('create', Post::class),
+                ],
+
             ],
         ];
     }

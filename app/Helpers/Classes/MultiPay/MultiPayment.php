@@ -7,25 +7,27 @@ use App\Helpers\Classes\MultiPay\Contracts\Types\MultiPayResponse;
 use App\Helpers\Classes\MultiPay\Providers\PaypalProvider;
 use App\Helpers\Classes\MultiPay\Providers\StripeProvider;
 use App\Helpers\Enums\ActionStatus;
+use App\Models\Plan;
 use Illuminate\Http\Request;
+use Laravel\Cashier\Checkout;
 
 class MultiPayment implements MultiPayProviderInterface
 {
-    public function __construct(public ?string $provider= null)
+    public function __construct(public ?string $provider = null)
     {
         if (empty($provider)) {
-            $this->provider= config('multipay.default_provider');
+            $this->provider = config('multipay.default_provider');
         }
     }
 
     public function create(mixed $data, mixed $item, Request $request): MultiPayResponse
     {
-        if ($this->provider==='stripe' && in_array('stripe', config('multipay.allowed_providers'), true)) {
-            return (new StripeProvider())->create($data,$item,$request);
+        if ($this->provider === 'stripe' && in_array('stripe', config('multipay.allowed_providers'), true)) {
+            return (new StripeProvider())->create($data, $item, $request);
         }
 
-        if ($this->provider==='paypal' && in_array('paypal', config('multipay.allowed_providers'), true)) {
-            return (new PaypalProvider())->create($data,$item,$request);
+        if ($this->provider === 'paypal' && in_array('paypal', config('multipay.allowed_providers'), true)) {
+            return (new PaypalProvider())->create($data, $item, $request);
         }
 
         return new MultiPayResponse(status: ActionStatus::FAILED, isSuccess: false, message: "The selected payment provider is not supported by the app");
@@ -34,12 +36,12 @@ class MultiPayment implements MultiPayProviderInterface
 
     public function success(mixed $data, Request $request): MultiPayResponse
     {
-        if ($this->provider==='stripe' && in_array('stripe', config('multipay.allowed_providers'), true)) {
-            return (new StripeProvider())->success($data,$request);
+        if ($this->provider === 'stripe' && in_array('stripe', config('multipay.allowed_providers'), true)) {
+            return (new StripeProvider())->success($data, $request);
         }
 
-        if ($this->provider==='paypal' && in_array('paypal', config('multipay.allowed_providers'), true)) {
-            return (new PaypalProvider())->success($data,$request);
+        if ($this->provider === 'paypal' && in_array('paypal', config('multipay.allowed_providers'), true)) {
+            return (new PaypalProvider())->success($data, $request);
         }
 
         return new MultiPayResponse(status: ActionStatus::FAILED, isSuccess: false, message: "The selected payment provider is not supported by the app");
@@ -54,5 +56,26 @@ class MultiPayment implements MultiPayProviderInterface
     public function checkStatus(string $transactionId): ActionStatus
     {
         return ActionStatus::COMPLETED;
+    }
+
+    public function subscriptionCreate(Plan $plan, Request $request): Checkout
+    {
+        if ($this->provider === 'stripe' && in_array('stripe', config('multipay.allowed_providers'), true)) {
+            return (new StripeProvider())->subscriptionCreate($plan, $request);
+        }
+        return new MultiPayResponse(status: ActionStatus::FAILED, isSuccess: false, message: "The selected payment provider is not supported by the app");
+    }
+
+    public function subscriptionSuccess(mixed $data, Request $request): MultiPayResponse
+    {
+        if ($this->provider === 'stripe' && in_array('stripe', config('multipay.allowed_providers'), true)) {
+            return (new StripeProvider())->subscriptionSuccess($data, $request);
+        }
+
+        if ($this->provider === 'paypal' && in_array('paypal', config('multipay.allowed_providers'), true)) {
+            return (new PaypalProvider())->success($data, $request);
+        }
+
+        return new MultiPayResponse(status: ActionStatus::FAILED, isSuccess: false, message: "The selected payment provider is not supported by the app");
     }
 }
