@@ -1,6 +1,7 @@
 import React from "react";
 import {Link, usePage} from "@inertiajs/react";
 import AppLogo from "@/Components/_Partials/AppLogo";
+import MainButton from "@/Components/Buttons/MainButton";
 
 export default function Header() {
   return (
@@ -25,12 +26,7 @@ export default function Header() {
               Connexion
             </Link>
 
-            <a
-              className="py-2 px-2.5 inline-flex items-center gap-x-1.5 whitespace-nowrap text-[13px] md:text-sm rounded-lg shadow-md bg-blue-600 text-white hover:bg-blue-700 hover:shadow-none focus:outline-hidden focus:bg-blue-700 focus:shadow-none disabled:opacity-50 disabled:pointer-events-none"
-              href="#"
-            >
-              Essai gratuit
-            </a>
+            <MainButton title={"Essai gratuit"} />
 
             {/* Collapse Button Trigger */}
             <button

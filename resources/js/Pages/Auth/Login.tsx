@@ -1,6 +1,7 @@
 import { Link, useForm } from "@inertiajs/react";
 import FormError from "@/Components/Errors/FormError";
 import AuthLayout from "@/Layouts/AuthLayout";
+import MainButton from "@/Components/Buttons/MainButton";
 
 interface LoginProps {
   canResetPassword: boolean;
@@ -198,20 +199,22 @@ export default function Login({ canResetPassword, status }: LoginProps) {
                 {errors.password && <FormError message={errors.password} />}
               </div>
 
-              <button
-                type="submit"
-                className="cursor-pointer py-2.5 px-3 w-full inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-hidden dark:focus:ring-1 dark:focus:ring-neutral-600"
-                disabled={processing}
-              >
-                Sign in
-              </button>
+              {/*<button*/}
+              {/*  type="submit"*/}
+              {/*  className="cursor-pointer py-2.5 px-3 w-full inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-hidden dark:focus:ring-1 dark:focus:ring-neutral-600"*/}
+              {/*  disabled={processing}*/}
+              {/*>*/}
+              {/*  Sign in*/}
+              {/*</button>*/}
+
+                <MainButton asType={"button"} type={"submit"} customClassName={"w-full"}  disabled={processing} title={"Sign in"} />
             </div>
           </form>
 
           <p className="text-sm text-gray-500 dark:text-neutral-500">
             New to Preline?
             <Link
-              className="inline-flex items-center gap-x-1 text-sm text-blue-600 decoration-2 hover:underline font-medium focus:outline-hidden focus:underline dark:text-blue-500"
+              className="inline-flex items-center gap-x-1 text-sm text-yellow-600 decoration-2 hover:underline font-medium focus:outline-hidden focus:underline dark:text-yellow-500"
               href="/register"
             >
               Sign up
