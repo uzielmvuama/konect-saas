@@ -1,7 +1,7 @@
 import React from "react";
 import { Head } from "@inertiajs/react";
 import PrelineProviderLayout from "@/Layouts/PrelineProviderLayout";
-import Header from "@/Components/_Partials/Header";
+import Header from "@/Components/_Partials/Headers/Header";
 import Footer from "@/Components/_Partials/Footer";
 
 // import {initializePreline} from "@/preline-init";

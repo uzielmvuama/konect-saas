@@ -9,8 +9,9 @@ use Inertia\Inertia;
 Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, config('app.allowed_locales'))) {
         Session::put('locale', $locale);
+        return true;
     }
-    return redirect()->back();
+    return false;
 });
 
 Route::middleware('guest')->group(function () {

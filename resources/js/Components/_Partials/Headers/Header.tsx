@@ -2,6 +2,7 @@ import React from "react";
 import {Link, usePage} from "@inertiajs/react";
 import AppLogo from "@/Components/_Partials/AppLogo";
 import MainButton from "@/Components/Buttons/MainButton";
+import {__} from "@/Utils/Functions/translate";
 
 export default function Header() {
   return (
@@ -23,10 +24,10 @@ export default function Header() {
               className="py-2 px-2.5 flex items-center gap-x-1.5 whitespace-nowrap text-[13px] md:text-sm text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
               href="/login"
             >
-              Connexion
+                {__('messages.header.login')}
             </Link>
 
-            <MainButton title={"Essai gratuit"} />
+            <MainButton title={__('messages.header.try')} />
 
             {/* Collapse Button Trigger */}
             <button
@@ -72,42 +73,42 @@ export default function Header() {
                   className="py-2 px-2.5 flex items-center gap-x-1.5 text-sm whitespace-nowrap text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                   href="#"
                 >
-                  Pour Entreprises
+                    {__('messages.header.for_team')}
                 </a>
 
                 <a
                   className="py-2 px-2.5 flex items-center gap-x-1.5 text-sm whitespace-nowrap text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                   href="/features"
                 >
-                  Fonctionalités
+                    {__('messages.header.features')}
                 </a>
 
                 <a
                   className="py-2 px-2.5 flex items-center gap-x-1.5 text-sm whitespace-nowrap text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                   href="/product/list"
                 >
-                  Produits
+                    {__('messages.header.products')}
                 </a>
 
                 <Link
                   className="py-2 px-2.5 flex items-center gap-x-1.5 text-sm whitespace-nowrap text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                   href="/plans"
                 >
-                  Prix et tarrifs
+                    {__('messages.header.pricing')}
                 </Link>
 
                 <a
                   className="py-2 px-2.5 flex items-center gap-x-1.5 text-sm whitespace-nowrap text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                   href="/about"
                 >
-                  A propos
+                    {__('messages.header.about')}
                 </a>
 
                 <a
                   className="py-2 px-2.5 md:hidden flex items-center gap-x-1.5 text-sm whitespace-nowrap text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                   href="#"
                 >
-                  Get a demo
+                    {__('messages.header.try')}
                 </a>
               </div>
               {/* End Nav */}

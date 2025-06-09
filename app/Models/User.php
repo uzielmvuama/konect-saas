@@ -99,10 +99,7 @@ class User extends Authenticatable
 
     public function currentSubscriptionName(): ?string
     {
-        return $this->subscriptions()
-            ->whereNull('ends_at') // Abonnement actif (non annulé)
-            ->orderByDesc('created_at') // Prend le plus récent si plusieurs
-            ->value('type'); // Retourne juste le nom
+        return $this->currentPlan()->name ?? 'starter'; // Retourne juste le nom
     }
 
     public function currentPlan(): ?Plan
@@ -132,4 +129,15 @@ class User extends Authenticatable
         return $this->availableUpgrades()->first();
     }
 
+    protected function defaultProfilePhotoUrl()
+    {
+        $name = trim(collect(explode(' ', $this->name))->map(function ($segment) {
+            return mb_substr($segment, 0, 1);
+        })->join(' '));
+        $firstname = trim(collect(explode(' ', $this->firstname))->map(function ($segment) {
+            return mb_substr($segment, 0, 1);
+        })->join(' '));
+
+        return 'https://ui-avatars.com/api/?name='.urlencode($firstname.$name).'&color=7F9CF5&background=EBF4FF';
+    }
 }

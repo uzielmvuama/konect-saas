@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
+import {IconType} from "react-icons";
 
 type ButtonType = "button" | "link" | "inertiaLink";
 
@@ -8,6 +9,7 @@ interface MainButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
     title: string;
     href?: string;
     customClassName?: string;
+    icon?: IconType;
 }
 
 const baseClass =
@@ -21,6 +23,7 @@ const MainButton: React.FC<MainButtonProps> = ({
                                                    asType = "inertiaLink",
                                                    title,
                                                    href = "#",
+    icon:Icon,
     customClassName="",
                                                    ...rest
                                                }) => {
@@ -31,7 +34,12 @@ const MainButton: React.FC<MainButtonProps> = ({
                 href={href}
                 {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
             >
-                {title}
+                {
+                    Icon && <i className="mr-0">
+                        {<Icon />}
+                    </i>
+                }
+                <span>{title}</span>
             </a>
         );
     }
@@ -39,7 +47,12 @@ const MainButton: React.FC<MainButtonProps> = ({
     if (asType === "button") {
         return (
             <button className={baseClass + " " + customClassName} {...rest}>
-                {title}
+                {
+                    Icon && <i className="mr-0">
+                        {<Icon />}
+                    </i>
+                }
+                <span>{title}</span>
             </button>
         );
     }
@@ -47,7 +60,12 @@ const MainButton: React.FC<MainButtonProps> = ({
     // inertiaLink par défaut
     return (
         <Link className={baseClass + " " + customClassName} href={href}>
-            {title}
+            {
+                Icon && <i className="mr-0">
+                    {<Icon />}
+                </i>
+            }
+            <span>{title}</span>
         </Link>
     );
 };

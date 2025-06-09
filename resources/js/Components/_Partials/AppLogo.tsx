@@ -3,8 +3,9 @@ import {Link} from "@inertiajs/react";
 
 interface AppLogoInterface {
     href?: string;
+    width?: number;
 }
-export default function AppLogo({href= "/dashboard"}: AppLogoInterface) {
+export default function AppLogo({href= "/dashboard", width =9}: AppLogoInterface) {
     return (
         <>
             {/* Logo */}
@@ -13,8 +14,8 @@ export default function AppLogo({href= "/dashboard"}: AppLogoInterface) {
                 href={href}
                 aria-label="Preline"
             >
-                <img src={"/assets/images/logo-yellow.png"} className="w-7" alt={"logo"}/>
-                <span>nect</span>
+                <img src={"/assets/images/logo-yellow.png"} className={`w-${width}`} alt={"logo"}/>
+                {/*<span>nect</span>*/}
             </Link>
             {/* End Logo */}
         </>
