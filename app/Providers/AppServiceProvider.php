@@ -49,9 +49,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Route::bind('ko_uuid', function (string $value) {
-            $default_uuid = env('APP_ENV') == "production" ? "4fb07f74-a2aa-43b0-8be5-855f0fe16c20" : "df71a3ca-a3f1-11ef-b1ab-da06989825a9";
+            $default_uuid = config('app.env') === "production" ? "4fb07f74-a2aa-43b0-8be5-855f0fe16c20" : "df71a3ca-a3f1-11ef-b1ab-da06989825a9";
 
-            $uuid = $value == "k" ? $default_uuid : $value;
+            $uuid = $value === "k" ? $default_uuid : $value;
 
             return KoGadget::where('uuid', $uuid)->firstOrFail();
         });

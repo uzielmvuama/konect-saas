@@ -28,7 +28,7 @@ Route::middleware('guest')->group(function () {
 });
 
 
-Route::get('/kuser', function () {
+Route::get('/kuser/{ko_uuid}', function () {
     return Inertia::render('Kuser');
 });
 
