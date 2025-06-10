@@ -9,9 +9,7 @@ interface Props {
 const PrelineProviderLayout = ({ children }: Props) => {
   const page = usePage();
 
-    console.log(page)
-
-    useEffect(() => {
+  useEffect(() => {
     initializePreline();
 
     // Pour Inertia : relancer Preline à chaque navigation

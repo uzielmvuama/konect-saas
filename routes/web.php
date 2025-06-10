@@ -59,6 +59,14 @@ Route::middleware([
         return Inertia::render('Profile/Dashboard');
     })->name('dashboard');
 
+    Route::get('/settings', function () {
+        return Inertia::render('Profile/Settings',
+
+        [
+            'user'=> \Illuminate\Support\Facades\Auth::user()->load('konects.user')->toResource(),
+        ]);
+    })->name('settings');
+
     Route::prefix("/teams")->group(function (){
        Route::name('teams.')->group(function (){
            Route::get('/create', [\App\Http\Controllers\TeamsController::class, 'create'])->name('create');
@@ -69,3 +77,4 @@ Route::middleware([
 });
 
 
+require __DIR__ . '/public.php';

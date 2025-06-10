@@ -22,9 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
             RedirectIfAuthenticated::class]);
 
-        $middleware->validateCsrfTokens(except: [
-            'stripe/*',
-        ]);
+        $middleware->validateCsrfTokens(except: env('APP_ENV') === 'local' ? [
+            '/*'
+        ] : []);
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {

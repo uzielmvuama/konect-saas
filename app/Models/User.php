@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Helpers\Traits\Pointable\Pointable;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -16,7 +17,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Billable;
+    use HasApiTokens, Billable, Pointable;
 
     /** @use HasFactory<UserFactory> */
     use HasFactory;
@@ -25,6 +26,8 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
 
+
+    protected $with = ['konects'];
 
     /**
      * The attributes that are mass assignable.
@@ -79,6 +82,31 @@ class User extends Authenticatable
         });
     }
 
+    public function konects()
+    {
+        return $this->hasMany(Konect::class)->orderBy('id', 'DESC');
+    }
+
+    public function konect_categories()
+    {
+        return $this->hasMany(KonectCategory::class);
+    }
+
+    public function companies()
+    {
+        return $this->hasMany(Company::class);
+    }
+
+    public function gadgets()
+    {
+        return $this->hasMany(KoGadget::class, "user_id", "id")->orderBy('id', 'DESC');;
+    }
+
+    function contact_feeds()
+    {
+        return $this->hasMany(ContactFeed::class)->orderBy('created_at', 'DESC');
+    }
+
     public function hasPaidOneTime()
     {
         return $this->payments()->where('type', 'onetime')->exists();
@@ -86,7 +114,7 @@ class User extends Authenticatable
 
     public function payments()
     {
-        return $this->hasMany(Paymentt::class);
+        return $this->hasMany(Payment::class);
     }
 
     public function currentSubscription(): ?\Laravel\Cashier\Subscription
@@ -139,5 +167,12 @@ class User extends Authenticatable
         })->join(' '));
 
         return 'https://ui-avatars.com/api/?name='.urlencode($firstname.$name).'&color=7F9CF5&background=EBF4FF';
+    }
+
+    public function getProfilePhotoUrlAttribute()
+    {
+        return $this->profile_photo_path
+            ? Storage::disk($this->profilePhotoDisk())->url($this->profile_photo_path)
+            : $this->defaultProfilePhotoUrl();
     }
 }

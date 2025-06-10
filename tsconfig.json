@@ -13,5 +13,5 @@
             "@/*": ["resources/js/*"]
         }
     },
-    "include": ["resources/js", "resources/js/vite-env.d.ts"]
+    "include": ["resources/js", "resources/js/vite-env.d.ts", "resources/js/canvas-confetti.d.ts"]
 }

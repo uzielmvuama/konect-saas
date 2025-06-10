@@ -22,6 +22,9 @@ class LocationVcard extends VcardProperty
     ) {
     }
 
+    final public function encode () : string {
+        return json_encode($this);
+}
 
 
 }

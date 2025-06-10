@@ -10,7 +10,6 @@ class Konect extends Model
 {
     use HasFactory;
 
-    protected $with = [];
 
     protected $fillable = [
         "ko_ip_konect",
@@ -33,8 +32,8 @@ class Konect extends Model
         });
     }
 
-    public function owner()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

@@ -18,7 +18,7 @@ export default function AuthLayout({ title, bgSrc, children }: AuthProps) {
         <div className="hidden min-h-screen lg:w-100 xl:w-107.5bg-gray-100 lg:flex flex-col justify-between p-6 dark:bg-neutral-950">
           {/* Header */}
           <div className="flex flex-wrap justify-between items-center gap-2">
-           <AppLogo href="/" />
+            <AppLogo width={8} href="/" />
 
             {/* Language Select */}
             <div className="relative">

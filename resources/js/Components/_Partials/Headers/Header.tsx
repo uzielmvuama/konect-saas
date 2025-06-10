@@ -1,8 +1,8 @@
 import React from "react";
-import {Link, usePage} from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import AppLogo from "@/Components/_Partials/AppLogo";
 import MainButton from "@/Components/Buttons/MainButton";
-import {__} from "@/Utils/Functions/translate";
+import { __ } from "@/Utils/Functions/translate";
 
 export default function Header() {
   return (
@@ -10,7 +10,7 @@ export default function Header() {
       <nav className="max-w-6xl basis-full w-full py-4 px-4 sm:px-6 lg:px-8 lg:mx-auto">
         <div className="flex flex-wrap md:flex-nowrap basis-full justify-between gap-x-2 w-full">
           <div className="flex items-center gap-x-1">
-           <AppLogo href="/" />
+            <AppLogo width={10} href="/" />
             <div className="ms-1 sm:ms-2"></div>
           </div>
 
@@ -24,10 +24,10 @@ export default function Header() {
               className="py-2 px-2.5 flex items-center gap-x-1.5 whitespace-nowrap text-[13px] md:text-sm text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
               href="/login"
             >
-                {__('messages.header.login')}
+              {__("messages.header.login")}
             </Link>
 
-            <MainButton title={__('messages.header.try')} />
+            <MainButton title={__("messages.header.try")} />
 
             {/* Collapse Button Trigger */}
             <button
@@ -73,42 +73,42 @@ export default function Header() {
                   className="py-2 px-2.5 flex items-center gap-x-1.5 text-sm whitespace-nowrap text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                   href="#"
                 >
-                    {__('messages.header.for_team')}
+                  {__("messages.header.for_team")}
                 </a>
 
                 <a
                   className="py-2 px-2.5 flex items-center gap-x-1.5 text-sm whitespace-nowrap text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                   href="/features"
                 >
-                    {__('messages.header.features')}
+                  {__("messages.header.features")}
                 </a>
 
                 <a
                   className="py-2 px-2.5 flex items-center gap-x-1.5 text-sm whitespace-nowrap text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                   href="/product/list"
                 >
-                    {__('messages.header.products')}
+                  {__("messages.header.products")}
                 </a>
 
                 <Link
                   className="py-2 px-2.5 flex items-center gap-x-1.5 text-sm whitespace-nowrap text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                   href="/plans"
                 >
-                    {__('messages.header.pricing')}
+                  {__("messages.header.pricing")}
                 </Link>
 
                 <a
                   className="py-2 px-2.5 flex items-center gap-x-1.5 text-sm whitespace-nowrap text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                   href="/about"
                 >
-                    {__('messages.header.about')}
+                  {__("messages.header.about")}
                 </a>
 
                 <a
                   className="py-2 px-2.5 md:hidden flex items-center gap-x-1.5 text-sm whitespace-nowrap text-start text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                   href="#"
                 >
-                    {__('messages.header.try')}
+                  {__("messages.header.try")}
                 </a>
               </div>
               {/* End Nav */}

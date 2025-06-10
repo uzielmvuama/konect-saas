@@ -19,14 +19,15 @@ class PaymentController
         $data = $request->only(['givenName', 'familyName', 'title', 'qteValue']);
         return (new MultiPayment())->create($data, $koGadgetItem, $request)->toArray();
     }
-    public function success(Order $order, Request $request)
+    public function success(Request $request)
     {
-        $payment = (new MultiPayment())->success($order, $request);
+
+        $payment = (new MultiPayment())->success($request);
         if ($payment->isSuccess && $payment->status === ActionStatus::SUCCESS) {
             return Inertia::render('Payment/PaymentSuccess', [
-                'is_closed' => $order->is_closed,
-                'buyer_name' => $order->buyer_firstname,
-                'buyer_email' => $order->buyer_email,
+//                'is_closed' => $order->is_closed,
+//                'buyer_name' => $order->buyer_firstname,
+//                'buyer_email' => $order->buyer_email,
                 'message' => 'Paiement effectué avec succès!',
             ]);
         }
@@ -45,9 +46,15 @@ class PaymentController
         return (new MultiPayment())->subscriptionCreate($plan, $request);
     }
 
-    final public function subscribeSuccess (string $session_id, Request $request)
+    final public function subscribeSuccess(string $session_id, Request $request)
     {
-        return (new MultiPayment())->subscriptionSuccess($session_id, $request)->toArray();
+
+        $rs= (new MultiPayment())->subscriptionSuccess($session_id, $request);
+
+        if(!$rs->status){
+            return Inertia::render('Payment/PaymentError', []);
+        }
+        return Inertia::render('Payment/PaymentSuccess', []);
     }
 //    public function subscriptionSuccess(Order $order, Request $request)
 //    {

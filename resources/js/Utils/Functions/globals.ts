@@ -8,3 +8,8 @@ export function ucfirst(text: string): string {
   if (!trimmed) return "";
   return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
 }
+
+export function pluralize(word: string, count: number, pluralForm?: string): string {
+  if (count === 1) return word;
+  return pluralForm ?? word + "s";
+}

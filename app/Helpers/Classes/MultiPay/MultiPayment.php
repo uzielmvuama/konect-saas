@@ -34,14 +34,14 @@ class MultiPayment implements MultiPayProviderInterface
 
     }
 
-    public function success(mixed $data, Request $request): MultiPayResponse
+    public function success(mixed $data,Request $request): MultiPayResponse
     {
         if ($this->provider === 'stripe' && in_array('stripe', config('multipay.allowed_providers'), true)) {
-            return (new StripeProvider())->success($data, $request);
+            return (new StripeProvider())->success($request);
         }
 
         if ($this->provider === 'paypal' && in_array('paypal', config('multipay.allowed_providers'), true)) {
-            return (new PaypalProvider())->success($data, $request);
+            return (new PaypalProvider())->success($request);
         }
 
         return new MultiPayResponse(status: ActionStatus::FAILED, isSuccess: false, message: "The selected payment provider is not supported by the app");

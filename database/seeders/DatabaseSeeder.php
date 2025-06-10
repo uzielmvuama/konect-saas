@@ -17,14 +17,18 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             IndustrySeeder::class,
-            PlanSeeder::class
+            PlanSeeder::class,
+        ]);
+        User::factory()->withPersonalTeam()->create([
+            'name' => 'test',
+            'firstname'=> 'user',
+            'email' => 'test@example.com',
+        ]);
+        $this->call([
+            KonectCategorySeeder::class,
+            KonectSeeder::class
         ]);
 
-//        User::factory()->withPersonalTeam()->create([
-//            'name' => 'Test',
-//            'firstname'=> 'User',
-//            'email' => 'test@example.com',
-//        ]);
 
 
     }

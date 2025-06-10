@@ -207,7 +207,13 @@ export default function Login({ canResetPassword, status }: LoginProps) {
               {/*  Sign in*/}
               {/*</button>*/}
 
-                <MainButton asType={"button"} type={"submit"} customClassName={"w-full"}  disabled={processing} title={"Sign in"} />
+              <MainButton
+                asType={"button"}
+                type={"submit"}
+                customClassName={"w-full"}
+                disabled={processing}
+                title={"Sign in"}
+              />
             </div>
           </form>
 

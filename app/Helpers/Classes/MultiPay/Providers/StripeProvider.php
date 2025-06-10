@@ -58,8 +58,8 @@ class StripeProvider implements MultiPayProviderInterface
 
     final public function success(mixed $data, Request $request): MultiPayResponse
     {
-        $sessionId = $request->get('session_id');
-        //        dd($sessionId);
+        $sessionId = $request->user()->stripe()->checkout->sessions->retrieve($request->get('session_id'));
+
         if ($sessionId === null) {
             return new MultiPayResponse(status: ActionStatus::FAILED, isSuccess: false, message: 'Stripe Session not found');
         }
@@ -106,8 +106,9 @@ class StripeProvider implements MultiPayProviderInterface
 //        dd($user);
 
         $checkout =  $user->newSubscription(config('cashier.subscription_type'), $plan->stripe_price_id)->checkout([        'success_url' =>
-            route('checkout.subscribe.success', ['session_id' => ':session.id']),
+            route('checkout.subscribe.success').'/{CHECKOUT_SESSION_ID}',
             'cancel_url' =>route('checkout.cancel')]);
+
 
 //        ->trialDays(config('cashier.trial_days'))
 //        ->allowPromotionCodes()
@@ -118,7 +119,7 @@ class StripeProvider implements MultiPayProviderInterface
     public function subscriptionSuccess (mixed $data, Request $request) : MultiPayResponse
     {
         $sessionId = $data;
-        return new MultiPayResponse(status: ActionStatus::PROGRESS, transactionId: '', isSuccess: true, message: 'Subscriptions successfully done', raw: $sessionId);
+        return new MultiPayResponse(status: ActionStatus::PROGRESS, transactionId: '', isSuccess: true, message: 'Subscriptions successfully done', raw: [$sessionId]);
     }
 
 }

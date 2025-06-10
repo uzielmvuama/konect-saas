@@ -30,7 +30,7 @@ class KonectService
 
             $ip = $payload["ip"];
 
-            if (Storage::disk(FILE_DRIVER)->exists("vcards/$user_first->uuid.vcf") === false) {
+            if (Storage::disk(FILE_DRIVER)->exists(VCARD_ROOT_PATH . "/$user_first->uuid.vcf") === false) {
                 $service =  new UserService();
                 $service->vcardGenerate($user_first);
             }
