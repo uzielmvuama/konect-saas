@@ -59,13 +59,14 @@ Route::middleware([
         return Inertia::render('Profile/Dashboard');
     })->name('dashboard');
 
-    Route::get('/settings', function () {
-        return Inertia::render('Profile/Settings',
+    require_once "includes/user-settings.php";
 
-        [
-            'user'=> \Illuminate\Support\Facades\Auth::user()->load('konects.user')->toResource(),
-        ]);
-    })->name('settings');
+    Route::get('/connections', function () {
+        return Inertia::render('Profile/Connections',
+            [
+                'user'=> \Illuminate\Support\Facades\Auth::user()->load('konects.user')->toResource(),
+            ]);
+    })->name('connections');
 
     Route::prefix("/teams")->group(function (){
        Route::name('teams.')->group(function (){

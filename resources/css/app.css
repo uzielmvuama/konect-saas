@@ -62,3 +62,22 @@
 
 /* Defaults hover styles on all devices */
 @custom-variant hover (&:hover);
+
+/*Preline Wizigig*/
+
+
+.ProseMirror:focus {
+    outline: none;
+}
+
+.tiptap ul p,
+.tiptap ol p {
+    display: inline;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}

@@ -2,14 +2,13 @@
 
 namespace App\Helpers\Classes\Vcard;
 
-use App\Helpers\Classes\Vcard\VcardProperty\Properties\{
-    EmailVcard,
+use App\Helpers\Classes\Vcard\VcardProperty\Properties\{EmailVcard,
+    ImageLinkVcard,
     LocationVcard,
     NameVcard,
     NoteVcard,
     SocialVcardItemAll,
-    UrlVcard
-};
+    UrlVcard};
 use App\Helpers\Classes\Vcard\VcardProperty\Properties\SocialVcardItem\SocialVcardItem;
 use App\Helpers\Classes\Vcard\VcardProperty\Properties\VideoLinkVcard;
 
@@ -20,6 +19,8 @@ abstract class VcardModel
     public SocialVcardItemAll $socialProfils;
     public array $urls = [];
     public array $videoLinks = [];
+
+    public array $imageLinks = [];
     public NoteVcard $note;
     public LocationVcard $location;
 
@@ -35,8 +36,11 @@ abstract class VcardModel
 
     private function initializeEmptyProperties(): void
     {
-        $this->names = new NameVcard(givenName: "", familyName: "", middleName: "", prefix: "", suffix: "");
+        $this->names = new NameVcard(givenName: "", familyName: "", middleName: "", prefix: "");
         $this->email[] = new EmailVcard(type: "", text: "");
+        $this->urls[] = new UrlVcard(type: "", uri: "");
+        $this->videoLinks[] = new VideoLinkVcard(type: "", uri: "");
+        $this->imageLinks[] = new ImageLinkVcard(type: "", uri: "");
         $this->location = new LocationVcard();
         $this->socialProfils = new SocialVcardItemAll(
             facebook: new SocialVcardItem(uri: ""),
@@ -57,7 +61,6 @@ abstract class VcardModel
             familyName: $vinfo->names->familyName,
             middleName: $vinfo->names->middleName,
             prefix: $vinfo->names->prefix,
-            suffix: $vinfo->names->suffix
         );
         if (isset($vinfo->email)) {
             if (is_array($vinfo->email)) {
@@ -96,6 +99,7 @@ abstract class VcardModel
             deFault: $vinfo->location->deFault
         );
         $this->videoLinks = array_map(fn($video) => new VideoLinkVcard(type: $video->type, uri: $video->uri), $vinfo->videoLinks);
+        $this->imageLinks = array_map(fn($image) => new ImageLinkVcard(type: $image->type, uri: $image->uri), $vinfo->imageLinks);
     }
 
     public function array_gen(): array
@@ -141,5 +145,10 @@ abstract class VcardModel
     public function addVideoLink(VideoLinkVcard $video): void
     {
         $this->videoLinks[] = $video;
+    }
+
+    public function addImageLink(ImageLinkVcard $image): void
+    {
+        $this->imageLinks[] = $image;
     }
 }

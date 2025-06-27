@@ -1,20 +1,20 @@
-import { useEffect } from 'react';
-import confetti from 'canvas-confetti';
+import { useEffect } from "react";
+import confetti from "canvas-confetti";
 
 interface ConfettiProps {
-    // Props ici
+  // Props ici
 }
 
 const Confetti: React.FC<ConfettiProps> = (props) => {
-    useEffect(() => {
-        confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 }
-        });
-    }, []);
+  useEffect(() => {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+  }, []);
 
-    return null; // Rien à aff
+  return null; // Rien à aff
 };
 
 export default Confetti;

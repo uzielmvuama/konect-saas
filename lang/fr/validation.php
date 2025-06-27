@@ -228,6 +228,7 @@ return [
         'photo'                    => 'photo',
         'portfolio'                => 'portefeuille',
         'postal_code'              => 'code postal',
+        'prefix'                  => 'préfix',
         'preview'                  => 'aperçu',
         'price'                    => 'prix',
         'product_id'               => 'identifiant du produit',

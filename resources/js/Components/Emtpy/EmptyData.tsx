@@ -6,7 +6,11 @@ interface EmptyDataProps {
   description?: string;
 }
 
-const EmptyData: React.FC<EmptyDataProps> = ({ type = "projects", title= 'No data', description='No data here yet. We will notify you when there\'s an update.' }) => {
+const EmptyData: React.FC<EmptyDataProps> = ({
+  type = "projects",
+  title = "No data",
+  description = "No data here yet. We will notify you when there's an update.",
+}) => {
   if (type === "bars") {
     return (
       <>
@@ -100,9 +104,7 @@ const EmptyData: React.FC<EmptyDataProps> = ({ type = "projects", title= 'No dat
           </svg>
           <div className="max-w-sm mx-auto">
             <p className="mt-2 font-medium text-gray-800 dark:text-neutral-200">{title}</p>
-            <p className="mb-5 text-sm text-gray-500 dark:text-neutral-500">
-                {description}
-            </p>
+            <p className="mb-5 text-sm text-gray-500 dark:text-neutral-500">{description}</p>
           </div>
           <button
             type="button"
@@ -319,9 +321,7 @@ const EmptyData: React.FC<EmptyDataProps> = ({ type = "projects", title= 'No dat
 
       <div className="max-w-sm mx-auto">
         <p className="mt-2 font-medium text-gray-800 dark:text-neutral-200">{title}</p>
-        <p className="mb-5 text-sm text-gray-500 dark:text-neutral-500">
-            {description}
-        </p>
+        <p className="mb-5 text-sm text-gray-500 dark:text-neutral-500">{description}</p>
       </div>
     </div>
   );

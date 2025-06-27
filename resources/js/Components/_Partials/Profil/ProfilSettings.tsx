@@ -2,6 +2,10 @@ import React from "react";
 import ConnectionsList from "@/Components/Connection/ConnectionsList";
 import { HiUser } from "react-icons/hi";
 import { TbArrowsDiff, TbArrowsLeftRight, TbUserCog, TbUsers } from "react-icons/tb";
+import { ucfirst } from "@/Utils/Functions/globals";
+import GeneralSettings from "@/Components/_Partials/Profil/Settings/GeneralSettings";
+import SocialInformationsSettings from "@/Components/_Partials/Profil/Settings/SocialInformationsSettings";
+import SecuritySettings from "@/Components/_Partials/Profil/Settings/SecuritySettings";
 
 interface ProfilSettingsProps {
   user: any;
@@ -14,14 +18,19 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
       icon: <TbUserCog />,
     },
     {
-      name: "Connections",
+      name: "Email et Réseaux Sociaux",
       icon: <TbArrowsLeftRight />,
     },
     {
-      name: "Teams",
+      name: "Photos et Vidéos",
+      icon: <TbArrowsLeftRight />,
+    },
+    {
+      name: "Sécurité et Connexion",
       icon: <TbUsers />,
     },
   ];
+
   const [currentTab, setCurrentTab] = React.useState<number>(0);
 
   return (
@@ -100,9 +109,9 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
 
             <div className="mt-3 text-center">
               <h1 className="text-xl font-semibold text-gray-800 dark:text-neutral-200">
-                Amanda Harvey
+                {ucfirst(user.firstname) + " " + ucfirst(user.name)}
               </h1>
-              <p className="text-gray-500 dark:text-neutral-500">iam_amanda</p>
+              <p className="text-gray-500 dark:text-neutral-500">{user.email} </p>
             </div>
           </div>
           {/* End Avatar */}
@@ -711,7 +720,10 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
         {/* End Status */}
       </div>
       <div>
-        {currentTab == 1 && <ConnectionsList initialDisplayType={"grid"} konects={user.konects} />}
+        {currentTab == 0 && <GeneralSettings />}
+        {currentTab == 1 && <SocialInformationsSettings />}
+        {currentTab == 2 && <SecuritySettings />}
+        {currentTab == 3 && <SecuritySettings />}
       </div>
       {}
     </>

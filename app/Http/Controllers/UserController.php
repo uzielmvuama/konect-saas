@@ -14,9 +14,11 @@ use App\Helpers\Classes\Vcard\VcardProperty\Properties\UrlVcard;
 use App\Helpers\Classes\Vcard\VcardProperty\Properties\VideoLinkVcard;
 use App\Helpers\Services\KonectService;
 use App\Helpers\Services\UserService;
+use App\Http\Requests\Profile\UpdateProfileGeneralInfoRequest;
 use App\Http\Resources\KoGadgetResource;
 use App\Models\CompanyMember;
 use App\Models\KoGadget;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -99,7 +101,6 @@ class UserController extends Controller
             familyName: $data->names->familyName ?? "",
             middleName: $data->names->middleName ?? "",
             prefix: $data->names->prefix ?? "",
-            suffix: $data->names->suffix ?? ""
         ));
 
 
@@ -149,6 +150,43 @@ class UserController extends Controller
         $user->save();
 
         return Redirect::route('profile.edit')
+            ->with('success', "Profile successfully updated");
+    }
+
+    final public function updateVcardGeneralInfo(UpdateProfileGeneralInfoRequest $request) : RedirectResponse
+    {
+        $user = $request->user();
+        // Retrieve the validated input data...
+
+        $validated = $request->validated();
+
+        //dd(json_decode($request->input('data')));
+        $vinfo = new UserVcard($user->vinfo);
+
+        $vinfo->addName(new NameVcard(
+            givenName: $validated["first_name"] ?? "",
+            familyName: $validated["name"] ?? "",
+            middleName: $validated["middle_name"] ?? "",
+            prefix: $validated["prefix"] ?? "",
+        ));
+
+
+        $vinfo->addAdress(new LocationVcard(
+            state: ucfirst(json_decode($validated["location"])->NAME ?? ""),
+            iso_code: strtoupper(json_decode($validated["location"])->ISOCODE ?? "")
+        ));
+
+
+        $vinfo->addNote(new NoteVcard(text: $validated["bio"] ?? ""));
+
+
+        $user->vinfo = $vinfo->json_gen();
+
+        $this->service->vcardGenerate($user);
+
+        $user->save();
+
+        return Redirect::route('settings')
             ->with('success', "Profile successfully updated");
     }
 }

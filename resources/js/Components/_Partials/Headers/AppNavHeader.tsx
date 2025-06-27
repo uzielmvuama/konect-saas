@@ -12,6 +12,7 @@ import {
   HiTemplate,
   HiTrendingUp,
 } from "react-icons/hi";
+import { TbArrowsLeftRight } from "react-icons/tb";
 
 interface AppNavHeaderInterface {
   permissions: any;
@@ -51,10 +52,10 @@ export default function AppNavHeader({
 
               <a
                 className="py-2 px-3 md:px-2.5 xl:px-2 flex items-center gap-x-2 text-sm text-start text-nowrap text-gray-800 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800/40 dark:focus:bg-neutral-800"
-                href="/settings"
+                href="/connections"
               >
-                <HiAdjustments />
-                Settings
+                <TbArrowsLeftRight />
+                Connections
               </a>
 
               <a

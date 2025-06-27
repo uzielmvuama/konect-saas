@@ -140,7 +140,7 @@ class UserService
         $vcard = new VCard();
 
         // add personal vinfo
-        $vcard->addName(ucfirst($vinfo["names"]["familyName"]), ucfirst($vinfo["names"]["givenName"]), ucfirst($vinfo["names"]["middleName"]), ucfirst($vinfo["names"]["prefix"]), ucfirst($vinfo["names"]["suffix"]));
+        $vcard->addName(ucfirst($vinfo["names"]["familyName"]), ucfirst($vinfo["names"]["givenName"]), ucfirst($vinfo["names"]["middleName"]), ucfirst($vinfo["names"]["prefix"]));
 
         $vcard->addNote(ucfirst($vinfo["note"]["text"]));
 

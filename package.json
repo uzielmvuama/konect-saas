@@ -29,6 +29,7 @@
         "clipboard": "^2.0.11",
         "clsx": "^2.1.1",
         "concurrently": "^9.0.1",
+        "country-state-city": "^3.2.1",
         "eslint": "^9.27.0",
         "eslint-plugin-react": "^7.37.5",
         "globals": "^16.1.0",
@@ -44,5 +45,20 @@
         "typescript-eslint": "^8.32.1",
         "vanilla-calendar-pro": "^3.0.3",
         "vite": "^6.2.4"
+    },
+    "dependencies": {
+        "@tiptap/core": "^2.22.3",
+        "@tiptap/extension-blockquote": "^2.22.3",
+        "@tiptap/extension-bold": "^2.22.3",
+        "@tiptap/extension-bullet-list": "^2.22.3",
+        "@tiptap/extension-code": "^2.22.3",
+        "@tiptap/extension-link": "^2.22.3",
+        "@tiptap/extension-list-item": "^2.22.3",
+        "@tiptap/extension-ordered-list": "^2.22.3",
+        "@tiptap/extension-paragraph": "^2.22.3",
+        "@tiptap/extension-placeholder": "^2.22.3",
+        "@tiptap/extension-strike": "^2.22.3",
+        "@tiptap/extension-underline": "^2.22.3",
+        "@tiptap/starter-kit": "^2.22.3"
     }
 }
