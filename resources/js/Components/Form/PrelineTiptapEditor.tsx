@@ -20,9 +20,9 @@ interface PrelineTiptapEditorProps {
 
 export default function PrelineTiptapEditor({ value = "", onUpdate }: PrelineTiptapEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
+  const editorInstance = useRef<Editor | null>(null);
 
-
-    useEffect(() => {
+  useEffect(() => {
     if (!editorRef.current) return;
 
     const editor = new Editor({
@@ -79,6 +79,8 @@ export default function PrelineTiptapEditor({ value = "", onUpdate }: PrelineTip
       },
     });
 
+    editorInstance.current = editor;
+
     const actions = [
       { id: "[data-hs-editor-bold]", fn: () => editor.chain().focus().toggleBold().run() },
       { id: "[data-hs-editor-italic]", fn: () => editor.chain().focus().toggleItalic().run() },
@@ -110,7 +112,14 @@ export default function PrelineTiptapEditor({ value = "", onUpdate }: PrelineTip
 
     return () => {
       editor.destroy();
+      editorInstance.current = null;
     };
+  }, []);
+
+  useEffect(() => {
+    if (editorInstance.current && value !== editorInstance.current.getHTML()) {
+      editorInstance.current.commands.setContent(value);
+    }
   }, [value]);
 
   return (

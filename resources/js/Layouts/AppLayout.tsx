@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import PrelineProviderLayout from "@/Layouts/PrelineProviderLayout";
 import { TeamProps } from "@/Types/types";
@@ -8,8 +8,7 @@ import DismissableAlert from "@/Components/Alerts/DismissableAlert";
 import { __ } from "@/Utils/Functions/translate";
 import AppNavHeader from "@/Components/_Partials/Headers/AppNavHeader";
 import { HiOutlineCog } from "react-icons/hi";
-
-// import {initializePreline} from "@/preline-init";
+import { initializePreline } from "@/Utils/preline-init";
 
 interface Props {
   title?: string;
@@ -27,9 +26,9 @@ export default function AppLayout({ title, showNavbarMenu = true, children }: Pr
   } = usePage().props as any;
 
   const all_teams: TeamProps[] = user.all_teams;
-  // useEffect(() => {
-  //     initializePreline();
-  // }, []);
+  useEffect(() => {
+    initializePreline();
+  }, []);
 
   const switchToTeam = (team: any) => {
     router.put(
@@ -1640,15 +1639,17 @@ export default function AppLayout({ title, showNavbarMenu = true, children }: Pr
       {/* ========== MAIN CONTENT ========== */}
       <main id="content">
         <div className="max-w-[85rem] p-2 sm:p-5 md:pt-5 lg:px-8 mx-auto">
-          <DismissableAlert
-            title={__("messages.upgrade_to_plan.title", {
-              plan: subscription.upgrade_plan.name,
-            })}
-            description={__("messages.upgrade_to_plan.description", {
-              plan: subscription.upgrade_plan.name,
-            })}
-            isShowed={subscription.current === "starter"}
-          />
+          {subscription.upgrade_plan && (
+            <DismissableAlert
+              title={__("messages.upgrade_to_plan.title", {
+                plan: subscription.upgrade_plan.name,
+              })}
+              description={__("messages.upgrade_to_plan.description", {
+                plan: subscription.upgrade_plan.name,
+              })}
+              isShowed={subscription.current === "starter"}
+            />
+          )}
           {children}
         </div>
       </main>

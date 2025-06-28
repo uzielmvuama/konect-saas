@@ -10,17 +10,16 @@ const PrelineProviderLayout = ({ children }: Props) => {
   const page = usePage();
 
   useEffect(() => {
-    initializePreline();
-
-    // Pour Inertia : relancer Preline à chaque navigation
+    // Listen to Inertia navigation
     document.addEventListener("inertia:after", initializePreline);
 
+    // Clean up listener
     return () => {
       document.removeEventListener("inertia:after", initializePreline);
     };
-  }, [page.url]); // Appelé à chaque navigation Inertia
+  }, [page.url]);
 
-  return <>{children} </>;
+  return <>{children}</>;
 };
 
 export default PrelineProviderLayout;

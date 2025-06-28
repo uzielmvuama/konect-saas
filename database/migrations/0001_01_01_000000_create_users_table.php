@@ -19,6 +19,7 @@ return new class extends Migration
             $table->uuid()->default(null)->unique();
             $table->string('firstname');
             $table->string('name');
+            $table->string('title')->nullable();
             $table->json('vinfo')->default($vcard->json_gen());
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -26,6 +27,8 @@ return new class extends Migration
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
+            $table->string('background_photo_path', 4096)->nullable();
+
             $table->timestamps();
         });
 

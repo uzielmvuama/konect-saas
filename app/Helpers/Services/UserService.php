@@ -132,6 +132,30 @@ class UserService
         }
     }
 
+    public function updateBackgroundImage(User $user, UploadedFile $img, string $rootPath = 'background-photos')
+    {
+        $image = Image::make($img->path())->fit(1920, 1080); // adapté pour un fond
+        $imgFilename = $user->uuid . "_bg.jpg";
+
+        if (!Storage::disk(FILE_DRIVER)->exists($rootPath)) {
+            Storage::disk(FILE_DRIVER)->makeDirectory($rootPath);
+        }
+
+        if (Storage::disk(FILE_DRIVER)->put($rootPath . DIRECTORY_SEPARATOR . $imgFilename, (string)$image->encode('jpg', 90))) {
+            $user->background_photo_path = $rootPath . DIRECTORY_SEPARATOR . $imgFilename;
+            $user->save();
+
+            // facultatif : compresser ou générer vcard si nécessaire
+            // $this->compressImage($user);
+            // $this->vcardGenerate($user);
+
+            return Utils::json_res(true, "Background image successfully updated", $user, Constants::CREATED_STATUS_CODE);
+        } else {
+            return Utils::json_res(false, "Problem during upload process", [], Constants::BAD_REQUEST_STATUS_CODE);
+        }
+    }
+
+
 
     function vcardGenerate(User $user, string $rootPath = "vcards")
     {

@@ -1,6 +1,8 @@
 import { Head } from "@inertiajs/react";
 import PrelineProviderLayout from "@/Layouts/PrelineProviderLayout";
 import AppLogo from "@/Components/_Partials/AppLogo";
+import { useEffect } from "react";
+import { initializePreline } from "@/Utils/preline-init";
 
 interface AuthProps {
   title: string;
@@ -9,6 +11,9 @@ interface AuthProps {
 }
 
 export default function AuthLayout({ title, bgSrc, children }: AuthProps) {
+  useEffect(() => {
+    initializePreline();
+  }, []);
   return (
     <PrelineProviderLayout>
       <Head title={title} />

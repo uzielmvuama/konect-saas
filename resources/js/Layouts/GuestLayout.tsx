@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Head } from "@inertiajs/react";
 import PrelineProviderLayout from "@/Layouts/PrelineProviderLayout";
 import Header from "@/Components/_Partials/Headers/Header";
 import Footer from "@/Components/_Partials/Footer";
+import { initializePreline } from "@/Utils/preline-init";
 
 // import {initializePreline} from "@/preline-init";
 
@@ -21,6 +22,10 @@ export default function GuestLayout({
   showFooter = true,
   showChat = true,
 }: Props) {
+  useEffect(() => {
+    initializePreline();
+  }, []);
+
   return (
     <PrelineProviderLayout>
       <Head title={title} />

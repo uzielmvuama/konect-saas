@@ -1,33 +1,40 @@
 import React, { useEffect } from "react";
-import SettingsLayout from "@/Layouts/SetttingsLayout";
+import SettingsLayout from "@/Layouts/SettingsLayout";
 import PrelineTiptapEditor from "@/Components/Form/PrelineTiptapEditor";
-import {useForm, usePage} from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import SelectCountryField from "@/Components/Form/Select/SelectCountryField";
-import {Country, ICountry} from "country-state-city";
+import { Country, ICountry } from "country-state-city";
 import FormError from "@/Components/Errors/FormError";
+import { initializePreline } from "@/Utils/preline-init";
 
 interface GeneralSettingsProps {
   // Props ici
 }
 
-
 const GeneralSettings: React.FC<GeneralSettingsProps> = (props) => {
-    const { user } = usePage().props as any;
-    const userLocation= user.vinfo.location
-    const allCountries = Country.getAllCountries();
+  const { user } = usePage().props as any;
+  const userLocation = user.vinfo.location;
+  const allCountries = Country.getAllCountries();
 
   const { data, setData, patch, processing, errors } = useForm({
     prefix: user.vinfo.names.prefix,
     first_name: user.vinfo.names.givenName,
     name: user.vinfo.names.familyName,
     middle_name: user.vinfo.names.middleName,
+    title: user.vinfo.title,
     bio: user.vinfo.note.text,
-    location: JSON.stringify(Country.getCountryByCode(userLocation.iso_code != null? userLocation.iso_code : "AF")),
+    location: JSON.stringify(
+      Country.getCountryByCode(userLocation.iso_code != null ? userLocation.iso_code : "AF")
+    ),
   });
 
-    const update = () => {
+  const update = () => {
     patch("/settings/vcard/general-info");
   };
+
+  useEffect(() => {
+    initializePreline();
+  }, []);
   return (
     <SettingsLayout>
       {/* Account Card */}
@@ -186,12 +193,49 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = (props) => {
                 htmlFor="hs-pro-dappiun"
                 className="sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500"
               >
+                Title
+              </label>
+            </div>
+            {/* End Col */}
+            <div className="sm:col-span-8 xl:col-span-4">
+              <input
+                id="hs-pro-dappiun"
+                onChange={(e) => setData("title", e.target.value)}
+                type="text"
+                defaultValue={data.title}
+                className="py-1.5 sm:py-2 px-3 block w-full border-gray-200 rounded-lg sm:text-sm placeholder:text-gray-400 focus:border-yellow-500 focus:ring-yellow-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:placeholder:text-white/60 dark:focus:ring-neutral-600"
+                placeholder="Ex. Content Creator"
+              />
+              <p className="mt-2 text-sm text-gray-500 dark:text-neutral-500">
+                Enter your display title on Preline public forums.
+              </p>
+              {errors.middle_name && (
+                <div>
+                  {" "}
+                  <FormError message={errors.title} />
+                </div>
+              )}
+            </div>
+            {/* End Col */}
+          </div>
+          {/* End Grid */}
+
+          {/* Grid */}
+          <div className="grid sm:grid-cols-12 gap-y-1.5 sm:gap-y-0 sm:gap-x-5">
+            <div className="sm:col-span-4 xl:col-span-3 2xl:col-span-2">
+              <label
+                htmlFor="hs-pro-dappiun"
+                className="sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500"
+              >
                 Description Note
               </label>
             </div>
             {/* End Col */}
             <div className="sm:col-span-8 xl:col-span-4">
-              <PrelineTiptapEditor onUpdate={(content) => setData("bio", content)} value={data.bio}/>
+              <PrelineTiptapEditor
+                onUpdate={(content) => setData("bio", content)}
+                value={data.bio}
+              />
               <p className="mt-2 text-sm text-gray-500 dark:text-neutral-500">
                 Enter your display name on Preline public forums.
               </p>
@@ -215,8 +259,10 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = (props) => {
             </div>
             <SelectCountryField
               options={allCountries}
-              defaultSelected={userLocation.iso_code != null? userLocation.iso_code : "AF"}
-              onChangeCallBack={(country) => setData("location", JSON.stringify(Country.getCountryByCode(country)))}
+              defaultSelected={userLocation.iso_code != null ? userLocation.iso_code : "AF"}
+              onChangeCallBack={(country) =>
+                setData("location", JSON.stringify(Country.getCountryByCode(country)))
+              }
               labelFor="country"
               error={errors.location}
               required

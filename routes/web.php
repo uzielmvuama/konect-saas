@@ -28,8 +28,10 @@ Route::middleware('guest')->group(function () {
 });
 
 
-Route::get('/kuser/{ko_uuid}', function () {
-    return Inertia::render('Kuser');
+Route::get('/kuser/{uuid}', function (\App\Models\User $user) {
+    return Inertia::render('Kuser', [
+        'user' => $user->load('konects.user')->toResource()
+    ]);
 });
 
 Route::get('/plans', function () {

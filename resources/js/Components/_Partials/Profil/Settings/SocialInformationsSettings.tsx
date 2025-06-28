@@ -1,12 +1,16 @@
 import React from "react";
-import SettingsLayout from "@/Layouts/SetttingsLayout";
+import SettingsLayout from "@/Layouts/SettingsLayout";
+import EmailsLinksManager from "@/Components/_Partials/Profil/Settings/_Partials/EmailsLinksManager";
+import ExternalsLinksManager from "@/Components/_Partials/Profil/Settings/_Partials/ExternalsLinksManager";
 
 interface SocialInformationsProps {
-  // Props ici
+ user: any
 }
 
-const SocialInformationsSettings: React.FC<SocialInformationsProps> = (props) => {
-  return (
+const SocialInformationsSettings: React.FC<SocialInformationsProps> = ({user}) => {
+    console.log(user.vinfo)
+
+    return (
     <SettingsLayout>
       {/* Account Card */}
       {/* Title */}
@@ -19,6 +23,9 @@ const SocialInformationsSettings: React.FC<SocialInformationsProps> = (props) =>
       {/* End Title */}
       {/* Form */}
       <form>
+         <EmailsLinksManager values={user.vinfo.emails} onChange={(emails)=> console.log(emails)
+         } />
+          <ExternalsLinksManager values={user.vinfo.urls} onChange={(urls)=> console.log(urls)} />
         {/* Social Accounts */}
         <div className="py-6 sm:py-8 space-y-5 border-t border-gray-200 first:border-t-0 dark:border-neutral-700">
           <h2 className="font-semibold text-gray-800 dark:text-neutral-200">Social accounts</h2>

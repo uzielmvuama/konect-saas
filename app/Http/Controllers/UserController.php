@@ -15,20 +15,27 @@ use App\Helpers\Classes\Vcard\VcardProperty\Properties\VideoLinkVcard;
 use App\Helpers\Services\KonectService;
 use App\Helpers\Services\UserService;
 use App\Http\Requests\Profile\UpdateProfileGeneralInfoRequest;
+use App\Http\Requests\Profile\UpdateProfileImagesRequest;
 use App\Http\Resources\KoGadgetResource;
 use App\Models\CompanyMember;
 use App\Models\KoGadget;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
+use Laravel\Fortify\Features;
+use Laravel\Jetstream\Http\Controllers\Inertia\UserProfileController;
 
 /**
  * @extends Controller<UserService>
  */
 class UserController extends Controller
 {
+
+
+
     public function __construct(UserService $userService)
     {
         parent::__construct($userService);
@@ -153,7 +160,7 @@ class UserController extends Controller
             ->with('success', "Profile successfully updated");
     }
 
-    final public function updateVcardGeneralInfo(UpdateProfileGeneralInfoRequest $request) : RedirectResponse
+    final public function updateVcardGeneralInfo(UpdateProfileGeneralInfoRequest $request): RedirectResponse
     {
         $user = $request->user();
         // Retrieve the validated input data...
@@ -170,6 +177,7 @@ class UserController extends Controller
             prefix: $validated["prefix"] ?? "",
         ));
 
+        $vinfo->title = $validated["title"] ?? "";
 
         $vinfo->addAdress(new LocationVcard(
             state: ucfirst(json_decode($validated["location"])->NAME ?? ""),
@@ -189,4 +197,42 @@ class UserController extends Controller
         return Redirect::route('settings')
             ->with('success', "Profile successfully updated");
     }
+
+    public function updateVcardImages(UpdateProfileImagesRequest $request)
+    {
+        $user = $request->user();
+        // Retrieve the validated input data...
+
+        $validated = $request->validated();
+
+        //dd(json_decode($request->input('data')));
+        $vinfo = new UserVcard($user->vinfo);
+
+        if ($request->hasFile('profile_picture')) {
+            $rs = $this->service->updateProfilImage($user, $request->file('profile_picture'));
+        }
+
+        if ($request->hasFile('background_image')) {
+            $rs = $this->service->updateBackgroundImage($user, $request->file('background_image'));
+        }
+
+        $this->service->vcardGenerate($user);
+
+        $user->save();
+
+        return Redirect::route('profile.edit')
+            ->with('success', "Profile successfully updated");
+    }
+
+    final function showLoggedUser(Request $request)
+    {
+        return Inertia::render('Profile/Settings',
+            [
+                'user' => Auth::user()->load('konects.user')->toResource(),
+                'confirmsTwoFactorAuthentication' => Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm'),
+                'sessions' => (new UserProfileController())->sessions($request)->all(),
+            ]);
+    }
+
+
 }

@@ -25,8 +25,9 @@ class UpdateProfileGeneralInfoRequest extends FormRequest
             'prefix'      => ['nullable', 'string', 'max:10'],
             'first_name'   => ['required', 'string', 'max:100'],
             'name'        => ['required', 'string', 'max:100'],
-            'middle_name' => ['required', 'string', 'max:100'],
-            'bio' => ['required', 'string', 'max:1000'],
+            'middle_name' => ['nullable', 'string', 'max:100'],
+            'title'   => ['nullable', 'string', 'max:100'],
+            'bio' => ['nullable', 'string', 'max:1000'],
             'location'    => ['required', 'string', 'string'],
         ];
     }
@@ -44,6 +45,7 @@ class UpdateProfileGeneralInfoRequest extends FormRequest
             'prefix'      => strtolower($this->prefix),
             'first_name'   =>  strtolower($this->first_name),
             'name'        =>  strtolower($this->name),
+            'title'        =>  strtolower($this->title),
             'middle_name' =>  strtolower($this->middle_name),
             'location'    =>  strtoupper($this->location),
         ]);

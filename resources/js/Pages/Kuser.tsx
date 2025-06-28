@@ -1,14 +1,19 @@
 import React from "react";
 import AppLayout from "@/Layouts/AppLayout";
 import GuestLayout from "@/Layouts/GuestLayout";
+import { usePage } from "@inertiajs/react";
+import { ucfirst } from "@/Utils/Functions/globals";
 
 export default function Kuser() {
+  const { user } = usePage().props as any;
+  console.log(usePage().props.user);
+
   return (
     <GuestLayout title="Kuser - " showFooter={false} showHeader={false}>
       <div className="min-h-screen flex items-center justify-center px-4">
         <>
           {/* ========== MAIN CONTENT ========== */}
-          <main id="content" className="lg:ps-65 pt-15 pb-10 sm:pb-16">
+          <main id="content" className="pt-15 pb-10 sm:pb-16">
             <div className="max-w-6xl mx-auto">
               {/* Breadcrumb */}
               <ol className="lg:hidden pt-3 md:pt-5 sm:pb-2 md:pb-0 px-2 sm:px-5 flex items-center whitespace-nowrap">
@@ -102,9 +107,11 @@ export default function Kuser() {
                     </div>
                     <div className="mt-3 text-center">
                       <h1 className="text-xl font-semibold text-gray-800 dark:text-neutral-200">
-                        Amanda Harvey
+                        {`${ucfirst(user.vinfo.names.givenName)} ${ucfirst(user.vinfo.names.familyName)}`}
                       </h1>
-                      <p className="text-gray-500 dark:text-neutral-500">iam_amanda</p>
+                      <p className="text-gray-500 dark:text-neutral-500">
+                        {ucfirst(user.vinfo.title)}
+                      </p>
                     </div>
                   </div>
                   {/* End Avatar */}

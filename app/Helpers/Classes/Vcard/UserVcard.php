@@ -6,23 +6,27 @@ use App\Helpers\Classes\Vcard\VcardProperty\Properties\PhoneVcard;
 
 class UserVcard extends VcardModel
 {
-    public array $phone = [];
+    public array $phones = [];
+    public string $title = "";
 
     public function __construct($vinfo = null)
     {
         parent::__construct($vinfo);
         if (empty($vinfo)) {
-            $this->phone[] = new PhoneVcard(type: "personal", text: "");
+            $this->title = "";
+            $this->phones = [];
         } else {
             $vinfo = json_decode($vinfo);
-            if (is_array($vinfo->phone)) {
-                foreach ((array) $vinfo->phone as $ph) {
-                    $this->phone[] = new PhoneVcard(type: $ph->type, text: $ph->text);
-                }
-            } elseif (is_object($vinfo->phone)) {
-                $this->phone[] = new PhoneVcard(type: $vinfo->phone->type, text: $vinfo->phone->text);
+            $this->title = $vinfo->title;
 
-                array_push($this->phone, new PhoneVcard(type: $vinfo->phone->type, text: $vinfo->phone->text));
+            if (is_array($vinfo->phones)) {
+                foreach ((array) $vinfo->phone as $ph) {
+                    $this->phones[] = new PhoneVcard(type: $ph->type, text: $ph->text);
+                }
+            } elseif (is_object($vinfo->phones)) {
+                $this->phones[] = new PhoneVcard(type: $vinfo->phones->type, text: $vinfo->phones->text);
+
+                array_push($this->phones, new PhoneVcard(type: $vinfo->phones->type, text: $vinfo->phones->text));
             }
         }
     }
@@ -30,5 +34,10 @@ class UserVcard extends VcardModel
     public function addPhone(PhoneVcard $phone)
     {
         $this->phone[] = $phone;
+    }
+
+    public function addTitle(string $title)
+    {
+        $this->title = $title;
     }
 }

@@ -1,8 +1,6 @@
 import React from "react";
-import ConnectionsList from "@/Components/Connection/ConnectionsList";
-import { HiUser } from "react-icons/hi";
-import { TbArrowsDiff, TbArrowsLeftRight, TbUserCog, TbUsers } from "react-icons/tb";
-import { ucfirst } from "@/Utils/Functions/globals";
+import {TbBoxMultiple, TbLinkPlus, TbShieldLock, TbUser} from "react-icons/tb";
+import {ucfirst} from "@/Utils/Functions/globals";
 import GeneralSettings from "@/Components/_Partials/Profil/Settings/GeneralSettings";
 import SocialInformationsSettings from "@/Components/_Partials/Profil/Settings/SocialInformationsSettings";
 import SecuritySettings from "@/Components/_Partials/Profil/Settings/SecuritySettings";
@@ -15,19 +13,19 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
   const navs = [
     {
       name: "My Profile",
-      icon: <TbUserCog />,
+      icon: <TbUser />,
     },
     {
       name: "Email et Réseaux Sociaux",
-      icon: <TbArrowsLeftRight />,
+      icon: <TbLinkPlus />
     },
     {
       name: "Photos et Vidéos",
-      icon: <TbArrowsLeftRight />,
+      icon: <TbBoxMultiple />
     },
     {
-      name: "Sécurité et Connexion",
-      icon: <TbUsers />,
+      name: "Security & Password",
+      icon: <TbShieldLock />,
     },
   ];
 
@@ -118,14 +116,14 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
 
           {/* Header */}
           <div className="mt-4 md:mt-7 -mb-0.5 flex flex-col md:flex-row md:justify-between md:items-center gap-3">
-            <div className="md:order-2 flex justify-center md:justify-end">
-              <a
-                className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
-                href="../../pro/dashboard/account-profile.html"
-              >
-                Edit
-              </a>
-            </div>
+            {/*<div className="md:order-2 flex justify-center md:justify-end">*/}
+            {/*  <a*/}
+            {/*    className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"*/}
+            {/*    href="../../pro/dashboard/account-profile.html"*/}
+            {/*  >*/}
+            {/*    Edit*/}
+            {/*  </a>*/}
+            {/*</div>*/}
 
             {/* Nav */}
             <div
@@ -721,7 +719,7 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
       </div>
       <div>
         {currentTab == 0 && <GeneralSettings />}
-        {currentTab == 1 && <SocialInformationsSettings />}
+        {currentTab == 1 && <SocialInformationsSettings user={user}/>}
         {currentTab == 2 && <SecuritySettings />}
         {currentTab == 3 && <SecuritySettings />}
       </div>

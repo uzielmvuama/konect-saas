@@ -1,4 +1,4 @@
-export const initializePreline = () => {
+export const initializePreline = async () => {
   if (typeof window !== "undefined") {
     window.HSStaticMethods?.autoInit();
     // window.HSDropdown?.autoInit();

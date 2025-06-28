@@ -15,7 +15,7 @@ use App\Helpers\Classes\Vcard\VcardProperty\Properties\VideoLinkVcard;
 abstract class VcardModel
 {
     public NameVcard $names;
-    public array $email = [];
+    public array $emails = [];
     public SocialVcardItemAll $socialProfils;
     public array $urls = [];
     public array $videoLinks = [];
@@ -37,10 +37,10 @@ abstract class VcardModel
     private function initializeEmptyProperties(): void
     {
         $this->names = new NameVcard(givenName: "", familyName: "", middleName: "", prefix: "");
-        $this->email[] = new EmailVcard(type: "", text: "");
-        $this->urls[] = new UrlVcard(type: "", uri: "");
-        $this->videoLinks[] = new VideoLinkVcard(type: "", uri: "");
-        $this->imageLinks[] = new ImageLinkVcard(type: "", uri: "");
+        $this->emails = [];
+        $this->urls = [];
+        $this->videoLinks = [];
+        $this->imageLinks = [];
         $this->location = new LocationVcard();
         $this->socialProfils = new SocialVcardItemAll(
             facebook: new SocialVcardItem(uri: ""),
@@ -62,13 +62,13 @@ abstract class VcardModel
             middleName: $vinfo->names->middleName,
             prefix: $vinfo->names->prefix,
         );
-        if (isset($vinfo->email)) {
+        if (isset($vinfo->emails)) {
             if (is_array($vinfo->email)) {
                 foreach ((array) $vinfo->email as $em) {
-                    $this->email[] = new EmailVcard(type: $em->type, text: $em->text);
+                    $this->emails[] = new EmailVcard(type: $em->type, text: $em->text);
                 }
             } elseif (is_object($vinfo->email)) {
-                $this->email[] = new EmailVcard(type: $vinfo->email->type, text: $vinfo->email->text);
+                $this->emails[] = new EmailVcard(type: $vinfo->email->type, text: $vinfo->email->text);
             }
         }
 
@@ -124,7 +124,7 @@ abstract class VcardModel
 
     public function addEmail(EmailVcard $email)
     {
-        $this->email[] = $email;
+        $this->emails[] = $email;
     }
 
     public function addAdress(LocationVcard $location)
