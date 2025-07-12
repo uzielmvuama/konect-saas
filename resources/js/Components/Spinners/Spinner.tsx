@@ -2,13 +2,13 @@ import React from "react";
 import classNames from "classnames";
 
 type SpinnerProps = {
-  size?: "xs"| "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
   color?: "yellow" | "blue" | "gray" | "white" | "dark";
   className?: string;
 };
 
 const sizeMap = {
-    xs: "size-3",
+  xs: "size-3",
   sm: "size-4",
   md: "size-6",
   lg: "size-8",
@@ -19,7 +19,7 @@ const colorMap = {
   blue: "text-blue-600 dark:text-blue-500",
   gray: "text-gray-600 dark:text-gray-400",
   white: "text-white",
-    dark: "text-dark/50",
+  dark: "text-dark/50",
 };
 
 const Spinner: React.FC<SpinnerProps> = ({ size = "xs", color = "dark", className = "" }) => {

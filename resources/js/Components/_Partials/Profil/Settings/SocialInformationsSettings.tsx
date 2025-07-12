@@ -5,13 +5,13 @@ import ExternalsLinksManager from "@/Components/_Partials/Profil/Settings/_Parti
 import SocialsLinkManager from "@/Components/_Partials/Profil/Settings/_Partials/SocialsLinkManager";
 
 interface SocialInformationsProps {
- user: any
+  user: any;
 }
 
-const SocialInformationsSettings: React.FC<SocialInformationsProps> = ({user}) => {
-    console.log(user.vinfo)
+const SocialInformationsSettings: React.FC<SocialInformationsProps> = ({ user }) => {
+  console.log(user.vinfo);
 
-    return (
+  return (
     <SettingsLayout>
       {/* Account Card */}
       {/* Title */}
@@ -24,10 +24,12 @@ const SocialInformationsSettings: React.FC<SocialInformationsProps> = ({user}) =
       {/* End Title */}
       {/* Form */}
       <form>
-         <EmailsLinksManager values={user.vinfo.emails} onChange={(emails)=> console.log(emails)
-         } />
-          <ExternalsLinksManager values={user.vinfo.urls} onChange={(urls)=> console.log(urls)} />
-    <SocialsLinkManager />
+        <EmailsLinksManager values={user.vinfo.emails} onChange={(emails) => console.log(emails)} />
+        <ExternalsLinksManager values={user.vinfo.urls} onChange={(urls) => console.log(urls)} />
+        <SocialsLinkManager
+          value={user.vinfo.socialProfils}
+          onChange={(urls) => console.log(urls)}
+        />
         {/*/!* Connect Accounts *!/*/}
         {/*<div className="py-6 sm:py-8 space-y-5 border-t border-gray-200 first:border-t-0 dark:border-neutral-700">*/}
         {/*    /!* Grid *!/*/}

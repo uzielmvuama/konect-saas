@@ -1,4 +1,4 @@
-import React, {FormEvent} from "react";
+import React, { FormEvent } from "react";
 import FormError from "@/Components/Errors/FormError";
 import { useForm } from "@inertiajs/react";
 import MainButton from "@/Components/Buttons/MainButton";
@@ -39,7 +39,7 @@ const SecureConfirmDialogProps: React.FC<ButtonSecureConfirmDialog> = ({
     onFinish: () => reset(),
   };
   const onConfirm = (e: FormEvent) => {
-      e.preventDefault();
+    e.preventDefault();
 
     if (method == "get") {
       props.get(url, options);
@@ -146,9 +146,13 @@ const SecureConfirmDialogProps: React.FC<ButtonSecureConfirmDialog> = ({
                 {cancelLabel}
               </button>
 
-
-                <MainButton title={confirmLabel} processing={processing} onClick={onConfirm}  paddindClassYX="py-2 px-3"
-                            asType={"button"}/>
+              <MainButton
+                title={confirmLabel}
+                processing={processing}
+                onClick={onConfirm}
+                paddindClassYX="py-2 px-3"
+                asType={"button"}
+              />
             </div>
           </div>
         </div>

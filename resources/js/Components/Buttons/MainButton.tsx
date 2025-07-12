@@ -29,7 +29,7 @@ const MainButton: React.FC<MainButtonProps> = ({
   icon: Icon,
   customClassName = "",
   paddindClassYX = " py-3 px-2.5",
-                                                   processing = false,
+  processing = false,
   ...rest
 }) => {
   if (asType === "link") {

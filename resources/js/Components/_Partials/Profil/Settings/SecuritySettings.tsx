@@ -290,7 +290,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = (props) => {
                 {/* Button Group */}
                 <div className="flex items-center gap-x-3">
                   <MainButton
-                      processing={processing}
+                    processing={processing}
                     title={"Change"}
                     onClick={updatePassword}
                     paddindClassYX="py-2 px-3"

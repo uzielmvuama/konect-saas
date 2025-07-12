@@ -1,6 +1,6 @@
 import React from "react";
-import {TbBoxMultiple, TbLinkPlus, TbShieldLock, TbUser} from "react-icons/tb";
-import {ucfirst} from "@/Utils/Functions/globals";
+import { TbBoxMultiple, TbLinkPlus, TbShieldLock, TbUser } from "react-icons/tb";
+import { ucfirst } from "@/Utils/Functions/globals";
 import GeneralSettings from "@/Components/_Partials/Profil/Settings/GeneralSettings";
 import SocialInformationsSettings from "@/Components/_Partials/Profil/Settings/SocialInformationsSettings";
 import SecuritySettings from "@/Components/_Partials/Profil/Settings/SecuritySettings";
@@ -17,11 +17,11 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
     },
     {
       name: "Email et Réseaux Sociaux",
-      icon: <TbLinkPlus />
+      icon: <TbLinkPlus />,
     },
     {
       name: "Photos et Vidéos",
-      icon: <TbBoxMultiple />
+      icon: <TbBoxMultiple />,
     },
     {
       name: "Security & Password",
@@ -719,7 +719,7 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
       </div>
       <div>
         {currentTab == 0 && <GeneralSettings />}
-        {currentTab == 1 && <SocialInformationsSettings user={user}/>}
+        {currentTab == 1 && <SocialInformationsSettings user={user} />}
         {currentTab == 2 && <SecuritySettings />}
         {currentTab == 3 && <SecuritySettings />}
       </div>
