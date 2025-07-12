@@ -168,7 +168,7 @@ class UserService
 
         $vcard->addNote(ucfirst($vinfo["note"]["text"]));
 
-        foreach ($vinfo['email'] as $email) {
+        foreach ($vinfo['emails'] as $email) {
             $vcard->addEmail($email['text'] ?? '', ucfirst($email['type'] ?? ''));
         }
 
@@ -185,7 +185,7 @@ class UserService
             // $vcard->addURL($social['uri'], $social['type']);
         }
         $sharedlink = ["website", "siteweb", "site web", "my website", "mon siteweb",];
-        foreach ($vinfo['phone'] as $phone) {
+        foreach ($vinfo['phones'] as $phone) {
             $vcard->addPhoneNumber($phone['text'] ?? "", ucfirst($phone['type'] ?? "work"));
         }
 

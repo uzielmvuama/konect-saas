@@ -63,12 +63,12 @@ abstract class VcardModel
             prefix: $vinfo->names->prefix,
         );
         if (isset($vinfo->emails)) {
-            if (is_array($vinfo->email)) {
-                foreach ((array) $vinfo->email as $em) {
+            if (is_array($vinfo->emails)) {
+                foreach ((array) $vinfo->emails as $em) {
                     $this->emails[] = new EmailVcard(type: $em->type, text: $em->text);
                 }
-            } elseif (is_object($vinfo->email)) {
-                $this->emails[] = new EmailVcard(type: $vinfo->email->type, text: $vinfo->email->text);
+            } elseif (is_object($vinfo->emails)) {
+                $this->emails[] = new EmailVcard(type: $vinfo->emails->type, text: $vinfo->email->text);
             }
         }
 

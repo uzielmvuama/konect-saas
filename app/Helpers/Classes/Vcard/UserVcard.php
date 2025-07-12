@@ -20,7 +20,7 @@ class UserVcard extends VcardModel
             $this->title = $vinfo->title;
 
             if (is_array($vinfo->phones)) {
-                foreach ((array) $vinfo->phone as $ph) {
+                foreach ((array) $vinfo->phones as $ph) {
                     $this->phones[] = new PhoneVcard(type: $ph->type, text: $ph->text);
                 }
             } elseif (is_object($vinfo->phones)) {

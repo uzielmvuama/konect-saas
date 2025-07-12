@@ -52,11 +52,13 @@ const EmailsLinksManager: React.FC<EmailsLinksManagerProps> = ({
             {emails.map((email, index) => (
               <div className="relative" key={index}>
                 <input
-                  type="text"
+                  type="email"
                   id="hs-inline-leading-select-label"
                   name="inline-add-on"
                   className="py-1.5 sm:py-2 px-4 ps-32 block w-full border-gray-200 rounded-lg sm:text-sm focus:z-10 focus:border-yellow-500 focus:ring-yellow-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                   placeholder="test.example.com"
+                  onChange={(e) => handleChange(index, "text", e.target.value)}
+                  value={email.text}
                 />
                 <div className="absolute inset-y-0 start-0 flex items-center text-gray-500 ps-px">
                   <label htmlFor="hs-inline-leading-select-country" className="sr-only">
@@ -66,10 +68,11 @@ const EmailsLinksManager: React.FC<EmailsLinksManagerProps> = ({
                     id="hs-inline-leading-select-country"
                     name="hs-inline-leading-select-country"
                     className="py-1 sm:py-1 block w-full border-transparent rounded-lg focus:ring-yellow-600 focus:border-yellow-600 dark:text-neutral-500 dark:bg-neutral-900 sm:text-sm cursor-pointer"
+                    onChange={(e) => handleChange(index, "type", e.target.value)} value={email.type}
                   >
-                    <option>Personal</option>
-                    <option>Work</option>
-                    <option>Home</option>
+                    <option value={"personal"}>Personal</option>
+                    <option value={"work"}>Work</option>
+                    <option value={"home"}>Home</option>
                   </select>
                 </div>
               </div>

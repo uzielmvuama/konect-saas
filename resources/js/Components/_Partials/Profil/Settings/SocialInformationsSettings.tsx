@@ -1,8 +1,11 @@
-import React from "react";
+import React, {FormEvent, useEffect} from "react";
 import SettingsLayout from "@/Layouts/SettingsLayout";
 import EmailsLinksManager from "@/Components/_Partials/Profil/Settings/_Partials/EmailsLinksManager";
 import ExternalsLinksManager from "@/Components/_Partials/Profil/Settings/_Partials/ExternalsLinksManager";
 import SocialsLinkManager from "@/Components/_Partials/Profil/Settings/_Partials/SocialsLinkManager";
+import { useForm } from "@inertiajs/react";
+import { initializePreline } from "@/Utils/preline-init";
+import MainButton from "@/Components/Buttons/MainButton";
 
 interface SocialInformationsProps {
   user: any;
@@ -10,6 +13,21 @@ interface SocialInformationsProps {
 
 const SocialInformationsSettings: React.FC<SocialInformationsProps> = ({ user }) => {
   console.log(user.vinfo);
+
+  const { data, setData, patch, processing, errors } = useForm({
+    emails: user.vinfo.emails,
+    socialProfils: user.vinfo.socialProfils,
+    urls: user.vinfo.urls,
+  });
+
+  const update = (e: FormEvent) => {
+      e.preventDefault();
+    patch("/settings/vcard/urls-info");
+  };
+
+  useEffect(() => {
+    initializePreline();
+  }, []);
 
   return (
     <SettingsLayout>
@@ -24,12 +42,28 @@ const SocialInformationsSettings: React.FC<SocialInformationsProps> = ({ user })
       {/* End Title */}
       {/* Form */}
       <form>
-        <EmailsLinksManager values={user.vinfo.emails} onChange={(emails) => console.log(emails)} />
-        <ExternalsLinksManager values={user.vinfo.urls} onChange={(urls) => console.log(urls)} />
+        <EmailsLinksManager
+          values={user.vinfo.emails}
+          onChange={(emails) => setData("emails", emails)}
+        />
+        <ExternalsLinksManager
+          values={user.vinfo.urls}
+          onChange={(urls) => setData("urls", urls)}
+        />
         <SocialsLinkManager
           value={user.vinfo.socialProfils}
-          onChange={(urls) => console.log(urls)}
+          onChange={(socialProfils) => setData("socialProfils", socialProfils)}
         />
+        <div className={"flex justify-end"}>
+          <MainButton
+            processing={processing}
+            title={"Save Changes"}
+            onClick={update}
+            paddindClassYX="py-2 px-3"
+            asType={"button"}
+          />
+        </div>
+
         {/*/!* Connect Accounts *!/*/}
         {/*<div className="py-6 sm:py-8 space-y-5 border-t border-gray-200 first:border-t-0 dark:border-neutral-700">*/}
         {/*    /!* Grid *!/*/}

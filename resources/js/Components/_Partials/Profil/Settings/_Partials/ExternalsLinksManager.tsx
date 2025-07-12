@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import {ucfirst} from "@/Utils/Functions/globals";
 
 export interface ExternalLink {
   type: string; // ex: "personal", "professional"
@@ -27,7 +28,7 @@ const EmailsLinksManager: React.FC<ExternalsLinksManagerProps> = ({
 
   const handleChange = (index: number, newValue: string) => {
     const updated = [...urls];
-    updated[index].uri = newValue;
+    updated[index].uri = "https://" + newValue;
     setUrls(updated);
   };
 
@@ -71,6 +72,7 @@ const EmailsLinksManager: React.FC<ExternalsLinksManagerProps> = ({
                     placeholder="my app website"
                     aria-describedby="hs-inline-input-helper-text"
                     onChange={(e) => handleChangeTitle(index, e.target.value)}
+                    value={ucfirst(url.type)}
                   />
                   {/*<p className="text-sm text-gray-500 dark:text-neutral-500" id="hs-inline-input-helper-text">We'll never share your details.</p>*/}
                 </div>
@@ -90,6 +92,7 @@ const EmailsLinksManager: React.FC<ExternalsLinksManagerProps> = ({
                       className="py-1.5 sm:py-2 px-4 ps-16 block w-full border-gray-200 rounded-lg sm:text-sm focus:z-10 focus:border-yellow-500 focus:ring-yellow-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                       placeholder="www.example.com"
                       onChange={(e) => handleChange(index, e.target.value)}
+                      value={url.uri.replace("https://", "")}
                     />
                     <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-4">
                       <span className="text-sm text-gray-500 dark:text-neutral-500">https://</span>

@@ -16,6 +16,7 @@ use App\Helpers\Services\KonectService;
 use App\Helpers\Services\UserService;
 use App\Http\Requests\Profile\UpdateProfileGeneralInfoRequest;
 use App\Http\Requests\Profile\UpdateProfileImagesRequest;
+use App\Http\Requests\Profile\UpdateProfileUrlsInfoRequest;
 use App\Http\Resources\KoGadgetResource;
 use App\Models\CompanyMember;
 use App\Models\KoGadget;
@@ -189,6 +190,47 @@ class UserController extends Controller
 
 
         $user->vinfo = $vinfo->json_gen();
+
+        $this->service->vcardGenerate($user);
+
+        $user->save();
+
+        return Redirect::route('settings')
+            ->with('success', "Profile successfully updated");
+    }
+
+    final public function updateUrlslInfo(UpdateProfileUrlsInfoRequest $request): RedirectResponse
+    {
+        $user = $request->user();
+        // Retrieve the validated input data...
+
+        $validated = $request->validated();
+
+        //dd(json_decode($request->input('data')));
+        $vinfo = new UserVcard($user->vinfo);
+        $vinfo->addSocialProfil(new SocialVcardItemAll(
+            facebook: new SocialVcardItem(uri: $validated["socialProfils"]["facebook"]["uri"] ?? "", type: "facebook"),
+            instagram: new SocialVcardItem(uri: $validated["socialProfils"]["instagram"]["uri"] ?? "", type: "instagram"),
+            twitter: new SocialVcardItem(uri: $validated["socialProfils"]["twitter"]["uri"] ?? "", type: "twitter"),
+            youtube: new SocialVcardItem(uri: $validated["socialProfils"]["youtube"]["uri"] ?? "", type: "youtube"),
+            linkedin: new SocialVcardItem(uri: $validated["socialProfils"]["linkedin"]["uri"] ?? "", type: "linkedin"),
+            tiktok: new SocialVcardItem(uri: $validated["socialProfils"]["tiktok"]["uri"] ?? "", type: "tiktok"),
+            pinterest: new SocialVcardItem(uri: $validated["socialProfils"]["pinterest"]["uri"] ?? "", type: "pinterest"),
+        ));
+
+        $vinfo->emails = array_filter(array_map(function ($email) {
+            $email= (object) $email;
+            return !empty($email->text) ? new EmailVcard(text: $email->text, type: $email->type) : null;
+        }, $validated["emails"]));
+
+
+        $vinfo->urls = array_filter(array_map(function ($link) {
+            $link= (object) $link;
+            return !empty($link->uri) ? new UrlVcard(type: $link->type, uri: $link->uri) : null;
+        }, $validated["urls"]));
+
+        $user->vinfo = $vinfo->json_gen();
+
 
         $this->service->vcardGenerate($user);
 

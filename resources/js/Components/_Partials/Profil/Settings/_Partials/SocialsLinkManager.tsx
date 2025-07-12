@@ -20,7 +20,7 @@ const SocialsLinkManager: React.FC<SocialsLinkManagerProps> = ({ value, onChange
   const handleSocialChange = (name: string, val: string) => {
     setSocialLinks((prev) => ({
       ...prev,
-      [name.split("-")[1]]: { uri: val, type: name.split("-")[1] },
+      [name.split("-")[1]]: { uri:"https://" + val, type: name.split("-")[1] },
     }));
   };
 
@@ -75,7 +75,7 @@ const SocialsLinkManager: React.FC<SocialsLinkManagerProps> = ({ value, onChange
                 iconSrc={"https://cdn.worldvectorlogo.com/logos/linkedin-icon-2.svg"}
                 name={"social-linkedin"}
                 value={socialLinks.linkedin.uri}
-                onChange={() => {}}
+                onChange={handleSocialChange}
                 iconClassName="scale-[1.3]"
               />
               <InputWithIconImage
