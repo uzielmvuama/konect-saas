@@ -14,3 +14,4 @@ export interface TeamProps {
   name: string;
   email: string;
 }
+export type MediaUploadType = 'profile' | 'cover' | 'activity-images' | 'activity-videos';

@@ -10,12 +10,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Cashier\Billable;
+use Laravel\Cashier\Subscription;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\File;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
     use HasApiTokens, Billable, Pointable;
 
@@ -25,7 +31,7 @@ class User extends Authenticatable
     use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
-
+    use InteractsWithMedia;
 
     protected $with = ['konects'];
 
@@ -62,20 +68,7 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-
-    protected static function booted ()
+    protected static function booted()
     {
         static::creating(function ($user) {
             $user->uuid = Str::uuid()->toString();
@@ -99,7 +92,7 @@ class User extends Authenticatable
 
     public function gadgets()
     {
-        return $this->hasMany(KoGadget::class, "user_id", "id")->orderBy('id', 'DESC');;
+        return $this->hasMany(KoGadget::class, "user_id", "id")->orderBy('id', 'DESC');
     }
 
     function contact_feeds()
@@ -117,14 +110,6 @@ class User extends Authenticatable
         return $this->hasMany(Payment::class);
     }
 
-    public function currentSubscription(): ?\Laravel\Cashier\Subscription
-    {
-        return $this->subscriptions()
-            ->whereNull('ends_at')          // encore actif (non annulé)
-            ->orderByDesc('created_at')     // le plus récent si plusieurs
-            ->first();                      // retourne l'objet Subscription
-    }
-
     public function currentSubscriptionName(): ?string
     {
         return $this->currentPlan()->name ?? 'starter'; // Retourne juste le nom
@@ -136,6 +121,19 @@ class User extends Authenticatable
         return $type
             ? Plan::where('stripe_price_id', $type)->first()
             : null;
+    }
+
+    public function currentSubscription(): ?Subscription
+    {
+        return $this->subscriptions()
+            ->whereNull('ends_at')          // encore actif (non annulé)
+            ->orderByDesc('created_at')     // le plus récent si plusieurs
+            ->first();                      // retourne l'objet Subscription
+    }
+
+    public function nextUpgrade(): ?Plan
+    {
+        return $this->availableUpgrades()->first();
     }
 
     public function availableUpgrades()
@@ -151,10 +149,11 @@ class User extends Authenticatable
             ->get();
     }
 
-
-    public function nextUpgrade(): ?Plan
+    public function getProfilePhotoUrlAttribute()
     {
-        return $this->availableUpgrades()->first();
+        return $this->profile_photo_path
+            ? Storage::disk($this->profilePhotoDisk())->url($this->profile_photo_path)
+            : $this->defaultProfilePhotoUrl();
     }
 
     protected function defaultProfilePhotoUrl()
@@ -166,13 +165,47 @@ class User extends Authenticatable
             return mb_substr($segment, 0, 1);
         })->join(' '));
 
-        return 'https://ui-avatars.com/api/?name='.urlencode($firstname.$name).'&color=7F9CF5&background=EBF4FF';
+        return 'https://ui-avatars.com/api/?name=' . urlencode($firstname . $name) . '&color=7F9CF5&background=EBF4FF';
     }
 
-    public function getProfilePhotoUrlAttribute()
+    final public function registerMediaCollections(): void
     {
-        return $this->profile_photo_path
-            ? Storage::disk($this->profilePhotoDisk())->url($this->profile_photo_path)
-            : $this->defaultProfilePhotoUrl();
+        $this->addMediaCollection(PROFILE_IMG_ROOT_PATH)->singleFile();
+        $this->addMediaCollection(COVER_IMG_ROOT_PATH)->singleFile();
+        $this->addMediaCollection(ACTIVITY_IMG_ROOT_PATH)
+            ->useDisk('public')
+            ->onlyKeepLatest(10);
+
+      $this->addMediaCollection(ACTIVITY_VIDEO_ROOT_PATH)
+          ->useDisk('public') // changer par 's3' plus tard si nécessaire
+          ->onlyKeepLatest(3)
+          ->acceptsMimeTypes(['video/mp4', 'video/quicktime']);
+
+        $this->addMediaCollection('vcards')
+            ->useDisk('public')
+            ->acceptsMimeTypes(['text/vcard', 'text/x-vcard', 'text/plain'])
+            ->singleFile(); // Remplace toujours l'ancienne
+
+    }
+
+    final public function registerMediaConversions(?Media $media = null): void
+    {
+        $this
+            ->addMediaConversion('preview')
+            ->fit(Fit::Contain, 300, 300)
+            ->nonQueued();
+    }
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 }

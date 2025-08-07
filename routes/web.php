@@ -77,6 +77,7 @@ Route::middleware([
        });
     });
     require_once "includes/checkout.php";
+    require_once "includes/media.php";
 });
 
 

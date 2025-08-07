@@ -9,7 +9,7 @@ export default function Kuser() {
   console.log(usePage().props.user);
 
   return (
-    <GuestLayout title="Kuser - " showFooter={false} showHeader={false}>
+    <GuestLayout title={`Kuser - ${ucfirst(user.firstname)}`} showFooter={false} showHeader={false}>
       <div className="min-h-screen flex items-center justify-center px-4">
         <>
           {/* ========== MAIN CONTENT ========== */}
