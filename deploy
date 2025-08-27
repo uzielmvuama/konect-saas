@@ -1,0 +1,100 @@
+#!/bin/bash
+
+# Initialisation des variables
+run_all=false
+skip_build=false
+run_build=false
+run_format=false
+run_clean=false
+skip_push=false
+
+# Fonction pour afficher l'aide
+show_help() {
+    echo "Usage: ./deploy [OPTIONS]"
+    echo ""
+    echo "Options disponibles :"
+    echo "  -a    Exécuter toutes les étapes automatiquement (build, format, clean, git add, commit, push)"
+    echo "  -b    Exécuter uniquement le build (npm run build)"
+    echo "  -f    Exécuter uniquement le formatage (npm run format)"
+    echo "  -c    Exécuter uniquement le nettoyage (npm run clean:dist:app)"
+    echo "  -n    Ne pas exécuter le build"
+    echo "  -s    Ne pas exécuter le push (git push)"
+    echo "  -h    Afficher ce message d'aide"
+    exit 0
+}
+
+# Fonction pour demander une confirmation avant d'exécuter une étape
+confirm() {
+    read -p "$1 [y/n] : " response
+    case "$response" in
+    [yY][eE][sS] | [yY]) return 0 ;;
+    *) return 1 ;;
+    esac
+}
+
+# Lecture des options passées au script
+while getopts "abfcnsph" opt; do
+    case "$opt" in
+    a) run_all=true ;;    # Exécuter toutes les étapes automatiquement
+    b) run_build=true ;;  # Exécuter uniquement le build
+    f) run_format=true ;; # Exécuter uniquement le formatage
+    c) run_clean=true ;;  # Exécuter uniquement le clean
+    n) skip_build=true ;; # Ne pas exécuter le build
+    s) skip_push=true ;;  # Ne pas exécuter le push
+    h) show_help ;;       # Afficher l'aide
+    *) echo "Option invalide. Utilisez -h pour voir l'aide." && exit 1 ;;
+    esac
+done
+
+# Étape 1 : Build
+if $run_all || $run_build; then
+    echo "📦 Exécution de 'npm run build'..."
+    npm run build
+elif ! $skip_build; then
+    confirm "Voulez-vous exécuter 'npm run build' ?" && npm run build
+fi
+
+# Étape 2 : Format
+if $run_all || $run_format; then
+    echo "🖋️ Exécution de 'npm run format'..."
+    npm run format
+else
+    confirm "Voulez-vous exécuter 'npm run format' ?" && npm run format
+fi
+
+# Étape 3 : Clean
+if $run_all || $run_clean; then
+    echo "🧹 Exécution de 'npm run clean:dist:app'..."
+    npm run clean:dist:app
+else
+    confirm "Voulez-vous exécuter 'npm run clean:dist:app' ?" && npm run clean:dist:app
+fi
+
+# Étape 4 : Git add
+if $run_all; then
+    echo "➕ Ajout des changements à Git..."
+    git add .
+else
+    confirm "Voulez-vous exécuter 'git add .' ?" && git add .
+fi
+
+# Étape 5 : Git commit
+if $run_all; then
+    read -p "Entrez le message de commit : " commit_message
+    git commit -m "$commit_message"
+else
+    confirm "Voulez-vous exécuter 'git commit' ?" && {
+        read -p "Entrez le message de commit : " commit_message
+        git commit -m "$commit_message"
+    }
+fi
+
+# Étape 6 : Git push
+if $run_all && ! $skip_push; then
+    echo "⬆️ Poussée des changements sur 'main'..."
+    git push -u origin main
+elif ! $skip_push; then
+    confirm "Voulez-vous exécuter 'git push' ?" && git push -u origin main
+fi
+
+echo "✅ Script terminé !"

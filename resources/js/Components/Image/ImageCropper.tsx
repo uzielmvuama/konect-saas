@@ -6,7 +6,6 @@ import {ROOT_FILES_URL} from "@/Utils/Constants/constants";
 import {useForm, usePage} from "@inertiajs/react";
 import MainButtonModal from "@/Components/ButtonModals/MainButtonModal";
 import {ImageUp, PenLine} from "lucide-react";
-import "dropzone/dist/dropzone-min.js";
 
 
 type ImageType = "profile" | "background";

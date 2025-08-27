@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#yarn install
+#yarn build
+#composer2 install --optimize-autoloader --ignore-platform-reqs --no-dev --prefer-dist
+
+#Clear and cache icons
+# php artisan icons:clear
+#php artisan icons:cache
+#php artisan optimize:clear
+#php artisan optimize
+
+composer install --no-dev --prefer-dist
+npm ci && npm run build
+#Migrations first
+php artisan migrate
+
+#Clear and cache routes
+php artisan route:clear
+php artisan route:cache
+
+#Clear and cache views
+#php artisan view:clear
+#php artisan view:cache
+
+#Clear and cache config
+php artisan config:clear
+php artisan config:cache
+
+#Clear and cache events
+php artisan event:clear
+php artisan event:cache
+
+php artisan view:cache
+php artisan storage:link
