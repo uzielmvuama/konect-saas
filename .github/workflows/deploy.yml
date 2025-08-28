@@ -74,6 +74,8 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_PORT: ${{ secrets.SSH_PORT }}
+          ENV_DECRYPT_KEY: ${{ secrets.ENV_DECRYPT_KEY }}   # <-- ajoute ce secret dans ton repo
+          DEPLOY_GROUP: admin                               # adapte si besoin
         run: |
           ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "APP_DIR='$APP_DIR' RELEASE='$RELEASE' PHP_FPM='$PHP_FPM' LARAVEL_ENV_ENCRYPTION_KEY='$ENV_DECRYPT_KEY' bash -s" <<'EOSH'
           set -euo pipefail
