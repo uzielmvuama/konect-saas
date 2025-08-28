@@ -120,6 +120,24 @@ jobs:
           ln -sfn "$SHARED_DIR/bootstrap/cache" "$RELEASE_DIR/bootstrap/cache"
 
 
+          #Clear and cache routes
+          php artisan route:clear
+
+          #Clear and cache views
+          php artisan view:clear
+          #php artisan view:cache
+
+          #Clear and cache config
+          php artisan config:clear
+          #php artisan config:cache
+
+          #Clear and cache events
+          php artisan event:clear
+          #php artisan event:cache
+
+          #php artisan view:cache
+          #php artisan storage:link
+
           # Optimiz & migrate
           php artisan key:generate --force || true
           php artisan migrate --force
