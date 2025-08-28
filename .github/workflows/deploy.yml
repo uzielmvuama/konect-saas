@@ -124,7 +124,7 @@ jobs:
           php artisan route:clear
 
           #Clear and cache views
-          php artisan view:clear
+          #php artisan view:clear
           #php artisan view:cache
 
           #Clear and cache config
