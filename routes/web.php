@@ -73,7 +73,7 @@ Route::middleware([
     Route::prefix("/team_user")->group(function (){
        Route::name('team_user.')->group(function (){
            Route::get('/create', [\App\Http\Controllers\TeamsController::class, 'create'])->name('create');
-           Route::post('/create', [\App\Http\Controllers\TeamsController::class, 'doCreate'])->name('create');
+           Route::post('/create', [\App\Http\Controllers\TeamsController::class, 'doCreate'])->name('store');
        });
     });
     require_once "includes/checkout.php";
