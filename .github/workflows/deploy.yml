@@ -65,6 +65,7 @@ jobs:
           rsync -az --mkpath --delete --exclude-from=.rsyncignore \
           -e "$RSYNC_RSH" ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:$DEST"
 
+
       - name: Run remote deploy script (composer, artisan, swap symlink)
         env:
           APP_DIR: ${{ secrets.APP_DIR }}
@@ -74,19 +75,38 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_PORT: ${{ secrets.SSH_PORT }}
         run: |
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "APP_DIR='$APP_DIR' RELEASE='$RELEASE' PHP_FPM='$PHP_FPM' bash -s" <<'EOSH'
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "APP_DIR='$APP_DIR' RELEASE='$RELEASE' PHP_FPM='$PHP_FPM' LARAVEL_ENV_ENCRYPTION_KEY='$ENV_DECRYPT_KEY' bash -s" <<'EOSH'
           set -euo pipefail
 
           RELEASE_DIR="$APP_DIR/releases/$RELEASE"
           SHARED_DIR="$APP_DIR/shared"
 
-          # Ensure shared links (.env & storage)
+          mkdir -p "$SHARED_DIR/storage" "$SHARED_DIR/bootstrap/cache"
+
+          # 1) Si shared/.env n'existe pas, essaie de le fabriquer à partir du .env chiffré dans la release
           if [ ! -f "$SHARED_DIR/.env" ]; then
-            echo "Missing $SHARED_DIR/.env (create it once on the server)"; exit 1
+            cd "$RELEASE_DIR"
+
+            if [ -f ".env.production.encrypted" ]; then
+              # Décrypte .env.production.encrypted -> .env.production (clé lue dans LARAVEL_ENV_ENCRYPTION_KEY)
+              php artisan env:decrypt --env=production --force
+              mv .env.production "$SHARED_DIR/.env"
+            elif [ -f ".env.encrypted" ]; then
+              # Variante: fichier .env.encrypted
+              php artisan env:decrypt --force
+              mv .env "$SHARED_DIR/.env"
+            else
+              echo "Aucun fichier .env(.production).encrypted trouvé dans la release"; exit 1
+            fi
+
+            chmod 640 "$SHARED_DIR/.env"
           fi
+
+          # 2) Lier les shared
           ln -sfn "$SHARED_DIR/.env" "$RELEASE_DIR/.env"
-          rm -rf "$RELEASE_DIR/storage"
-          ln -sfn "$SHARED_DIR/storage" "$RELEASE_DIR/storage"
+          rm -rf "$RELEASE_DIR/storage" "$RELEASE_DIR/bootstrap/cache"
+          ln -sfn "$SHARED_DIR/storage"         "$RELEASE_DIR/storage"
+          ln -sfn "$SHARED_DIR/bootstrap/cache" "$RELEASE_DIR/bootstrap/cache"
 
           cd "$RELEASE_DIR"
 
