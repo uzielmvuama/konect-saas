@@ -83,9 +83,18 @@ jobs:
 
           mkdir -p "$SHARED_DIR/storage" "$SHARED_DIR/bootstrap/cache"
 
+          cd "$RELEASE_DIR"
+
+          # 0) Installer vendor AVANT tout 'php artisan'
+          COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+
           # 1) Si shared/.env n'existe pas, essaie de le fabriquer à partir du .env chiffré dans la release
           if [ ! -f "$SHARED_DIR/.env" ]; then
-            cd "$RELEASE_DIR"
+
+            # Normaliser le nom du fichier chiffré si besoin
+            if [ -f "env.production.encrypted" ] && [ ! -f ".env.production.encrypted" ]; then
+              cp "env.production.encrypted" ".env.production.encrypted"
+            fi
 
             if [ -f ".env.production.encrypted" ]; then
               # Décrypte .env.production.encrypted -> .env.production (clé lue dans LARAVEL_ENV_ENCRYPTION_KEY)
@@ -108,10 +117,6 @@ jobs:
           ln -sfn "$SHARED_DIR/storage"         "$RELEASE_DIR/storage"
           ln -sfn "$SHARED_DIR/bootstrap/cache" "$RELEASE_DIR/bootstrap/cache"
 
-          cd "$RELEASE_DIR"
-
-          # Composer install sur le serveur (compatibilité PHP/extensions)
-          composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
 
           # Optimiz & migrate
           php artisan key:generate --force || true
