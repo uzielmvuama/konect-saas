@@ -60,9 +60,10 @@ jobs:
 
       - name: Rsync code to release dir on VPS
         run: |
-          RSYNC_RSH="ssh -p ${{ secrets.SSH_PORT }}"
+          RSYNC_RSH="ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no"
           DEST="${{ secrets.APP_DIR }}/releases/${{ steps.rel.outputs.name }}/"
-          rsync -az --delete --exclude-from=.rsyncignore -e "$RSYNC_RSH" ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:$DEST"
+          rsync -az --mkpath --delete --exclude-from=.rsyncignore \
+          -e "$RSYNC_RSH" ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:$DEST"
 
       - name: Run remote deploy script (composer, artisan, swap symlink)
         env:
