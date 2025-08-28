@@ -70,8 +70,8 @@ Route::middleware([
             ]);
     })->name('connections');
 
-    Route::prefix("/teams")->group(function (){
-       Route::name('teams.')->group(function (){
+    Route::prefix("/team")->group(function (){
+       Route::name('team.')->group(function (){
            Route::get('/create', [\App\Http\Controllers\TeamsController::class, 'create'])->name('create');
            Route::post('/create', [\App\Http\Controllers\TeamsController::class, 'doCreate'])->name('create');
        });
