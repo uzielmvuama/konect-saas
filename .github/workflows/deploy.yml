@@ -79,11 +79,18 @@ jobs:
         run: |
           ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "APP_DIR='$APP_DIR' RELEASE='$RELEASE' PHP_FPM='$PHP_FPM' LARAVEL_ENV_ENCRYPTION_KEY='$ENV_DECRYPT_KEY' bash -s" <<'EOSH'
           set -euo pipefail
+          umask 002   # pour que le groupe ait les droits d'écriture
 
           RELEASE_DIR="$APP_DIR/releases/$RELEASE"
           SHARED_DIR="$APP_DIR/shared"
 
-          mkdir -p "$SHARED_DIR/storage" "$SHARED_DIR/bootstrap/cache"
+          # CHANGEMENT 1: créer tous les sous-dossiers attendus par Laravel
+          mkdir -p \
+            "$SHARED_DIR/storage/app/public" \
+            "$SHARED_DIR/storage/framework/cache/data" \
+            "$SHARED_DIR/storage/framework/sessions" \
+            "$SHARED_DIR/storage/framework/views" \
+            "$SHARED_DIR/storage/logs"
 
           cd "$RELEASE_DIR"
 
@@ -150,9 +157,16 @@ jobs:
           ln -sfn "$RELEASE_DIR" "$APP_DIR/current"
 
           # Permissions
+          # chown -hR deploy:admin "$APP_DIR"
+          # find "$SHARED_DIR/storage" -type d -exec chmod 775 {} \;
+          # find "$SHARED_DIR/storage" -type f -exec chmod 664 {} \;
+
+          # CHANGEMENT 5: droits. Code possédé par deploy, mais donner l'écriture à www-data sur les caches
           chown -hR deploy:admin "$APP_DIR"
+          chown -R www-data:www-data "$SHARED_DIR/storage" "$SHARED_DIR/bootstrap/cache"
           find "$SHARED_DIR/storage" -type d -exec chmod 775 {} \;
           find "$SHARED_DIR/storage" -type f -exec chmod 664 {} \;
+          chmod -R 775 "$SHARED_DIR/bootstrap/cache"
 
           # Reload services
           sudo systemctl reload "$PHP_FPM" || true
