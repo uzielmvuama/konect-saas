@@ -84,13 +84,13 @@ jobs:
           RELEASE_DIR="$APP_DIR/releases/$RELEASE"
           SHARED_DIR="$APP_DIR/shared"
 
-          # CHANGEMENT 1: créer tous les sous-dossiers attendus par Laravel
-          mkdir -p \
+          # 1) Créer les dossiers partagés avec le bon owner/groupe/mode
+          sudo install -d -m 2775 -o www-data -g www-data \
             "$SHARED_DIR/storage/app/public" \
             "$SHARED_DIR/storage/framework/cache/data" \
             "$SHARED_DIR/storage/framework/sessions" \
             "$SHARED_DIR/storage/framework/views" \
-            "$SHARED_DIR/storage/logs"
+            "$SHARED_DIR/storage/logs" \
             "$SHARED_DIR/bootstrap/cache"
 
 
