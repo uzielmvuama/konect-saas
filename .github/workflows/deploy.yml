@@ -91,10 +91,24 @@ jobs:
             "$SHARED_DIR/storage/framework/sessions" \
             "$SHARED_DIR/storage/framework/views" \
             "$SHARED_DIR/storage/logs"
+            "$SHARED_DIR/bootstrap/cache"
+
+
+          # 2) Droits AVANT Artisan (pour éviter les erreurs de cache)
+          chown -R www-data:www-data "$SHARED_DIR/storage" "$SHARED_DIR/bootstrap"
+          find "$SHARED_DIR/storage" -type d -exec chmod 2775 {} \;
+          find "$SHARED_DIR/storage" -type f -exec chmod 664 {} \;
+          chmod 2775 "$SHARED_DIR/bootstrap" "$SHARED_DIR/bootstrap/cache"
+
+          # 3) Lier les shared dans la release
+          ln -sfn "$SHARED_DIR/.env" "$RELEASE_DIR/.env" || true
+          rm -rf "$RELEASE_DIR/storage" "$RELEASE_DIR/bootstrap/cache" || true
+          ln -sfn "$SHARED_DIR/storage"         "$RELEASE_DIR/storage"
+          ln -sfn "$SHARED_DIR/bootstrap/cache" "$RELEASE_DIR/bootstrap/cache"
 
           cd "$RELEASE_DIR"
 
-          # 0) Installer vendor AVANT tout 'php artisan'
+          # 4) Installer vendor AVANT tout 'php artisan'
           COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
 
           # 1) Si shared/.env n'existe pas, essaie de le fabriquer à partir du .env chiffré dans la release
@@ -120,59 +134,35 @@ jobs:
             chmod 640 "$SHARED_DIR/.env"
           fi
 
-          # 2) Lier les shared
-          ln -sfn "$SHARED_DIR/.env" "$RELEASE_DIR/.env"
-          rm -rf "$RELEASE_DIR/storage" "$RELEASE_DIR/bootstrap/cache"
-          ln -sfn "$SHARED_DIR/storage"         "$RELEASE_DIR/storage"
-          ln -sfn "$SHARED_DIR/bootstrap/cache" "$RELEASE_DIR/bootstrap/cache"
+          # 6) Caches Artisan (exécutés en tant que www-data)
+               sudo -u www-data php artisan route:clear
+               sudo -u www-data php artisan view:clear
+               sudo -u www-data php artisan config:clear
+               sudo -u www-data php artisan event:clear
 
+          # ⚠️ Ne PAS regénérer APP_KEY à chaque déploiement
+          # sudo -u www-data php artisan key:generate --force || true   # <-- SUPPRIMÉ
 
-          #Clear and cache routes
-          php artisan route:clear
+               sudo -u www-data php artisan migrate --force
 
-          #Clear and cache views
-          #php artisan view:clear
-          #php artisan view:cache
+          # Cache (attention aux closures de routes)
+          # Si tu as des closures dans routes/*.php, laisse route:cache commenté :
+          # sudo -u www-data php artisan route:cache
+               sudo -u www-data php artisan config:cache
+          # sudo -u www-data php artisan view:cache
+               sudo -u www-data php artisan event:cache
 
-          #Clear and cache config
-          php artisan config:clear
-          #php artisan config:cache
+          # 7) Basculer la release -> current (atomique)
+               ln -sfn "$RELEASE_DIR" "$APP_DIR/current"
 
-          #Clear and cache events
-          php artisan event:clear
-          #php artisan event:cache
+          # 8) Reload services
+               sudo systemctl reload "$PHP_FPM" 2>/dev/null || \
+               sudo systemctl reload php8.4-fpm 2>/dev/null || \
+               sudo systemctl reload php8.3-fpm 2>/dev/null || \
+               sudo systemctl reload php8.2-fpm 2>/dev/null || true
+               sudo systemctl reload nginx || true
 
-          #php artisan view:cache
-          #php artisan storage:link
-
-          # Optimiz & migrate
-          php artisan key:generate --force || true
-          php artisan migrate --force
-          php artisan config:cache
-          php artisan route:cache
-          #php artisan view:cache
-          php artisan event:cache
-
-          # Basculer la release -> current (atomique)
-          ln -sfn "$RELEASE_DIR" "$APP_DIR/current"
-
-          # Permissions
-          # chown -hR deploy:admin "$APP_DIR"
-          # find "$SHARED_DIR/storage" -type d -exec chmod 775 {} \;
-          # find "$SHARED_DIR/storage" -type f -exec chmod 664 {} \;
-
-          # CHANGEMENT 5: droits. Code possédé par deploy, mais donner l'écriture à www-data sur les caches
-          chown -hR deploy:admin "$APP_DIR"
-          chown -R www-data:www-data "$SHARED_DIR/storage" "$SHARED_DIR/bootstrap/cache"
-          find "$SHARED_DIR/storage" -type d -exec chmod 775 {} \;
-          find "$SHARED_DIR/storage" -type f -exec chmod 664 {} \;
-          chmod -R 775 "$SHARED_DIR/bootstrap/cache"
-
-          # Reload services
-          sudo systemctl reload "$PHP_FPM" || true
-          sudo systemctl reload nginx || true
-
-          # (Optionnel) redémarrer worker/horizon s’ils existent
+          # 9) (Optionnel) Workers
           # sudo systemctl restart laravel-worker.service 2>/dev/null || true
           # sudo systemctl restart horizon.service 2>/dev/null || true
           EOSH
