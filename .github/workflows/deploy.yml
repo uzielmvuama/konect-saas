@@ -70,6 +70,7 @@ jobs:
               export LARAVEL_ENV_ENCRYPTION_KEY="${{ secrets.ENV_DECRYPT_KEY }}"
 
               if [ -f ".env.production.encrypted" ]; then
+                echo "→ Decrypting production ..."
                 php artisan env:decrypt --env=production --force
                 mv .env.production "$SHARED_DIR/.env"
               elif [ -f ".env.encrypted" ]; then
