@@ -33,7 +33,7 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-dev --optimize-autoloader
 
-      # (Optionnel mais utile) Vérifier que le .env chiffré est bien suivi par git
+      # (Optionnel) Vérifier que le .env chiffré est bien suivi par git
       - name: Check encrypted env in repo (CI-side)
         run: |
           echo "[CI] Listing encrypted env files tracked by git:"
@@ -55,15 +55,13 @@ jobs:
             SHARED_DIR="$APP_DIR/shared"
 
             echo "→ Ensure base folders (releases/shared/storage/.env)"
-            # tente avec sudo sans mot de passe, sinon sans sudo
             if sudo -n true 2>/dev/null; then
-              sudo mkdir -p "$APP_DIR/releases" "$APP_DIR/shared/storage" "$APP_DIR/shared/bootstrap/cache"
-              sudo touch "$APP_DIR/shared/.env" || true
+              sudo mkdir -p "$APP_DIR/releases" "$SHARED_DIR/storage" "$SHARED_DIR/bootstrap/cache"
+              # on ne force pas la création du .env contenu (on le créera via decrypt)
               sudo chown -R $USER:www-data "$APP_DIR" || true
               sudo chmod -R 775 "$APP_DIR" || true
             else
-              mkdir -p "$APP_DIR/releases" "$APP_DIR/shared/storage" "$APP_DIR/shared/bootstrap/cache"
-              touch "$APP_DIR/shared/.env" || true
+              mkdir -p "$APP_DIR/releases" "$SHARED_DIR/storage" "$SHARED_DIR/bootstrap/cache"
               chown -R "$USER":www-data "$APP_DIR" || true
               chmod -R 775 "$APP_DIR" || true
             fi
@@ -90,11 +88,10 @@ jobs:
             ln -sfn "$SHARED_DIR/bootstrap/cache" "$RELEASE_DIR/bootstrap/cache"
 
             echo "→ Handle .env (decrypt if needed)"
-            # si le .env persistant est vide (touch), on essaie de le remplir via decrypt
-            if [ ! -s "$SHARED_DIR/.env" ]; then
+            if [ ! -f "$SHARED_DIR/.env" ] || [ ! -s "$SHARED_DIR/.env" ]; then
               export LARAVEL_ENV_ENCRYPTION_KEY="${{ secrets.ENV_DECRYPT_KEY }}"
 
-              # Cherche plusieurs variantes et sous-dossiers (monorepo friendly)
+              # Cherche plusieurs variantes et sous-dossiers
               mapfile -t CANDIDATES < <( \
                 find . -maxdepth 4 -type f \
                   \( -name ".env.production.encrypted" -o -name ".env.production.encrypt" -o -name ".env.encrypted" \) \
@@ -106,8 +103,8 @@ jobs:
 
               if [ "${#CANDIDATES[@]}" -eq 0 ]; then
                 echo "❌ Aucun fichier .env chiffré trouvé dans la release."
-                echo "   - Vérifie le nom: .env.production.encrypted (recommandé)"
-                echo "   - Vérifie .gitignore: autorise-le (ex: '!.env.production.encrypted')"
+                echo "   - Nom attendu: .env.production.encrypted (recommandé)"
+                echo "   - Dans .gitignore: ajouter '!.env.production.encrypted'"
                 exit 1
               fi
 
@@ -126,7 +123,7 @@ jobs:
               elif php artisan env:decrypt --force 2>/dev/null; then
                 :
               else
-                echo "❌ Échec du déchiffrement. Vérifie ENV_DECRYPT_KEY = LARAVEL_ENV_ENCRYPTION_KEY (format base64:...)."
+                echo "❌ Échec du déchiffrement. Vérifie ENV_DECRYPT_KEY = LARAVEL_ENV_ENCRYPTION_KEY (format base64:...)"
                 popd >/dev/null
                 exit 1
               fi
@@ -150,6 +147,31 @@ jobs:
             echo "→ Link .env into release"
             ln -sfn "$SHARED_DIR/.env" "$RELEASE_DIR/.env"
 
+            echo "→ Ensure DB driver before migrate (sqlite/mysql)"
+            if grep -q '^DB_CONNECTION=sqlite' "$SHARED_DIR/.env"; then
+              echo "→ Detected sqlite"
+              if sudo -n true 2>/dev/null; then
+                sudo apt-get update -y
+                (sudo apt-get install -y php8.4-sqlite3 || sudo apt-get install -y php-sqlite3) || true
+              else
+                echo "(pas de sudo) impossible d'installer php-sqlite3 automatiquement"
+              fi
+              # Assure le chemin et le fichier sqlite
+              if ! grep -q '^DB_DATABASE=' "$SHARED_DIR/.env"; then
+                echo "DB_DATABASE=$SHARED_DIR/database/database.sqlite" >> "$SHARED_DIR/.env"
+              fi
+              mkdir -p "$SHARED_DIR/database"
+              [ -f "$SHARED_DIR/database/database.sqlite" ] || install -m 664 -o "$USER" -g www-data /dev/null "$SHARED_DIR/database/database.sqlite"
+            elif grep -q '^DB_CONNECTION=mysql' "$SHARED_DIR/.env"; then
+              echo "→ Detected mysql"
+              if sudo -n true 2>/dev/null; then
+                sudo apt-get update -y
+                (sudo apt-get install -y php8.4-mysql || sudo apt-get install -y php-mysql) || true
+              else
+                echo "(pas de sudo) impossible d'installer php-mysql automatiquement"
+              fi
+            fi
+
             echo "→ Permissions"
             if sudo -n true 2>/dev/null; then
               sudo chown -R www-data:www-data "$RELEASE_DIR"
@@ -163,11 +185,19 @@ jobs:
             php artisan config:clear || true
             php artisan view:clear || true
             php artisan route:clear || true
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan event:cache || true
 
-            # (Facultatif) Installer le driver DB si nécessaire (sqlite ou mysql)
-            # if grep -q '^DB_CONNECTION=sqlite' "$SHARED_DIR/.env"; then
-              # (sudo apt-get update -y && (sudo apt-get install -y php8.4-sqlite3 || sudo apt-get install -y php-sqlite3)) || true
-              # if ! grep -q '^DB_DATABASE=' "$SHARED_DIR/.env"; then
-                # echo "DB_DATABASE=$SHARED_DIR/database/database.sqlite" >> "$SHARED_DIR/.env"
-              # fi
-              # mkdir
+            echo "→ Switch current symlink"
+            ln -sfn "$RELEASE_DIR" "$APP_DIR/current"
+
+            echo "→ Reload services"
+            if sudo -n true 2>/dev/null; then
+              sudo systemctl reload ${{ secrets.PHP_FPM_SERVICE }} || true
+              sudo systemctl reload nginx || true
+            else
+              echo "(pas de sudo) skip reload services"
+            fi
+
+            echo "✅ Deployment complete!"
