@@ -87,8 +87,8 @@ jobs:
             ln -sfn "$SHARED_DIR/.env" "$RELEASE_DIR/.env"
 
             echo "→ Fixing permissions..."
-            chown -R www-data:www-data "$RELEASE_DIR"
-            chmod -R 775 "$RELEASE_DIR"
+            sudo chown -R www-data:www-data "$RELEASE_DIR"
+            sudo chmod -R 775 "$RELEASE_DIR"
 
             echo "→ Running Laravel commands..."
             php artisan config:clear || true
@@ -99,6 +99,6 @@ jobs:
             ln -sfn "$RELEASE_DIR" "$APP_DIR/current"
 
             echo "→ Reloading PHP-FPM"
-            systemctl reload ${{ secrets.PHP_FPM_SERVICE }} || true
+            sudo systemctl reload ${{ secrets.PHP_FPM_SERVICE }} || true
 
             echo "✅ Deployment complete!"
