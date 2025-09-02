@@ -2,8 +2,8 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: [ "main" ] # Déclenchement sur push vers main
-  workflow_dispatch:      # Permet un déclenchement manuel via l'interface GitHub
+    branches: [ "main" ] # Déploiement automatique sur push vers main
+  workflow_dispatch:      # Permet le déclenchement manuel
 
 jobs:
   deploy:
@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js (pour React/Vite)
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # ou ton Node LTS
+          node-version: '20'
 
       - name: Install JS dependencies & build assets
         run: |
@@ -26,14 +26,14 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4' # ou la version que tu utilises
+          php-version: '8.4'
           extensions: mbstring, xml, bcmath, zip, curl, exif
           tools: composer
 
       - name: Install PHP dependencies
         run: composer install --no-dev --optimize-autoloader
 
-      - name: Deploy via SSH
+      - name: Deploy via SSH (with decryption)
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -41,190 +41,64 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            set -e
+            set -euo pipefail
 
-            cd ${{ secrets.APP_DIR }}/releases
-            NEW_RELEASE=$(date +%Y%m%d%H%M%S)
-            mkdir -p $NEW_RELEASE
+            APP_DIR="${{ secrets.APP_DIR }}"
+            RELEASE=$(date +%Y%m%d%H%M%S)
+            RELEASE_DIR="$APP_DIR/releases/$RELEASE"
+            SHARED_DIR="$APP_DIR/shared"
 
-            cd $NEW_RELEASE
-            git clone https://github.com/${{ github.repository }} .
+            echo "→ Creating release folder..."
+            mkdir -p "$RELEASE_DIR"
+            cd "$RELEASE_DIR"
+
+            echo "→ Cloning repository..."
+            git clone https://github.com/${{ github.repository }} . --depth=1
+
+            echo "→ Installing backend dependencies..."
             composer install --no-dev --optimize-autoloader
+
+            echo "→ Installing frontend assets..."
             npm install && npm run build
 
-            ln -sfn ${{ secrets.APP_DIR }}/shared/.env .env
+            echo "→ Linking shared resources..."
+            ln -sfn "$SHARED_DIR/storage" "$RELEASE_DIR/storage"
+            ln -sfn "$SHARED_DIR/bootstrap/cache" "$RELEASE_DIR/bootstrap/cache"
+
+            echo "→ Handling environment file..."
+            if [ ! -f "$SHARED_DIR/.env" ]; then
+              export LARAVEL_ENV_ENCRYPTION_KEY="${{ secrets.ENV_DECRYPT_KEY }}"
+
+              if [ -f ".env.production.encrypted" ]; then
+                php artisan env:decrypt --env=production --force
+                mv .env.production "$SHARED_DIR/.env"
+              elif [ -f ".env.encrypted" ]; then
+                php artisan env:decrypt --force
+                mv .env "$SHARED_DIR/.env"
+              else
+                echo "❌ Aucun fichier .env chiffré trouvé !"
+                exit 1
+              fi
+
+              chmod 640 "$SHARED_DIR/.env"
+            fi
+
+            echo "→ Linking .env"
+            ln -sfn "$SHARED_DIR/.env" "$RELEASE_DIR/.env"
+
+            echo "→ Fixing permissions..."
+            sudo chown -R www-data:www-data "$RELEASE_DIR"
+            sudo chmod -R 775 "$RELEASE_DIR"
+
+            echo "→ Running Laravel commands..."
+            php artisan config:clear || true
             php artisan config:cache
             php artisan migrate --force
 
-            ln -sfn ${{ secrets.APP_DIR }}/releases/$NEW_RELEASE ${{ secrets.APP_DIR }}/current
+            echo "→ Updating current release..."
+            ln -sfn "$RELEASE_DIR" "$APP_DIR/current"
 
-            sudo systemctl reload ${{ secrets.PHP_FPM_SERVICE }}
+            echo "→ Reloading PHP-FPM"
+            sudo systemctl reload ${{ secrets.PHP_FPM_SERVICE }} || true
 
-#name: Deploy to VPS (NGINX)
-#
-#on:
-#  push:
-#    branches: [ "main" ]
-#  workflow_dispatch:
-#
-#env:
-#  # Node LTS pour Vite/React (22.x)
-#  NODE_VERSION: "22"
-#
-#jobs:
-#  deploy:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v5
-#        # v5 utilise runtime node24 côté runner (ok pour hosted runners récents). :contentReference[oaicite:0]{index=0}
-#
-#      - name: Setup Node
-#        uses: actions/setup-node@v4
-#        with:
-#          node-version: ${{ env.NODE_VERSION }}
-#          cache: 'npm'
-#        # Node 22 est LTS (Jod) depuis oct. 2024. :contentReference[oaicite:1]{index=1}
-#
-#      - name: Install JS deps & build (Vite)
-#        run: |
-#          npm ci
-#          npm run build
-#
-#      - name: List rsync excludes
-#        run: |
-#          cat > .rsyncignore <<'EOF'
-#          .git
-#          .github
-#          node_modules
-#          tests
-#          storage
-#          vendor
-#          .env
-#          *.md
-#          EOF
-#
-#      - name: Start SSH agent with deploy key
-#        uses: webfactory/ssh-agent@v0.9.0
-#        with:
-#          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-#        # Action maintenue, compatible Node 20+. :contentReference[oaicite:2]{index=2}
-#
-#      - name: Add VPS host key to known_hosts
-#        run: |
-#          mkdir -p ~/.ssh
-#          ssh-keyscan -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
-#
-#      - name: Compute release name (timestamp)
-#        id: rel
-#        run: echo "name=$(date -u +%Y%m%d%H%M%S)" >> "$GITHUB_OUTPUT"
-#
-#      - name: Rsync code to release dir on VPS
-#        run: |
-#          RSYNC_RSH="ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no"
-#          DEST="${{ secrets.APP_DIR }}/releases/${{ steps.rel.outputs.name }}/"
-#          rsync -az --mkpath --delete --exclude-from=.rsyncignore \
-#          -e "$RSYNC_RSH" ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:$DEST"
-#
-#
-#      - name: Run remote deploy script (composer, artisan, swap symlink)
-#        env:
-#          APP_DIR: ${{ secrets.APP_DIR }}
-#          RELEASE: ${{ steps.rel.outputs.name }}
-#          PHP_FPM: ${{ secrets.PHP_FPM_SERVICE }}
-#          SSH_USER: ${{ secrets.SSH_USER }}
-#          SSH_HOST: ${{ secrets.SSH_HOST }}
-#          SSH_PORT: ${{ secrets.SSH_PORT }}
-#          ENV_DECRYPT_KEY: ${{ secrets.ENV_DECRYPT_KEY }}   # <-- ajoute ce secret dans ton repo
-#          DEPLOY_GROUP: www-data                               # adapte si besoin
-#        run: |
-#          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "APP_DIR='$APP_DIR' RELEASE='$RELEASE' PHP_FPM='$PHP_FPM' LARAVEL_ENV_ENCRYPTION_KEY='$ENV_DECRYPT_KEY' bash -s" <<'EOSH'
-#          set -euo pipefail
-#          umask 002   # pour que le groupe ait les droits d'écriture
-#
-#          RELEASE_DIR="$APP_DIR/releases/$RELEASE"
-#          SHARED_DIR="$APP_DIR/shared"
-#
-#          # 1) Créer les dossiers partagés avec le bon owner/groupe/mode
-#          sudo install -d -m 2775 -o www-data -g www-data \
-#            "$SHARED_DIR/storage/app/public" \
-#            "$SHARED_DIR/storage/framework/cache/data" \
-#            "$SHARED_DIR/storage/framework/sessions" \
-#            "$SHARED_DIR/storage/framework/views" \
-#            "$SHARED_DIR/storage/logs" \
-#            "$SHARED_DIR/bootstrap/cache"
-#
-#
-#          # 2) Droits AVANT Artisan (pour éviter les erreurs de cache)
-#          chown -R www-data:www-data "$SHARED_DIR/storage" "$SHARED_DIR/bootstrap"
-#          find "$SHARED_DIR/storage" -type d -exec chmod 2775 {} \;
-#          find "$SHARED_DIR/storage" -type f -exec chmod 664 {} \;
-#          chmod 2775 "$SHARED_DIR/bootstrap" "$SHARED_DIR/bootstrap/cache"
-#
-#          # 3) Lier les shared dans la release
-#          ln -sfn "$SHARED_DIR/.env" "$RELEASE_DIR/.env" || true
-#          rm -rf "$RELEASE_DIR/storage" "$RELEASE_DIR/bootstrap/cache" || true
-#          ln -sfn "$SHARED_DIR/storage"         "$RELEASE_DIR/storage"
-#          ln -sfn "$SHARED_DIR/bootstrap/cache" "$RELEASE_DIR/bootstrap/cache"
-#
-#          cd "$RELEASE_DIR"
-#
-#          # 4) Installer vendor AVANT tout 'php artisan'
-#          COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
-#
-#          # 1) Si shared/.env n'existe pas, essaie de le fabriquer à partir du .env chiffré dans la release
-#          if [ ! -f "$SHARED_DIR/.env" ]; then
-#
-#            # Normaliser le nom du fichier chiffré si besoin
-#            if [ -f "env.production.encrypted" ] && [ ! -f ".env.production.encrypted" ]; then
-#              cp "env.production.encrypted" ".env.production.encrypted"
-#            fi
-#
-#            if [ -f ".env.production.encrypted" ]; then
-#              # Décrypte .env.production.encrypted -> .env.production (clé lue dans LARAVEL_ENV_ENCRYPTION_KEY)
-#              php artisan env:decrypt --env=production --force
-#              mv .env.production "$SHARED_DIR/.env"
-#            elif [ -f ".env.encrypted" ]; then
-#              # Variante: fichier .env.encrypted
-#              php artisan env:decrypt --force
-#              mv .env "$SHARED_DIR/.env"
-#            else
-#              echo "Aucun fichier .env(.production).encrypted trouvé dans la release"; exit 1
-#            fi
-#
-#            chmod 640 "$SHARED_DIR/.env"
-#          fi
-#
-#          # 6) Caches Artisan (exécutés en tant que www-data)
-#               sudo -u www-data php artisan route:clear
-#               sudo -u www-data php artisan view:clear
-#               sudo -u www-data php artisan config:clear
-#               sudo -u www-data php artisan event:clear
-#
-#          # ⚠️ Ne PAS regénérer APP_KEY à chaque déploiement
-#          # sudo -u www-data php artisan key:generate --force || true   # <-- SUPPRIMÉ
-#
-#               sudo -u www-data php artisan migrate --force
-#
-#          # Cache (attention aux closures de routes)
-#          # Si tu as des closures dans routes/*.php, laisse route:cache commenté :
-#          # sudo -u www-data php artisan route:cache
-#               sudo -u www-data php artisan config:cache
-#          # sudo -u www-data php artisan view:cache
-#               sudo -u www-data php artisan event:cache
-#
-#          # 7) Basculer la release -> current (atomique)
-#               ln -sfn "$RELEASE_DIR" "$APP_DIR/current"
-#
-#          # 8) Reload services
-#               sudo systemctl reload "$PHP_FPM" 2>/dev/null || \
-#               sudo systemctl reload php8.4-fpm 2>/dev/null || \
-#               sudo systemctl reload php8.3-fpm 2>/dev/null || \
-#               sudo systemctl reload php8.2-fpm 2>/dev/null || true
-#               sudo systemctl reload nginx || true
-#
-#          # 9) (Optionnel) Workers
-#          # sudo systemctl restart laravel-worker.service 2>/dev/null || true
-#          # sudo systemctl restart horizon.service 2>/dev/null || true
-#          EOSH
+            echo "✅ Deployment complete!"
