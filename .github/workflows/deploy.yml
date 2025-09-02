@@ -33,8 +33,7 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-dev --optimize-autoloader
 
-      # (Optionnel) Vérifier que le .env chiffré est bien suivi par git
-      - name: Check encrypted env in repo (CI-side)
+      - name: Check encrypted env in repo (CI-side)  # (optionnel)
         run: |
           echo "[CI] Listing encrypted env files tracked by git:"
           git ls-files | grep -E '(^|/)\.env(\.production)?\.encrypt(ed)?$' || (echo "❌ Aucun .env chiffré n'est suivi par git"; exit 1)
@@ -54,7 +53,7 @@ jobs:
             RELEASE_DIR="$APP_DIR/releases/$RELEASE"
             SHARED_DIR="$APP_DIR/shared"
 
-            echo "→ Ensure base folders (releases/shared/storage/.env)"
+            echo "→ Ensure base folders"
             if sudo -n true 2>/dev/null; then
               sudo mkdir -p "$APP_DIR/releases" "$SHARED_DIR/storage" "$SHARED_DIR/bootstrap/cache"
               sudo chown -R $USER:www-data "$APP_DIR" || true
@@ -70,6 +69,18 @@ jobs:
             cd "$RELEASE_DIR"
             git clone https://github.com/${{ github.repository }} . --depth=1
 
+            # --- FIX VITE (1/3): Blade ne référence QUE le JS app.tsx ---
+            # remplace @vite(['resources/css/app.css','resources/js/app.tsx']) par @vite(['resources/js/app.tsx'])
+            if grep -q "@vite(['resources/css/app.css'" resources/views/app.blade.php 2>/dev/null; then
+              sed -i "s#@vite(\['resources/css/app.css',\s*'resources/js/app.tsx'\])#@vite(['resources/js/app.tsx'])#g" resources/views/app.blade.php || true
+              sed -i 's#@vite(\x27resources/css/app.css\x27,\s*\x27resources/js/app.tsx\x27)#@vite([\x27resources/js/app.tsx\x27])#g' resources/views/app.blade.php || true
+            fi
+
+            # --- FIX VITE (2/3): CSS importé depuis le JS ---
+            if [ -f resources/js/app.tsx ] && ! grep -q "import '../css/app.css'" resources/js/app.tsx; then
+              sed -i "1s#^#import '../css/app.css';\n#" resources/js/app.tsx
+            fi
+
             echo "→ Composer install (server)"
             composer install --no-dev --optimize-autoloader
 
@@ -82,6 +93,13 @@ jobs:
             npm install
             npm run build
 
+            # --- FIX VITE (3/3): sanity check manifest ---
+            if [ -f public/build/manifest.json ]; then
+              (grep -q '"resources/js/app.tsx"' public/build/manifest.json) || { echo "❌ Vite manifest ne contient pas resources/js/app.tsx"; exit 1; }
+            else
+              echo "❌ Vite manifest manquant (public/build/manifest.json)"; exit 1
+            fi
+
             echo "→ Link shared storage & cache"
             ln -sfn "$SHARED_DIR/storage" "$RELEASE_DIR/storage"
             ln -sfn "$SHARED_DIR/bootstrap/cache" "$RELEASE_DIR/bootstrap/cache"
@@ -89,55 +107,40 @@ jobs:
             echo "→ Handle .env (decrypt if needed)"
             if [ ! -f "$SHARED_DIR/.env" ] || [ ! -s "$SHARED_DIR/.env" ]; then
               export LARAVEL_ENV_ENCRYPTION_KEY="${{ secrets.ENV_DECRYPT_KEY }}"
+              mapfile -t CANDIDATES < <(find . -maxdepth 4 -type f \( -name ".env.production.encrypted" -o -name ".env.production.encrypt" -o -name ".env.encrypted" \) -print 2>/dev/null)
+              echo "→ Encrypted env candidates: ${#CANDIDATES[@]}"; printf '%s\n' "${CANDIDATES[@]:-}"
+              [ "${#CANDIDATES[@]}" -gt 0 ] || { echo "❌ Aucun .env chiffré"; exit 1; }
 
-              mapfile -t CANDIDATES < <( \
-                find . -maxdepth 4 -type f \
-                  \( -name ".env.production.encrypted" -o -name ".env.production.encrypt" -o -name ".env.encrypted" \) \
-                  -print 2>/dev/null \
-              )
-
-              echo "→ Encrypted env candidates found: ${#CANDIDATES[@]}"
-              printf '%s\n' "${CANDIDATES[@]:-}"
-
-              if [ "${#CANDIDATES[@]}" -eq 0 ]; then
-                echo "❌ Aucun fichier .env chiffré trouvé dans la release."
-                echo "   - Nom attendu: .env.production.encrypted (recommandé)"
-                echo "   - Dans .gitignore: ajouter '!.env.production.encrypted'"
-                exit 1
-              fi
-
-              ENC_FILE="${CANDIDATES[0]}"
-              ENC_DIR="$(dirname "$ENC_FILE")"
-              echo "→ Using encrypted env: $ENC_FILE"
+              ENC_FILE="${CANDIDATES[0]}"; ENC_DIR="$(dirname "$ENC_FILE")"
               pushd "$ENC_DIR" >/dev/null
-
-              if php artisan env:decrypt --env=production --key="${{ secrets.ENV_DECRYPT_KEY }}" --force 2>/dev/null; then
-                :
-              elif php artisan env:decrypt --env=production --force 2>/dev/null; then
-                :
-              elif php artisan env:decrypt --key="${{ secrets.ENV_DECRYPT_KEY }}" --force 2>/dev/null; then
-                :
-              elif php artisan env:decrypt --force 2>/dev/null; then
-                :
+              if php artisan env:decrypt --env=production --key="${{ secrets.ENV_DECRYPT_KEY }}" --force 2>/dev/null; then :;
+              elif php artisan env:decrypt --env=production --force 2>/dev/null; then :;
+              elif php artisan env:decrypt --key="${{ secrets.ENV_DECRYPT_KEY }}" --force 2>/dev/null; then :;
+              elif php artisan env:decrypt --force 2>/dev/null; then :;
               else
-                echo "❌ Échec du déchiffrement. Vérifie ENV_DECRYPT_KEY = LARAVEL_ENV_ENCRYPTION_KEY (format base64:...)"
-                popd >/dev/null
-                exit 1
+                echo "❌ Échec du déchiffrement (.env)"; popd >/dev/null; exit 1;
               fi
-
-              if [ -f ".env.production" ]; then
-                mv .env.production "$SHARED_DIR/.env"
-              elif [ -f ".env" ]; then
-                mv .env "$SHARED_DIR/.env"
-              else
-                echo "❌ Déchiffrement effectué mais .env introuvable."
-                popd >/dev/null
-                exit 1
+              if   [ -f ".env.production" ]; then mv .env.production "$SHARED_DIR/.env";
+              elif [ -f ".env"           ]; then mv .env            "$SHARED_DIR/.env";
+              else echo "❌ Déchiffrement ok mais .env absent"; popd >/dev/null; exit 1;
               fi
-
               popd >/dev/null
               chmod 640 "$SHARED_DIR/.env"
-              echo "→ .env installed at $SHARED_DIR/.env"
+            fi
+
+            # --- FIX APP_KEY: on garantit une clé valide (base64:...) ---
+            if ! grep -q '^APP_KEY=base64:' "$SHARED_DIR/.env"; then
+              if [ -n "${{ secrets.APP_KEY }}" ]; then
+                echo "→ Inject APP_KEY depuis secrets"
+                sed -i '/^APP_KEY=/d' "$SHARED_DIR/.env"
+                printf 'APP_KEY=%s\n' "${{ secrets.APP_KEY }}" >> "$SHARED_DIR/.env"
+              else
+                echo "❌ APP_KEY manquant. Ajoute secrets.APP_KEY (base64:...) ou inclus-le dans ton .env chiffré."
+                exit 1
+              fi
+              # Optionnel: forcer le cipher cohérent
+              sed -i '/^APP_CIPHER=/d' "$SHARED_DIR/.env"
+              echo 'APP_CIPHER=aes-256-cbc' >> "$SHARED_DIR/.env"
             fi
 
             echo "→ Link .env into release"
@@ -145,12 +148,10 @@ jobs:
 
             echo "→ Ensure DB driver before migrate (sqlite/mysql)"
             if grep -q '^DB_CONNECTION=sqlite' "$SHARED_DIR/.env"; then
-              echo "→ Detected sqlite"
+              echo "→ sqlite"
               if sudo -n true 2>/dev/null; then
                 sudo apt-get update -y
                 (sudo apt-get install -y php8.4-sqlite3 || sudo apt-get install -y php-sqlite3) || true
-              else
-                echo "(pas de sudo) impossible d'installer php-sqlite3 automatiquement"
               fi
               if ! grep -q '^DB_DATABASE=' "$SHARED_DIR/.env"; then
                 echo "DB_DATABASE=$SHARED_DIR/database/database.sqlite" >> "$SHARED_DIR/.env"
@@ -158,12 +159,10 @@ jobs:
               mkdir -p "$SHARED_DIR/database"
               [ -f "$SHARED_DIR/database/database.sqlite" ] || install -m 664 -o "$USER" -g www-data /dev/null "$SHARED_DIR/database/database.sqlite"
             elif grep -q '^DB_CONNECTION=mysql' "$SHARED_DIR/.env"; then
-              echo "→ Detected mysql"
+              echo "→ mysql"
               if sudo -n true 2>/dev/null; then
                 sudo apt-get update -y
                 (sudo apt-get install -y php8.4-mysql || sudo apt-get install -y php-mysql) || true
-              else
-                echo "(pas de sudo) impossible d'installer php-mysql automatiquement"
               fi
             fi
 
@@ -180,22 +179,14 @@ jobs:
             php artisan config:clear || true
             php artisan view:clear || true
             php artisan route:clear || true
-
-            # NEW: sanity check — s'assurer que public/index.php existe AVANT de migrer/basculer
-            if [ ! -f "public/index.php" ]; then
-              echo "❌ public/index.php manquant dans la release. Abort pour éviter un 'File not found'."
-              exit 1
-            fi
-
+            [ -f public/index.php ] || { echo "❌ public/index.php manquant"; exit 1; }
             php artisan migrate --force
             php artisan config:cache
             php artisan event:cache || true
-            php artisan storage:link || true   # NEW: utile pour assets/upload
+            php artisan storage:link || true
 
             echo "→ Switch current symlink"
             ln -sfn "$RELEASE_DIR" "$APP_DIR/current"
-
-            # NEW: vérif du symlink après bascule (log)
             echo "→ current -> $(readlink -f "$APP_DIR/current")"
             ls -la "$APP_DIR/current/public/index.php" >/dev/null || { echo "❌ current/public/index.php introuvable"; exit 1; }
 
@@ -203,8 +194,6 @@ jobs:
             if sudo -n true 2>/dev/null; then
               sudo systemctl reload ${{ secrets.PHP_FPM_SERVICE }} || true
               sudo systemctl reload nginx || true
-            else
-              echo "(pas de sudo) skip reload services"
             fi
 
             echo "✅ Deployment complete!"
