@@ -57,7 +57,6 @@ jobs:
             echo "→ Ensure base folders (releases/shared/storage/.env)"
             if sudo -n true 2>/dev/null; then
               sudo mkdir -p "$APP_DIR/releases" "$SHARED_DIR/storage" "$SHARED_DIR/bootstrap/cache"
-              # on ne force pas la création du .env contenu (on le créera via decrypt)
               sudo chown -R $USER:www-data "$APP_DIR" || true
               sudo chmod -R 775 "$APP_DIR" || true
             else
@@ -91,7 +90,6 @@ jobs:
             if [ ! -f "$SHARED_DIR/.env" ] || [ ! -s "$SHARED_DIR/.env" ]; then
               export LARAVEL_ENV_ENCRYPTION_KEY="${{ secrets.ENV_DECRYPT_KEY }}"
 
-              # Cherche plusieurs variantes et sous-dossiers
               mapfile -t CANDIDATES < <( \
                 find . -maxdepth 4 -type f \
                   \( -name ".env.production.encrypted" -o -name ".env.production.encrypt" -o -name ".env.encrypted" \) \
@@ -113,7 +111,6 @@ jobs:
               echo "→ Using encrypted env: $ENC_FILE"
               pushd "$ENC_DIR" >/dev/null
 
-              # Plusieurs tentatives selon la version Laravel
               if php artisan env:decrypt --env=production --key="${{ secrets.ENV_DECRYPT_KEY }}" --force 2>/dev/null; then
                 :
               elif php artisan env:decrypt --env=production --force 2>/dev/null; then
@@ -128,7 +125,6 @@ jobs:
                 exit 1
               fi
 
-              # Sortie possible: .env.production ou .env
               if [ -f ".env.production" ]; then
                 mv .env.production "$SHARED_DIR/.env"
               elif [ -f ".env" ]; then
@@ -156,7 +152,6 @@ jobs:
               else
                 echo "(pas de sudo) impossible d'installer php-sqlite3 automatiquement"
               fi
-              # Assure le chemin et le fichier sqlite
               if ! grep -q '^DB_DATABASE=' "$SHARED_DIR/.env"; then
                 echo "DB_DATABASE=$SHARED_DIR/database/database.sqlite" >> "$SHARED_DIR/.env"
               fi
@@ -185,12 +180,24 @@ jobs:
             php artisan config:clear || true
             php artisan view:clear || true
             php artisan route:clear || true
+
+            # NEW: sanity check — s'assurer que public/index.php existe AVANT de migrer/basculer
+            if [ ! -f "public/index.php" ]; then
+              echo "❌ public/index.php manquant dans la release. Abort pour éviter un 'File not found'."
+              exit 1
+            fi
+
             php artisan migrate --force
             php artisan config:cache
             php artisan event:cache || true
+            php artisan storage:link || true   # NEW: utile pour assets/upload
 
             echo "→ Switch current symlink"
             ln -sfn "$RELEASE_DIR" "$APP_DIR/current"
+
+            # NEW: vérif du symlink après bascule (log)
+            echo "→ current -> $(readlink -f "$APP_DIR/current")"
+            ls -la "$APP_DIR/current/public/index.php" >/dev/null || { echo "❌ current/public/index.php introuvable"; exit 1; }
 
             echo "→ Reload services"
             if sudo -n true 2>/dev/null; then
