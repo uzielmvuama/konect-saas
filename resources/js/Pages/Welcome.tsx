@@ -3,6 +3,7 @@ import { usePage } from "@inertiajs/react";
 import GuestLayout from "@/Layouts/GuestLayout";
 import CookieConsentModal from "@/Components/Modals/CookieConsentModal";
 import MainButton from "@/Components/Buttons/MainButton";
+import {ArrowRightLeft, FileUser, NotebookText, Palette, RectangleCircle, SmartphoneNfc} from "lucide-react";
 
 interface PageProps {
   auth: {
@@ -34,14 +35,13 @@ export default function Welcome() {
                 <div className="mb-4 md:mb-8 grid md:grid-cols-12 items-center gap-y-12 gap-x-5 lg:gap-x-8">
                   <div className="md:col-span-7">
                     <p className="mb-3 md:mb-4 font-mono text-sm text-gray-500 dark:text-neutral-400">
-                      Web App
+                      Konect Web
                     </p>
                     <h1 className="font-bold text-gray-800 text-4xl md:text-5xl lg:text-6xl dark:text-white">
-                      L'Expression de votre valeur
+                        Partagez instantanément, connectez efficacement.
                     </h1>
                     <p className="mt-5 text-sm md:text-lg text-gray-800 dark:text-gray-200">
-                      Boostez et developez efficacement votre réseau, au travers d'outils, et
-                      ressources mises à votre disposition par Konect.
+                        Boostez vos connexions et développez votre réseau grâce aux outils pratiques et ressources exclusives de Konect.
                     </p>
                     <div className="mt-5 flex flex-wrap items-center gap-2">
                       <MainButton title={"Commencer L'essai Gratuit"} />
@@ -1391,10 +1391,10 @@ export default function Welcome() {
               {/* Heading */}
               <div className="mb-8 md:mb-16 max-w-xl mx-auto text-center">
                 <p className="mb-2 font-mono text-sm text-gray-500 dark:text-neutral-400">
-                  What we do
+                    Ce que vous pouvez faire avec Konect
                 </p>
                 <h2 className="font-semibold text-2xl md:text-3xl text-gray-800 dark:text-neutral-200">
-                  Since 2007, we have helped 2.5k+ companies launch over 100k incredible products
+                    Des outils simples et puissants pour partager, connecter et développer votre réseau.”
                 </h2>
               </div>
               {/* End Heading */}
@@ -1402,186 +1402,74 @@ export default function Welcome() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 sm:gap-x-10 lg:gap-y-12 lg:gap-x-16">
                 {/* Icon Block */}
                 <div className="flex gap-5">
-                  <svg
-                    className="shrink-0 size-6 md:size-8 mt-1 text-blue-600 dark:text-blue-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={24}
-                    height={24}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" />
-                    <path d="M9 13a4.5 4.5 0 0 0 3-4" />
-                    <path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" />
-                    <path d="M3.477 10.896a4 4 0 0 1 .585-.396" />
-                    <path d="M6 18a4 4 0 0 1-1.967-.516" />
-                    <path d="M12 13h4" />
-                    <path d="M12 18h6a2 2 0 0 1 2 2v1" />
-                    <path d="M12 8h8" />
-                    <path d="M16 8V5a2 2 0 0 1 2-2" />
-                    <circle cx={16} cy={13} r=".5" />
-                    <circle cx={18} cy={3} r=".5" />
-                    <circle cx={20} cy={21} r=".5" />
-                    <circle cx={20} cy={8} r=".5" />
-                  </svg>
+                    <SmartphoneNfc className="shrink-0 size-6 md:size-7 mt-1 text-yellow-600 dark:text-yellow-500"/>
+
                   <div className="grow">
                     <h4 className="font-medium text-gray-800 dark:text-neutral-200">
-                      Creative minds
+                        Partage instantané
                     </h4>
                     <p className="mt-1 text-gray-500 dark:text-neutral-500">
-                      We choose our teams carefully. Our people are the secret to great work.
+                        Transmettez vos coordonnées, réseaux et offres en un instant. Plus simple qu’un QR code, plus pratique qu’une carte papier.                    </p>
+                  </div>
+                </div>
+                {/* End Icon Block */}
+                {/* Icon Block */}
+                <div className="flex gap-5">
+                    <FileUser className="shrink-0 size-6 md:size-7 mt-1 text-yellow-600 dark:text-yellow-500"/>
+                  <div className="grow">
+                    <h4 className="font-medium text-gray-800 dark:text-neutral-200">
+                        Toutes vos infos au même endroit                    </h4>
+                    <p className="mt-1 text-gray-500 dark:text-neutral-500">
+                        Centralisez vos coordonnées, réseaux sociaux, portfolio et services sur une seule page, toujours à jour.
                     </p>
                   </div>
                 </div>
                 {/* End Icon Block */}
                 {/* Icon Block */}
                 <div className="flex gap-5">
-                  <svg
-                    className="shrink-0 size-6 md:size-8 mt-1 text-blue-600 dark:text-blue-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={24}
-                    height={24}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
-                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
-                    <path d="M4 22h16" />
-                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
-                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
-                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
-                  </svg>
+                    <ArrowRightLeft className="shrink-0 size-6 md:size-7 mt-1 text-yellow-600 dark:text-yellow-500"/>
                   <div className="grow">
                     <h4 className="font-medium text-gray-800 dark:text-neutral-200">
-                      Conquer the best
+                        Connexions efficaces
                     </h4>
                     <p className="mt-1 text-gray-500 dark:text-neutral-500">
-                      We stay lean and help your product do one thing well.
+                        Vos contacts enregistrent vos infos directement et peuvent revenir vers vous sans détour.
                     </p>
                   </div>
                 </div>
                 {/* End Icon Block */}
                 {/* Icon Block */}
                 <div className="flex gap-5">
-                  <svg
-                    className="shrink-0 size-6 md:size-8 mt-1 text-blue-600 dark:text-blue-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={24}
-                    height={24}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5" />
-                    <path d="M16 2v4" />
-                    <path d="M8 2v4" />
-                    <path d="M3 10h5" />
-                    <path d="M17.5 17.5 16 16.3V14" />
-                    <circle cx={16} cy={16} r={6} />
-                  </svg>
+                    <Palette className="shrink-0 size-6 md:size-7 mt-1 text-yellow-600 dark:text-yellow-500" />
                   <div className="grow">
                     <h4 className="font-medium text-gray-800 dark:text-neutral-200">
-                      Effortless updates
-                    </h4>
+                        Adaptez à votre style                    </h4>
                     <p className="mt-1 text-gray-500 dark:text-neutral-500">
-                      Benefit from automatic updates to all boards any time you need to make a
-                      change to your website.
+                        Personnalisez votre profil et vos cartes pour refléter votre identité professionnelle et marquer les esprits.
                     </p>
                   </div>
                 </div>
                 {/* End Icon Block */}
                 {/* Icon Block */}
                 <div className="flex gap-5">
-                  <svg
-                    className="shrink-0 size-6 md:size-8 mt-1 text-blue-600 dark:text-blue-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={24}
-                    height={24}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M15.536 11.293a1 1 0 0 0 0 1.414l2.376 2.377a1 1 0 0 0 1.414 0l2.377-2.377a1 1 0 0 0 0-1.414l-2.377-2.377a1 1 0 0 0-1.414 0z" />
-                    <path d="M2.297 11.293a1 1 0 0 0 0 1.414l2.377 2.377a1 1 0 0 0 1.414 0l2.377-2.377a1 1 0 0 0 0-1.414L6.088 8.916a1 1 0 0 0-1.414 0z" />
-                    <path d="M8.916 17.912a1 1 0 0 0 0 1.415l2.377 2.376a1 1 0 0 0 1.414 0l2.377-2.376a1 1 0 0 0 0-1.415l-2.377-2.376a1 1 0 0 0-1.414 0z" />
-                    <path d="M8.916 4.674a1 1 0 0 0 0 1.414l2.377 2.376a1 1 0 0 0 1.414 0l2.377-2.376a1 1 0 0 0 0-1.414l-2.377-2.377a1 1 0 0 0-1.414 0z" />
-                  </svg>
+                    <NotebookText className="shrink-0 size-6 md:size-7 mt-1 text-yellow-600 dark:text-yellow-500" />
                   <div className="grow">
                     <h4 className="font-medium text-gray-800 dark:text-neutral-200">
-                      Designing for people
+                        Suivi de vos connexions
                     </h4>
                     <p className="mt-1 text-gray-500 dark:text-neutral-500">
-                      We actively pursue the right balance between functionality and aesthetics,
-                      creating delightful experiences.
-                    </p>
+                        Suivez l’impact de vos partages, assurez-vous que vos infos sont bien reçues et transformez chaque contact en opportunité réelle.                    </p>
                   </div>
                 </div>
                 {/* End Icon Block */}
                 {/* Icon Block */}
                 <div className="flex gap-5">
-                  <svg
-                    className="shrink-0 size-6 md:size-8 mt-1 text-blue-600 dark:text-blue-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={24}
-                    height={24}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" />
-                  </svg>
+                    <RectangleCircle className="shrink-0 size-6 md:size-7 mt-1 text-yellow-600 dark:text-yellow-500" />
                   <div className="grow">
                     <h4 className="font-medium text-gray-800 dark:text-neutral-200">
-                      Strong empathy
-                    </h4>
+                        Accessoire à votre image                    </h4>
                     <p className="mt-1 text-gray-500 dark:text-neutral-500">
-                      We've user tested our own process by shipping over 1k products for clients.
-                    </p>
-                  </div>
-                </div>
-                {/* End Icon Block */}
-                {/* Icon Block */}
-                <div className="flex gap-5">
-                  <svg
-                    className="shrink-0 size-6 md:size-8 mt-1 text-blue-600 dark:text-blue-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={24}
-                    height={24}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx={12} cy={12} r={10} />
-                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                    <path d="M12 17h.01" />
-                  </svg>
-                  <div className="grow">
-                    <h4 className="font-medium text-gray-800 dark:text-neutral-200">
-                      Stay curious
-                    </h4>
-                    <p className="mt-1 text-gray-500 dark:text-neutral-500">
-                      We dedicate time for researching and experimentation to increase creativity
-                      and imagine new challenges.
+                        Carte élégante, badge pratique ou porte-clés discret : Konect s’adapte à votre style et à vos besoins.
                     </p>
                   </div>
                 </div>
