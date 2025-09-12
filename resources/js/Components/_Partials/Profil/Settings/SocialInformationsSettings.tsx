@@ -1,4 +1,4 @@
-import React, {FormEvent, useEffect} from "react";
+import React, { FormEvent, useEffect } from "react";
 import SettingsLayout from "@/Layouts/SettingsLayout";
 import EmailsLinksManager from "@/Components/_Partials/Profil/Settings/_Partials/EmailsLinksManager";
 import ExternalsLinksManager from "@/Components/_Partials/Profil/Settings/_Partials/ExternalsLinksManager";
@@ -21,7 +21,7 @@ const SocialInformationsSettings: React.FC<SocialInformationsProps> = ({ user })
   });
 
   const update = (e: FormEvent) => {
-      e.preventDefault();
+    e.preventDefault();
     patch("/settings/vcard/urls-info");
   };
 
@@ -30,7 +30,10 @@ const SocialInformationsSettings: React.FC<SocialInformationsProps> = ({ user })
   }, []);
 
   return (
-    <SettingsLayout title={"Email et Réseaux Sociaux"} description={"Manage your name, password and account settings."}>
+    <SettingsLayout
+      title={"Email et Réseaux Sociaux"}
+      description={"Manage your name, password and account settings."}
+    >
       {/* Form */}
       <form>
         <EmailsLinksManager

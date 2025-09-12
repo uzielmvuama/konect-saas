@@ -38,20 +38,20 @@ const InputWithIconImage: React.FC<InputWithIconImageProps> = ({
           <img src={iconSrc} alt={name} className={`${iconClassName} w-4 h-4 rounded`} />
         </div>
 
-          <div className="relative w-[inherit]">
-              <input
-                  type="text"
-                  id="hs-inline-add-on"
-                  name="hs-inline-add-on"
-                  className="py-1.5 sm:py-2 px-4 ps-16 block w-full border-gray-200 rounded-e-lg sm:text-sm focus:z-10 focus:border-yellow-500 focus:ring-yellow-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                  placeholder="www.example.com"
-                  onChange={handleChange}
-                  value={value.replace("https://", "")}
-              />
-              <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-4">
-                  <span className="text-sm text-gray-500 dark:text-neutral-500">https://</span>
-              </div>
+        <div className="relative w-[inherit]">
+          <input
+            type="text"
+            id="hs-inline-add-on"
+            name="hs-inline-add-on"
+            className="py-1.5 sm:py-2 px-4 ps-16 block w-full border-gray-200 rounded-e-lg sm:text-sm focus:z-10 focus:border-yellow-500 focus:ring-yellow-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+            placeholder="www.example.com"
+            onChange={handleChange}
+            value={value.replace("https://", "")}
+          />
+          <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-4">
+            <span className="text-sm text-gray-500 dark:text-neutral-500">https://</span>
           </div>
+        </div>
         {/*<input*/}
         {/*  type="text"*/}
         {/*  id={name}*/}

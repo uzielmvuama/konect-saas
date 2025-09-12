@@ -68,7 +68,8 @@ const EmailsLinksManager: React.FC<EmailsLinksManagerProps> = ({
                     id="hs-inline-leading-select-country"
                     name="hs-inline-leading-select-country"
                     className="py-1 sm:py-1 block w-full border-transparent rounded-lg focus:ring-yellow-600 focus:border-yellow-600 dark:text-neutral-500 dark:bg-neutral-900 sm:text-sm cursor-pointer"
-                    onChange={(e) => handleChange(index, "type", e.target.value)} value={email.type}
+                    onChange={(e) => handleChange(index, "type", e.target.value)}
+                    value={email.type}
                   >
                     <option value={"personal"}>Personal</option>
                     <option value={"work"}>Work</option>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {ucfirst} from "@/Utils/Functions/globals";
+import { ucfirst } from "@/Utils/Functions/globals";
 
 export interface ExternalLink {
   type: string; // ex: "personal", "professional"

@@ -36,7 +36,10 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = (props) => {
     initializePreline();
   }, []);
   return (
-    <SettingsLayout title={"Profile"} description={"Manage your name, password and account settings."}>
+    <SettingsLayout
+      title={"Profile"}
+      description={"Manage your name, password and account settings."}
+    >
       {/* Form */}
       <form>
         {/* Personal Info */}

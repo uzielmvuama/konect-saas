@@ -44,7 +44,10 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = (props) => {
   };
 
   return (
-    <SettingsLayout title={"Security & password"} description={"Manage your name, password and account settings."}>
+    <SettingsLayout
+      title={"Security & password"}
+      description={"Manage your name, password and account settings."}
+    >
       {/* Form */}
       <form>
         {/* Password */}

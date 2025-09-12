@@ -305,7 +305,7 @@ function ContactChat() {
         <button
           id="hs-pro-chwcnd"
           type="button"
-          className="hs-dropdown-toggle flex justify-center items-center size-12 text-sm font-medium rounded-full border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+          className="hs-dropdown-toggle flex justify-center items-center size-12 text-sm font-medium rounded-full border border-transparent bg-yellow-800 text-neutral-800 hover:bg-yellow-900 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none z-[100]"
           aria-haspopup="menu"
           aria-expanded="false"
           aria-label="Dropdown"

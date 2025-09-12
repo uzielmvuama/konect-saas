@@ -20,7 +20,7 @@ const SocialsLinkManager: React.FC<SocialsLinkManagerProps> = ({ value, onChange
   const handleSocialChange = (name: string, val: string) => {
     setSocialLinks((prev) => ({
       ...prev,
-      [name.split("-")[1]]: { uri:"https://" + val, type: name.split("-")[1] },
+      [name.split("-")[1]]: { uri: "https://" + val, type: name.split("-")[1] },
     }));
   };
 
