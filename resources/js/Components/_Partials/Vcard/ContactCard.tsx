@@ -20,6 +20,7 @@ import ImageGalleryCarousel from "@/Components/_Partials/Vcard/ImageGalleryCarou
 import {UserProfile} from "@/Types/types";
 import {usePage} from "@inertiajs/react";
 import {FaWhatsapp} from "react-icons/fa6";
+import {ucfirst} from "@/Utils/Functions/globals";
 
 type ContactCardProps = {
     user: UserProfile;
@@ -98,7 +99,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
           {/* Name + subtitle */}
           <div className="absolute bottom-5 left-5 right-5">
             <h1 className="text-white text-[28px] leading-7 font-extrabold drop-shadow">
-              {firstname + " " + name}
+              {ucfirst(firstname) + " " + ucfirst(name)}
             </h1>
             <p className="mt-1 text-neutral-200 text-sm">{subtitle}</p>
           </div>
