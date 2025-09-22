@@ -43,7 +43,7 @@ type Props = {
     /** Tu peux passer user OU items, ou les deux (fusion + dédoublonnage) */
     user?: UserProfile;
     items?: SocialItem[];         // ordre d’affichage prioritaire si fourni
-    extraItems?: SocialItem[];    // ajout/override d’items (avec icon custom possible)
+    extraItems?: SocialItem[];    // ajout/override d’items (avec icons custom possible)
     className?: string;
 };
 

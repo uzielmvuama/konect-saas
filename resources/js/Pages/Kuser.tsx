@@ -20,7 +20,6 @@ export default function Kuser() {
         <div className="h-screen w-full">
           <ContactCard
               user={user}
-            portraitUrl={"https://images.pexels.com/photos/3031397/pexels-photo-3031397.jpeg"}
             subtitle={"Graphisme et Design"}
             about="American actor, comedian, musician and writer..."
           />

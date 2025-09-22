@@ -67,7 +67,7 @@ const SelectCountryField: React.FC<SelectCountryFieldProps> = ({
           {/*<option*/}
           {/*    value="AF"*/}
           {/*    data-hs-select-option='{*/}
-          {/*"icon": "<img class=\"inline-block size-4 rounded-full\" src=\"../assets/vendor/svg-country-flags/png100px/af.png\" alt=\"Afghanistan\" />"}'*/}
+          {/*"icons": "<img class=\"inline-block size-4 rounded-full\" src=\"../assets/vendor/svg-country-flags/png100px/af.png\" alt=\"Afghanistan\" />"}'*/}
           {/*>*/}
           {/*    Afghanistan*/}
           {/*</option>*/}

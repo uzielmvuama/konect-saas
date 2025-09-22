@@ -1,5 +1,5 @@
 // src/components/MobileContactCard.tsx
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
   Download,
   Share2,
@@ -27,7 +27,6 @@ type ContactCardProps = {
   domain?: string;
   logoText?: string;
   ctaText?: string;
-  portraitUrl: string;
   subtitle: string;
   about: string;
   pagesCount?: number;
@@ -41,7 +40,6 @@ const ContactCard: React.FC<ContactCardProps> = ({
   domain = "tapr.ca",
   logoText = "tapr",
   ctaText = "Get your card",
-  portraitUrl,
   subtitle,
   about,
   pagesCount = 4,
@@ -50,14 +48,21 @@ const ContactCard: React.FC<ContactCardProps> = ({
   onShare,
 }) => {
 
-    const { vinfo, firstname , name} = user;
+    const { vinfo, firstname , name, profile_photo_path} = user;
+    const [profilImg, setProfilImg] = useState<string>("/assets/images/icons/user.jpg");
+
+    useEffect(() => {
+        if (profile_photo_path){
+            setProfilImg(profile_photo_path);
+        }
+    }, []);
     const extras: ContactItem[] = [
         // Groupe custom "WhatsApp" avec son icône, deux lignes
         // {
         //     type: "custom",
         //     group: "whatsapp",
         //     groupLabel: "WhatsApp",
-        //     icon: <FaWhatsapp className="h-5 w-5 text-neutral-700" />,
+        //     icons: <FaWhatsapp className="h-5 w-5 text-neutral-700" />,
         //     label: "Main",
         //     value: "+1 613 555 1111",
         //     href: "https://wa.me/16135551111",
@@ -73,7 +78,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
         // {
         //     type: "email",
         //     groupLabel: "Emails",
-        //     icon: <Mail className="h-5 w-5 text-neutral-700" />,
+        //     icons: <Mail className="h-5 w-5 text-neutral-700" />,
         //     value: "contact@veraup.com",
         //     // href sera auto "mailto:"
         // },
@@ -85,13 +90,15 @@ const ContactCard: React.FC<ContactCardProps> = ({
       <div className="min-h-screen w-[360px] max-w-[92vw] rounded-[38px] bg-neutral-50 shadow-[0_40px_120px_rgba(0,0,0,.55)] ring-1 ring-black/10 overflow-hidden">
         {/* Hero */}
         <div className="relative rounded-br-4xl overflow-hidden">
-          <img src={portraitUrl} alt={"Profil Image"} className="h-[400px] w-full object-cover" />
+          <img src={profilImg} alt={"Profil Image"} className="h-[400px] w-full object-cover" />
           {/* Gradient bottom overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
           {/* Logo + CTA */}
           <div className="absolute top-8 left-5 right-5 flex items-center justify-between">
-            <AppLogo width={7} />
+            <span className="bg-neutral-900 w-14 h-14 rounded-full flex justify-center items-center">
+                <AppLogo width={5} />
+            </span>
 
             {/*<MainButton title={ctaText} asType={"link"} href={'/products'} paddindClassYX={" py-2 px-1.5"}  />*/}
           </div>

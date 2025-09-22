@@ -21,7 +21,7 @@ export type UserProfile = {
 type BuiltInType = "phone" | "email" | "website" | "address";
 type ContactItemType = BuiltInType | "custom";
 
-/** Un item = une ligne dans un groupe. `icon` et `group` servent à créer/overrider un groupe (section). */
+/** Un item = une ligne dans un groupe. `icons` et `group` servent à créer/overrider un groupe (section). */
 export type ContactItem = {
     /** Pour les types built-in, group = type. Pour "custom", précise group pour regrouper plusieurs lignes sous une même icône/titre. */
     type: ContactItemType;
@@ -190,7 +190,7 @@ function buildGroups(items: ContactItem[]): Group[] {
             isExternal,
         };
 
-        // si un extraItem veut override l’icon/titre du groupe, on respecte le dernier défini
+        // si un extraItem veut override l’icons/titre du groupe, on respecte le dernier défini
         if (it.icon) g.icon = it.icon;
         if (it.groupLabel) g.title = it.groupLabel.toUpperCase();
 
