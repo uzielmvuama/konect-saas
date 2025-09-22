@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\Classes\Media\MediaPresenter;
 use App\Models\Plan;
 use App\Models\Team;
 use Illuminate\Http\Request;
@@ -35,13 +36,26 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $user = $request->user();
+        $user = $request->user()->load('media'); // évite un 2nd hit DB
+
+        $avatarMedia  = $user->getFirstMedia(PROFILE_IMG_ROOT_PATH);
+        $coverMedia   = $user->getFirstMedia(COVER_IMG_ROOT_PATH);
+        $imagesMedia  = $user->getMedia(ACTIVITY_IMG_ROOT_PATH);
+        $videosMedia  = $user->getMedia(ACTIVITY_VIDEO_ROOT_PATH);
+
         $allowedPlans = Plan::whereIn('name', ['entreprise'])
             ->pluck('stripe_product_id')
             ->toArray();
 
         return [
             'locale' => App::getLocale(),
+            'medias' => [
+                'avatar'  => $avatarMedia ? MediaPresenter::item($avatarMedia, ['thumb','large']) : null,
+                'cover'   => $coverMedia  ? MediaPresenter::item($coverMedia,  ['large'])        : null,
+                'images'  => MediaPresenter::collection($imagesMedia, ['thumb','large']),
+                'videos'  => MediaPresenter::collection($videosMedia, []), // pas de conv nécessaires
+            ],
+            'sftp_root_path' => config('app.env') === 'local' ? FILES_APP_URL_TEST: FILES_APP_URL,
             'translations' => $this->loadAllTranslations(App::getLocale()),
             'app_email' => config('mail.from.address'),
             'flash' => [

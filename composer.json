@@ -20,6 +20,7 @@
         "laravel/socialite": "^5.19",
         "laravel/tinker": "^2.10.1",
         "league/flysystem-ftp": "3.0",
+        "league/flysystem-sftp-v3": "3.0",
         "spatie/laravel-medialibrary": "^11.13",
         "srmklive/paypal": "~3.0",
         "stevebauman/location": "^7.5",

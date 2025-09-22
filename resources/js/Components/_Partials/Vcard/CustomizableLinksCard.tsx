@@ -1,7 +1,7 @@
 // src/components/CustomizableLinksCard.tsx
 import React, { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import {UserProfile} from "@/Types/types";
+import { UserProfile } from "@/Types/types";
 
 type LinkItem = {
   title: string;
@@ -62,9 +62,7 @@ export default function CustomizableLinksCard({
                   <div className="text-[15px] leading-6 text-neutral-900 line-clamp-2 font-bold">
                     {it.type}
                   </div>
-                    <div className="text-sm leading-6 text-neutral-900 line-clamp-2">
-                        {it.uri}
-                    </div>
+                  <div className="text-sm leading-6 text-neutral-900 line-clamp-2">{it.uri}</div>
                 </div>
                 <ChevronRight className="h-5 w-5 text-neutral-400 group-hover:text-neutral-500" />
               </a>

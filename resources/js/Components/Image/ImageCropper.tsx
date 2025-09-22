@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { base64ToBlob, getCroppedImg, ucfirst } from "@/Utils/Functions/globals";
+import React, { useCallback, useState } from "react";
 import Cropper from "react-easy-crop";
 import { TbX } from "react-icons/tb";
-import { ROOT_FILES_URL } from "@/Utils/Constants/constants";
-import { useForm, usePage } from "@inertiajs/react";
-import MainButtonModal from "@/Components/ButtonModals/MainButtonModal";
 import { ImageUp, PenLine } from "lucide-react";
+import { useForm, usePage } from "@inertiajs/react";
+
+import MainButtonModal from "@/Components/ButtonModals/MainButtonModal";
+import { ROOT_FILES_URL } from "@/Utils/Constants/constants";
+import { base64ToBlob, getCroppedImg, ucfirst } from "@/Utils/Functions/globals";
 
 type ImageType = "profile" | "background";
 
@@ -26,56 +27,123 @@ const ImageCropper = ({
   onImageCropped,
   translations,
 }: ImageCropperProps) => {
+  const { user, medias, sftp_root_path } = usePage().props as any;
+    console.log(medias, sftp_root_path)
+
+
+    // --- UI state
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
   const [isVisible, setIsVisible] = useState(false);
 
+  // On mémorise nom/type de l'image source pour recréer un File cohérent
+  const [sourceName, setSourceName] = useState<string>("image.jpg");
+  const [sourceType, setSourceType] = useState<string>("image/jpeg");
+
   const aspectRatio = type === "profile" ? 1 : 16 / 9;
 
-  const { user } = usePage().props as any;
-
-  const { data, setData, post, progress } = useForm({
-    cover: new Blob(),
-    profile: new Blob(),
+  // --- Inertia form
+  const { data, setData, post, progress, errors, reset, processing, transform } = useForm<{
+    cover: File | null;
+    profile: File | null;
+  }>({
+    cover: null,
+    profile: null,
   });
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, modalIdKey: string) => {
-    closeModal(modalIdKey);
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageDataUrl = await readFile(file);
-      setImageSrc(imageDataUrl as string);
-      setIsVisible(true);
-    }
+  // --- helpers
+  const readFile = (file: File): Promise<string | ArrayBuffer | null> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.readAsDataURL(file);
+    });
   };
 
   const closeModal = (modalIdKey: string) => {
-    const modal = document.querySelector(`#hs-${modalIdKey}`);
-
+    const modal = document.querySelector<HTMLElement>(`#hs-${modalIdKey}`);
     // @ts-ignore
-    window.HSOverlay?.close(modal);
+    window.HSOverlay?.close?.(modal);
+  };
+
+  // --- events
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, modalIdKey: string) => {
+    closeModal(modalIdKey);
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // mémoriser nom & type
+    setSourceName(file.name || "image.jpg");
+    setSourceType(file.type || "image/jpeg");
+
+    const imageDataUrl = await readFile(file);
+    setImageSrc(imageDataUrl as string);
+    setIsVisible(true);
+    // reset l’input file (optionnel) pour pouvoir re-sélectionner le même fichier
+    e.target.value = "";
   };
 
   const onCropComplete = useCallback((_: any, croppedPixels: any) => {
     setCroppedAreaPixels(croppedPixels);
   }, []);
 
-  const handleSave = async () => {
-    if (imageSrc && croppedAreaPixels) {
-      const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
-      const blob: Blob = base64ToBlob(croppedImage);
-      onImageCropped!(blob, croppedImage);
-      saveAvatarImage(blob);
-      setImageSrc(null);
-      setIsVisible(false);
-    }
+  // Convertit le base64 du crop en File correct
+  const blobToFile = (blob: Blob, filename: string, type?: string) => {
+    const fileType = type || blob.type || "image/jpeg";
+    return new File([blob], filename, { type: fileType });
   };
 
-  const saveAvatarImage = async (blob: Blob) => {
-    setData("profile", blob);
-    post("/media/profile");
+  const handleSave = async () => {
+    if (!imageSrc || !croppedAreaPixels) return;
+
+    // getCroppedImg doit renvoyer un base64 dataURL
+    const croppedBase64 = await getCroppedImg(imageSrc, croppedAreaPixels);
+    const blob: Blob = base64ToBlob(croppedBase64);
+
+    // petite vérif locale : éviter d’envoyer un blob vide
+    if (!blob || blob.size < 10 * 1024) {
+      alert("L'image recadrée semble trop petite. Réessaie avec une résolution plus grande.");
+      return;
+    }
+
+    // créer un File avec nom + type
+    const safeName =
+      sourceName && /\.[a-z]{2,4}$/i.test(sourceName)
+        ? sourceName
+        : type === "profile"
+          ? "avatar.jpg"
+          : "cover.jpg";
+
+    const mime = sourceType && sourceType.startsWith("image/") ? sourceType : "image/jpeg";
+
+    const file = blobToFile(blob, safeName, mime);
+
+    if (file) {
+      const url = type === "profile" ? "/media/profile" : "/media/cover";
+
+      transform((data) => {
+        // data est une copie sérialisable de ton form
+        // On injecte le File directement ici
+        return {
+          ...data,
+          [type]: file, // <- on force le fichier dans la payload
+        };
+      });
+      post(url, {
+        forceFormData: true,
+        preserveScroll: true,
+        onSuccess: () => {
+          setIsVisible(false);
+          reset("cover");
+          reset("profile");
+          if (onImageCropped) {
+            onImageCropped(blob, croppedBase64);
+          }
+        },
+      });
+    }
   };
 
   return (
@@ -84,8 +152,8 @@ const ImageCropper = ({
         {/* Cover */}
         <div className="">
           <div className="relative flex w-full">
-            {/* SVG Background Element */}
             <figure className="w-full">
+              {/* ton SVG */}
               <svg
                 className="w-full"
                 preserveAspectRatio="none"
@@ -114,7 +182,6 @@ const ImageCropper = ({
                 </g>
               </svg>
             </figure>
-            {/* End SVG Background Element */}
 
             <div className="absolute top-4 end-4">
               <MainButtonModal
@@ -125,7 +192,22 @@ const ImageCropper = ({
                   " gap-x-1.5 text-start bg-white border border-gray-200 text-gray-800 text-xs font-medium rounded-full whitespace-nowrap shadow-2xs align-middle hover:bg-gray-50 focus:outline-hidden focus:bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
                 }
               >
-                lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus quis orci quis diam
+                {/* Choisir une image de couverture */}
+                <div className="flex items-center">
+                  <label
+                    htmlFor="file-upload-cover"
+                    className="cursor-pointer font-normal flex gap-x-2 items-center"
+                  >
+                    <ImageUp width={15} height={15} /> {translations.Text.choose_image}
+                  </label>
+                  <input
+                    type="file"
+                    id="file-upload-cover"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e, "cover")}
+                  />
+                </div>
               </MainButtonModal>
             </div>
           </div>
@@ -138,13 +220,15 @@ const ImageCropper = ({
             {initialImage || imageSrc ? (
               <img
                 className="object-cover size-full rounded-full"
-                src={imageSrc ? imageSrc : `${ROOT_FILES_URL}/${initialImage}`}
+                src={imageSrc ? imageSrc : `${sftp_root_path}/${initialImage}`}
                 alt="Avatar"
               />
             ) : (
-              <span className="inline-flex items-center justify-center size-full rounded-full bg-gray-500 text-lg font-semibold text-white">
-                AC
-              </span>
+                <img
+                    className="object-cover size-full rounded-full"
+                    src="/assets/images/icons/user.jpg"
+                    alt="Avatar"
+                />
             )}
 
             <div className="absolute bottom-0 -end-2">
@@ -163,13 +247,15 @@ const ImageCropper = ({
                     {initialImage || imageSrc ? (
                       <img
                         className="object-cover size-full rounded-full"
-                        src={imageSrc ? imageSrc : `${ROOT_FILES_URL}/${initialImage}`}
+                        src={imageSrc ? imageSrc : `${sftp_root_path}/${initialImage}`}
                         alt="Avatar"
                       />
                     ) : (
-                      <span className="inline-flex items-center justify-center size-full rounded-full bg-gray-500 text-lg font-semibold text-white">
-                        AC
-                      </span>
+                        <img
+                            className="object-cover size-full rounded-full"
+                            src="/assets/images/icons/user.jpg"
+                            alt="Avatar"
+                        />
                     )}
                   </div>
 
@@ -177,7 +263,7 @@ const ImageCropper = ({
                     <div className="flex flex-col items-center md:items-start">
                       <div className="flex text-sm w-max cursor-pointer items-center space-x-1 rounded-md border border-neutral-300/30 bg-gray-50 dark:bg-neutral-900 px-4 py-1 transition-colors hover:text-gray-300 text-gray-400">
                         <label
-                          htmlFor="file-upload"
+                          htmlFor="file-upload-avatar"
                           className="cursor-pointer font-normal flex gap-x-2 items-center "
                         >
                           <ImageUp width={15} height={15} /> {translations.Text.choose_image}
@@ -185,12 +271,10 @@ const ImageCropper = ({
                       </div>
                       <input
                         type="file"
-                        id="file-upload"
-                        accept="image/jpeg,image/png"
+                        id="file-upload-avatar"
+                        accept="image/jpeg,image/png,image/webp"
                         className="hidden"
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          handleFileChange(e, "avatar")
-                        }
+                        onChange={(e) => handleFileChange(e, "avatar")}
                       />
                     </div>
                   </div>
@@ -203,20 +287,24 @@ const ImageCropper = ({
             <h1 className="text-xl font-semibold text-gray-800 dark:text-neutral-200">
               {ucfirst(user.firstname) + " " + ucfirst(user.name)}
             </h1>
-            <p className="text-gray-500 dark:text-neutral-500">{user.email} </p>
+            <p className="text-gray-500 dark:text-neutral-500">{user.email}</p>
           </div>
         </div>
         {/* End Avatar */}
       </>
 
-      {/* Cropper */}
+      {/* Cropper overlay */}
       {isVisible && imageSrc && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-black bg-opacity-90">
+        <div className="fixed inset-0 z-50 flex flex-col bg-black/90">
           <div className="mb-4 flex items-center justify-between px-6 py-4 text-white border-b border-neutral-700">
             <TbX className="cursor-pointer text-xl" onClick={() => setIsVisible(false)} />
             <h2 className="font-semibold">Resize image</h2>
-            <button className="text-sm underline" onClick={handleSave}>
-              Save
+            <button
+              className="text-sm underline disabled:opacity-50"
+              onClick={handleSave}
+              disabled={processing}
+            >
+              {processing ? "Saving..." : "Save"}
             </button>
           </div>
           <div className="flex-grow flex justify-center items-center">
@@ -234,16 +322,16 @@ const ImageCropper = ({
           </div>
         </div>
       )}
+
+      {/* Affichage d’erreurs backend (optionnel) */}
+      {(errors.profile || errors.cover) && (
+        <p className="mt-2 text-sm text-red-600">{errors.profile || errors.cover}</p>
+      )}
+
+      {/* Progress upload (optionnel) */}
+      {progress && <div className="mt-2 text-xs text-gray-500">{progress.percentage}%</div>}
     </div>
   );
-};
-
-const readFile = (file: File): Promise<string | ArrayBuffer | null> => {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.readAsDataURL(file);
-  });
 };
 
 export default ImageCropper;

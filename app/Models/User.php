@@ -170,19 +170,19 @@ class User extends Authenticatable implements HasMedia
 
     final public function registerMediaCollections(): void
     {
-        $this->addMediaCollection(PROFILE_IMG_ROOT_PATH)->singleFile();
-        $this->addMediaCollection(COVER_IMG_ROOT_PATH)->singleFile();
+        $this->addMediaCollection(PROFILE_IMG_ROOT_PATH)->useDisk('sftp')->singleFile();
+        $this->addMediaCollection(COVER_IMG_ROOT_PATH)->useDisk('sftp')->singleFile();
         $this->addMediaCollection(ACTIVITY_IMG_ROOT_PATH)
-            ->useDisk('public')
+            ->useDisk('sftp')
             ->onlyKeepLatest(10);
 
       $this->addMediaCollection(ACTIVITY_VIDEO_ROOT_PATH)
-          ->useDisk('public') // changer par 's3' plus tard si nécessaire
+          ->useDisk('sftp') // changer par 's3' plus tard si nécessaire
           ->onlyKeepLatest(3)
           ->acceptsMimeTypes(['video/mp4', 'video/quicktime']);
 
         $this->addMediaCollection('vcards')
-            ->useDisk('public')
+            ->useDisk('sftp')
             ->acceptsMimeTypes(['text/vcard', 'text/x-vcard', 'text/plain'])
             ->singleFile(); // Remplace toujours l'ancienne
 
@@ -191,7 +191,7 @@ class User extends Authenticatable implements HasMedia
     final public function registerMediaConversions(?Media $media = null): void
     {
         $this
-            ->addMediaConversion('preview')
+            ->addMediaConversion('thumb')->performOnCollections(PROFILE_IMG_ROOT_PATH)
             ->fit(Fit::Contain, 300, 300)
             ->nonQueued();
     }

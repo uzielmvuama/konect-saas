@@ -16,7 +16,10 @@ export default function BioCard({ title = "BIO", text, className = "" }: Props) 
       </h2>
 
       {/* whitespace-pre-line permet de respecter les retours à la ligne comme sur la maquette */}
-        <p className="text-[15px] leading-6 !text-neutral-800 !dark:text-neutral-800 whitespace-pre-line [&_*]:text-neutral-900" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(text) }} />
+      <p
+        className="text-[15px] leading-6 !text-neutral-800 !dark:text-neutral-800 whitespace-pre-line [&_*]:text-neutral-900"
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(text) }}
+      />
     </section>
   );
 }

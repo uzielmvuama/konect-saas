@@ -5,6 +5,7 @@ import SocialInformationsSettings from "@/Components/_Partials/Profil/Settings/S
 import SecuritySettings from "@/Components/_Partials/Profil/Settings/SecuritySettings";
 import MediaSettings from "@/Components/_Partials/Profil/Settings/MediaSettings";
 import ImageCropper from "@/Components/Image/ImageCropper";
+import {usePage} from "@inertiajs/react";
 
 interface ProfilSettingsProps {
   user: any;
@@ -31,6 +32,8 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
   ];
 
   const [currentTab, setCurrentTab] = React.useState<number>(0);
+  const {medias, sftp_root_path } = usePage().props as any;
+    console.log(medias, sftp_root_path)
 
   // useEffect(() => {
   //     initializePreline();
@@ -43,6 +46,10 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
         <div className="p-3 md:p-5 bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
           <ImageCropper
             type={"profile"}
+            initialImage={medias.avatar.urls.thumb}
+            onImageCropped={(image) => {
+              console.log(image);
+            }}
             translations={{
               Text: {
                 choose_image: "Choisir une image",

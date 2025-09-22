@@ -28,7 +28,7 @@ const MainButton: React.FC<MainButtonProps> = ({
   title,
   href = "#",
   icon: Icon,
-                                                   iconClass ="",
+  iconClass = "",
   customClassName = "",
   paddindClassYX = " py-3 px-2.5",
   processing = false,
@@ -42,7 +42,7 @@ const MainButton: React.FC<MainButtonProps> = ({
         {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
       >
         {processing && <Spinner />}
-        {Icon && <i className="mr-0">{<Icon className={iconClass}/>}</i>}
+        {Icon && <i className="mr-0">{<Icon className={iconClass} />}</i>}
         <span>{title}</span>
       </a>
     );
@@ -62,7 +62,7 @@ const MainButton: React.FC<MainButtonProps> = ({
   return (
     <Link className={baseClass + " " + customClassName + paddindClassYX} href={href}>
       {processing && <Spinner />}
-      {Icon && <i className="mr-0">{<Icon className={iconClass}/>}</i>}
+      {Icon && <i className="mr-0">{<Icon className={iconClass} />}</i>}
       <span>{title}</span>
     </Link>
   );

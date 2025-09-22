@@ -1,5 +1,5 @@
 // src/components/MobileContactCard.tsx
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   Download,
   Share2,
@@ -13,18 +13,17 @@ import {
 import AppLogo from "@/Components/_Partials/AppLogo";
 import MainButton from "@/Components/Buttons/MainButton";
 import SocialLinksCard from "@/Components/_Partials/Vcard/SocialLinksCard";
-import ContactInfoCard, {ContactItem} from "@/Components/_Partials/Vcard/ContactInfoCard";
+import ContactInfoCard, { ContactItem } from "@/Components/_Partials/Vcard/ContactInfoCard";
 import BioCard from "@/Components/_Partials/Vcard/BioCard";
 import CustomizableLinksCard from "@/Components/_Partials/Vcard/CustomizableLinksCard";
 import ImageGalleryCarousel from "@/Components/_Partials/Vcard/ImageGalleryCarousel";
-import {UserProfile} from "@/Types/types";
-import {usePage} from "@inertiajs/react";
-import {FaWhatsapp} from "react-icons/fa6";
-import {ucfirst} from "@/Utils/Functions/globals";
-import {ROOT_FILES_URL} from "@/Utils/Constants/constants";
+import { UserProfile } from "@/Types/types";
+import { usePage } from "@inertiajs/react";
+import { FaWhatsapp } from "react-icons/fa6";
+import { ucfirst } from "@/Utils/Functions/globals";
 
 type ContactCardProps = {
-    user: UserProfile;
+  user: UserProfile;
   domain?: string;
   logoText?: string;
   ctaText?: string;
@@ -37,7 +36,7 @@ type ContactCardProps = {
 };
 
 const ContactCard: React.FC<ContactCardProps> = ({
-    user,
+  user,
   domain = "tapr.ca",
   logoText = "tapr",
   ctaText = "Get your card",
@@ -48,44 +47,44 @@ const ContactCard: React.FC<ContactCardProps> = ({
   onExchange,
   onShare,
 }) => {
+  const { vinfo, firstname, name, profile_photo_path } = user;
+  const ROOT_FILES_URL = usePage().props.sftp_root_path as string;
+  const [profilImg, setProfilImg] = useState<string>("/assets/images/icons/user.jpg");
 
-    const { vinfo, firstname , name, profile_photo_path} = user;
-    const [profilImg, setProfilImg] = useState<string>("/assets/images/icons/user.jpg");
+  useEffect(() => {
+    if (profile_photo_path) {
+      setProfilImg(ROOT_FILES_URL + "/" + profile_photo_path);
+    }
+  }, []);
 
-    useEffect(() => {
-        if (profile_photo_path){
-            setProfilImg(ROOT_FILES_URL + "/" +profile_photo_path);
-        }
-    }, []);
-    const extras: ContactItem[] = [
-        // Groupe custom "WhatsApp" avec son icône, deux lignes
-        // {
-        //     type: "custom",
-        //     group: "whatsapp",
-        //     groupLabel: "WhatsApp",
-        //     icons: <FaWhatsapp className="h-5 w-5 text-neutral-700" />,
-        //     label: "Main",
-        //     value: "+1 613 555 1111",
-        //     href: "https://wa.me/16135551111",
-        // },
-        // {
-        //     type: "custom",
-        //     group: "whatsapp",
-        //     value: "+1 819 555 2222",
-        //     href: "https://wa.me/18195552222",
-        // },
+  const extras: ContactItem[] = [
+    // Groupe custom "WhatsApp" avec son icône, deux lignes
+    // {
+    //     type: "custom",
+    //     group: "whatsapp",
+    //     groupLabel: "WhatsApp",
+    //     icons: <FaWhatsapp className="h-5 w-5 text-neutral-700" />,
+    //     label: "Main",
+    //     value: "+1 613 555 1111",
+    //     href: "https://wa.me/16135551111",
+    // },
+    // {
+    //     type: "custom",
+    //     group: "whatsapp",
+    //     value: "+1 819 555 2222",
+    //     href: "https://wa.me/18195552222",
+    // },
+    // Override du groupe EMAILS pour lui mettre une autre icône (facultatif)
+    // {
+    //     type: "email",
+    //     groupLabel: "Emails",
+    //     icons: <Mail className="h-5 w-5 text-neutral-700" />,
+    //     value: "contact@veraup.com",
+    //     // href sera auto "mailto:"
+    // },
+  ];
 
-        // Override du groupe EMAILS pour lui mettre une autre icône (facultatif)
-        // {
-        //     type: "email",
-        //     groupLabel: "Emails",
-        //     icons: <Mail className="h-5 w-5 text-neutral-700" />,
-        //     value: "contact@veraup.com",
-        //     // href sera auto "mailto:"
-        // },
-    ];
-
-    return (
+  return (
     <div className="w-full flex items-center justify-center bg-neutral-900/95 p-6">
       {/* Phone body */}
       <div className="min-h-screen w-[360px] max-w-[92vw] rounded-[38px] bg-neutral-50 shadow-[0_40px_120px_rgba(0,0,0,.55)] ring-1 ring-black/10 overflow-hidden">
@@ -98,7 +97,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
           {/* Logo + CTA */}
           <div className="absolute top-8 left-5 right-5 flex items-center justify-between">
             <span className="bg-neutral-900 w-14 h-14 rounded-full flex justify-center items-center">
-                <AppLogo width={5} />
+              <AppLogo width={5} />
             </span>
 
             {/*<MainButton title={ctaText} asType={"link"} href={'/products'} paddindClassYX={" py-2 px-1.5"}  />*/}
@@ -127,35 +126,24 @@ const ContactCard: React.FC<ContactCardProps> = ({
               iconClass={"h-6.5 w-6.5 p-1 rounded-full bg-yellow-800 text-black"}
             />
 
-              <MainButton
-                  onClick={onExchange}
-                  title={"Exchange"}
-                  asType={"link"}
-                  href={"/products"}
-                  paddindClassYX={" py-3 px-1.5"}
-                  customClassName={"!bg-neutral-900 text-white"}
-                  icon={Share2}
-                  iconClass={"h-4 w-4"}
-              />
-
+            <MainButton
+              onClick={onExchange}
+              title={"Exchange"}
+              asType={"link"}
+              href={"/products"}
+              paddindClassYX={" py-3 px-1.5"}
+              customClassName={"!bg-neutral-900 text-white"}
+              icon={Share2}
+              iconClass={"h-4 w-4"}
+            />
           </div>
         </div>
 
-        <SocialLinksCard
-            title={"SOCIAL"}
-            user={user}
-        />
+        <SocialLinksCard title={"SOCIAL"} user={user} />
 
-          <ContactInfoCard
-              user={user}
-              title="CONTACT"
-              extraItems={extras}
-              showChevron
-          />
+        <ContactInfoCard user={user} title="CONTACT" extraItems={extras} showChevron />
 
-        <CustomizableLinksCard
-          items={vinfo.urls}
-        />
+        <CustomizableLinksCard items={vinfo.urls} />
 
         <ImageGalleryCarousel
           images={[
@@ -168,9 +156,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
           options={{ loop: true, align: "start" }}
         />
 
-        <BioCard
-          text={vinfo.note.text}
-        />
+        <BioCard text={vinfo.note.text} />
       </div>
     </div>
   );
