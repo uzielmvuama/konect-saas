@@ -21,6 +21,7 @@ import {UserProfile} from "@/Types/types";
 import {usePage} from "@inertiajs/react";
 import {FaWhatsapp} from "react-icons/fa6";
 import {ucfirst} from "@/Utils/Functions/globals";
+import {ROOT_FILES_URL} from "@/Utils/Constants/constants";
 
 type ContactCardProps = {
     user: UserProfile;
@@ -53,7 +54,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
 
     useEffect(() => {
         if (profile_photo_path){
-            setProfilImg(profile_photo_path);
+            setProfilImg(ROOT_FILES_URL + "/" +profile_photo_path);
         }
     }, []);
     const extras: ContactItem[] = [
