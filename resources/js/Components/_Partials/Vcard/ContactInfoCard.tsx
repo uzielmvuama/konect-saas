@@ -6,7 +6,7 @@ import { Phone, Mail, Globe, MapPin, ChevronRight } from "lucide-react";
 export type UserProfile = {
     vinfo: {
         emails: { text: string; type: string }[];
-        phones: string[];
+        phones: { text: string; type: string }[];
         urls: { type: string; uri: string }[];
         location: {
             country: string | null;
@@ -96,9 +96,9 @@ function extractLinesFromUser(user: UserProfile): ContactItem[] {
 
     if (Array.isArray(user.vinfo?.phones)) {
         for (const p of user.vinfo.phones) {
-            const value = normalizePhone(p);
+            const value = normalizePhone(p.text);
             if (!value) continue;
-            out.push({ type: "phone", value, label: "Mobile" });
+            out.push({ type: "phone", value, label: p.type || "Mobile" });
         }
     }
 
