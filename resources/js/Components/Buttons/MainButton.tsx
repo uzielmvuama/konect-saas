@@ -11,6 +11,7 @@ interface MainButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
   href?: string;
   customClassName?: string;
   icon?: IconType;
+  iconClass?: string;
   paddindClassYX?: string;
   processing?: boolean;
 }
@@ -27,6 +28,7 @@ const MainButton: React.FC<MainButtonProps> = ({
   title,
   href = "#",
   icon: Icon,
+                                                   iconClass ="",
   customClassName = "",
   paddindClassYX = " py-3 px-2.5",
   processing = false,
@@ -40,7 +42,7 @@ const MainButton: React.FC<MainButtonProps> = ({
         {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
       >
         {processing && <Spinner />}
-        {Icon && <i className="mr-0">{<Icon />}</i>}
+        {Icon && <i className="mr-0">{<Icon className={iconClass}/>}</i>}
         <span>{title}</span>
       </a>
     );
@@ -50,7 +52,7 @@ const MainButton: React.FC<MainButtonProps> = ({
     return (
       <button className={baseClass + " " + customClassName + paddindClassYX} {...rest}>
         {processing && <Spinner />}
-        {Icon && <i className="mr-0">{<Icon />}</i>}
+        {Icon && <i className="mr-0">{<Icon className={iconClass} />}</i>}
         <span>{title}</span>
       </button>
     );
@@ -60,7 +62,7 @@ const MainButton: React.FC<MainButtonProps> = ({
   return (
     <Link className={baseClass + " " + customClassName + paddindClassYX} href={href}>
       {processing && <Spinner />}
-      {Icon && <i className="mr-0">{<Icon />}</i>}
+      {Icon && <i className="mr-0">{<Icon className={iconClass}/>}</i>}
       <span>{title}</span>
     </Link>
   );

@@ -8,16 +8,25 @@ import {
   ChevronRight,
   Plus,
   MoreHorizontal,
+  Save,
 } from "lucide-react";
 import AppLogo from "@/Components/_Partials/AppLogo";
 import MainButton from "@/Components/Buttons/MainButton";
+import SocialLinksCard from "@/Components/_Partials/Vcard/SocialLinksCard";
+import ContactInfoCard, {ContactItem} from "@/Components/_Partials/Vcard/ContactInfoCard";
+import BioCard from "@/Components/_Partials/Vcard/BioCard";
+import CustomizableLinksCard from "@/Components/_Partials/Vcard/CustomizableLinksCard";
+import ImageGalleryCarousel from "@/Components/_Partials/Vcard/ImageGalleryCarousel";
+import {UserProfile} from "@/Types/types";
+import {usePage} from "@inertiajs/react";
+import {FaWhatsapp} from "react-icons/fa6";
 
 type ContactCardProps = {
+    user: UserProfile;
   domain?: string;
   logoText?: string;
   ctaText?: string;
   portraitUrl: string;
-  fullName: string;
   subtitle: string;
   about: string;
   pagesCount?: number;
@@ -27,11 +36,11 @@ type ContactCardProps = {
 };
 
 const ContactCard: React.FC<ContactCardProps> = ({
+    user,
   domain = "tapr.ca",
   logoText = "tapr",
   ctaText = "Get your card",
   portraitUrl,
-  fullName,
   subtitle,
   about,
   pagesCount = 4,
@@ -39,14 +48,43 @@ const ContactCard: React.FC<ContactCardProps> = ({
   onExchange,
   onShare,
 }) => {
-  return (
+
+    const { vinfo, firstname , name} = user;
+    const extras: ContactItem[] = [
+        // Groupe custom "WhatsApp" avec son icône, deux lignes
+        // {
+        //     type: "custom",
+        //     group: "whatsapp",
+        //     groupLabel: "WhatsApp",
+        //     icon: <FaWhatsapp className="h-5 w-5 text-neutral-700" />,
+        //     label: "Main",
+        //     value: "+1 613 555 1111",
+        //     href: "https://wa.me/16135551111",
+        // },
+        // {
+        //     type: "custom",
+        //     group: "whatsapp",
+        //     value: "+1 819 555 2222",
+        //     href: "https://wa.me/18195552222",
+        // },
+
+        // Override du groupe EMAILS pour lui mettre une autre icône (facultatif)
+        // {
+        //     type: "email",
+        //     groupLabel: "Emails",
+        //     icon: <Mail className="h-5 w-5 text-neutral-700" />,
+        //     value: "contact@veraup.com",
+        //     // href sera auto "mailto:"
+        // },
+    ];
+
+    return (
     <div className="w-full flex items-center justify-center bg-neutral-900/95 p-6">
       {/* Phone body */}
       <div className="min-h-screen w-[360px] max-w-[92vw] rounded-[38px] bg-neutral-50 shadow-[0_40px_120px_rgba(0,0,0,.55)] ring-1 ring-black/10 overflow-hidden">
-
         {/* Hero */}
         <div className="relative rounded-br-4xl overflow-hidden">
-          <img src={portraitUrl} alt={fullName} className="h-[400px] w-full object-cover" />
+          <img src={portraitUrl} alt={"Profil Image"} className="h-[400px] w-full object-cover" />
           {/* Gradient bottom overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
@@ -54,14 +92,13 @@ const ContactCard: React.FC<ContactCardProps> = ({
           <div className="absolute top-8 left-5 right-5 flex items-center justify-between">
             <AppLogo width={7} />
 
-              {/*<MainButton title={ctaText} asType={"link"} href={'/products'} paddindClassYX={" py-2 px-1.5"}  />*/}
-
+            {/*<MainButton title={ctaText} asType={"link"} href={'/products'} paddindClassYX={" py-2 px-1.5"}  />*/}
           </div>
 
           {/* Name + subtitle */}
           <div className="absolute bottom-5 left-5 right-5">
             <h1 className="text-white text-[28px] leading-7 font-extrabold drop-shadow">
-              {fullName}
+              {firstname + " " + name}
             </h1>
             <p className="mt-1 text-neutral-200 text-sm">{subtitle}</p>
           </div>
@@ -70,30 +107,60 @@ const ContactCard: React.FC<ContactCardProps> = ({
         {/* Action buttons */}
         <div className="px-4 pb-3">
           <div className="mt-3 grid grid-cols-2 gap-3">
-            <button
+            <MainButton
               onClick={onSave}
-              className="group inline-flex items-center justify-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-white hover:bg-neutral-800 transition-all"
-            >
-              <Download className="h-4 w-4" />
-              <span className="text-sm font-semibold">Save contact</span>
-            </button>
-            <button
-              onClick={onExchange}
-              className="group inline-flex items-center justify-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-white hover:bg-neutral-800 transition-all"
-            >
-              <Repeat2 className="h-4 w-4" />
-              <span className="text-sm font-semibold">Exchange contact</span>
-            </button>
+              title={"Save contact"}
+              asType={"link"}
+              href={"/products"}
+              paddindClassYX={" py-4 px-1.5"}
+              customClassName={"!bg-neutral-900 text-yellow-600"}
+              icon={Save}
+              iconClass={"h-4 w-4"}
+            />
+              <MainButton
+                  onClick={onExchange}
+                  title={"Exchange"}
+                  asType={"link"}
+                  href={"/products"}
+                  paddindClassYX={" py-5 px-1.5"}
+                  customClassName={"!bg-neutral-900 text-white"}
+                  icon={Share2}
+                  iconClass={"h-4 w-4"}
+              />
+
           </div>
         </div>
 
-        {/* About */}
-        <div className="bg-white px-4 pb-5 pt-3">
-          <h2 className="text-[11px] font-extrabold tracking-[0.15em] text-neutral-800">BIO</h2>
-          <p className="mt-2 text-[13px] leading-5 text-neutral-700">{about}</p>
-        </div>
+        <SocialLinksCard
+            title={"SOCIAL"}
+            user={user}
+        />
 
+          <ContactInfoCard
+              user={user}
+              title="CONTACT"
+              extraItems={extras}
+              showChevron
+          />
 
+        <CustomizableLinksCard
+          items={vinfo.urls}
+        />
+
+        <ImageGalleryCarousel
+          images={[
+            { src: "/images/gorman.jpg", alt: "Amanda Gorman" },
+            { src: "/images/tower.jpg", alt: "Skyscraper" },
+            { src: "/images/event.jpg", alt: "Conference" },
+            { src: "/images/city.jpg", alt: "City" },
+          ]}
+          // loop pour slider infini
+          options={{ loop: true, align: "start" }}
+        />
+
+        <BioCard
+          text={vinfo.note.text}
+        />
       </div>
     </div>
   );
