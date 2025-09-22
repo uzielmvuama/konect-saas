@@ -85,7 +85,10 @@ export type UserProfile = {
             currency: string | null;
             deFault: string | null;
         };
-        phones: string[];
+        phones: {
+            text: string;
+            type: string;
+        }[];
         title: string;
     };
     uuid: string;
