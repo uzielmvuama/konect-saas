@@ -11,7 +11,7 @@ export default function Kuser() {
 
     return (
     <GuestLayout
-      title={`Kuser - ${ucfirst(user.firstname)}`}
+      title={`Kuser - ${ucfirst(user.firstname)} ${ucfirst(user.name)}`}
       showFooter={false}
       showHeader={false}
       showChat={false}

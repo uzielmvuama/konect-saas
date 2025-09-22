@@ -98,7 +98,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
 
           {/* Name + subtitle */}
           <div className="absolute bottom-5 left-5 right-5">
-            <h1 className="text-white text-[28px] leading-7 font-extrabold drop-shadow">
+            <h1 className="text-white text-[28px] leading-7 font-black drop-shadow">
               {ucfirst(firstname) + " " + ucfirst(name)}
             </h1>
             <p className="mt-1 text-neutral-200 text-sm">{subtitle}</p>
@@ -110,20 +110,21 @@ const ContactCard: React.FC<ContactCardProps> = ({
           <div className="mt-3 grid grid-cols-2 gap-3">
             <MainButton
               onClick={onSave}
-              title={"Save contact"}
+              title={"Save"}
               asType={"link"}
               href={"/products"}
-              paddindClassYX={" py-4 px-1.5"}
-              customClassName={"!bg-neutral-900 text-yellow-600"}
+              paddindClassYX={" py-3 px-1.5"}
+              customClassName={"!bg-neutral-900 text-yellow-600 font-bold"}
               icon={Save}
-              iconClass={"h-4 w-4"}
+              iconClass={"h-6.5 w-6.5 p-1 rounded-full bg-yellow-800 text-black"}
             />
+
               <MainButton
                   onClick={onExchange}
                   title={"Exchange"}
                   asType={"link"}
                   href={"/products"}
-                  paddindClassYX={" py-5 px-1.5"}
+                  paddindClassYX={" py-3 px-1.5"}
                   customClassName={"!bg-neutral-900 text-white"}
                   icon={Share2}
                   iconClass={"h-4 w-4"}

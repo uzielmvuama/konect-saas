@@ -228,7 +228,7 @@ export default function SocialLinksCard({
                 {title}
             </h2>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 overflow-hidden overflow-x-auto">
                 {merged.map(({ name, href, icon, label }) => {
                     const tooltipId = `tip-${name}`;
                     return (
@@ -239,7 +239,8 @@ export default function SocialLinksCard({
                             rel="noopener noreferrer"
                             aria-label={label ?? name}
                             className={
-                                "relative h-12 w-12 rounded-2xl flex items-center justify-center shadow-sm ring-1 ring-black/5 " +
+                                "relative min-h-12 min-w-12 rounded-2xl flex items-center justify-center shadow-sm" +
+                                " ring-1 ring-black/5 " +
                                 "transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0 " +
                                 bgClass[name]
                             }
