@@ -17,7 +17,7 @@ class UploadProfileRequest extends FormRequest
                 'required',
                 File::image()
                     ->types(['jpg','jpeg','png','webp'])
-                    ->min(100)          // ≥ 100 Ko (mets 1024 pour 1 Mo si tu veux)
+                    ->min(1)          // ≥ 100 Ko (mets 1024 pour 1 Mo si tu veux)
                     ->max(12 * 1024),   // ≤ 12 Mo
                 Rule::dimensions()
                     ->ratio(1)          // carré

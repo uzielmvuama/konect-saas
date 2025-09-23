@@ -1,5 +1,4 @@
 <?php
-
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Validation\Validator;
@@ -32,3 +31,4 @@ function growthPercentageFromDataCount(int $beforeValue, int $afterValue)
     $percentage = $beforeValue != 0 ? ($diff / $beforeValue) * 100 : 0;
     return $percentage;
 }
+

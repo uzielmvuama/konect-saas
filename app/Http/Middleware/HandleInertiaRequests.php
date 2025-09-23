@@ -41,6 +41,7 @@ class HandleInertiaRequests extends Middleware
         $coverMedia   = null;
         $imagesMedia  = null;
         $videosMedia  = null;
+        $vcardMedia= null;
 
         if(!empty($user)) {
             $user = $user->load('media');
@@ -48,6 +49,7 @@ class HandleInertiaRequests extends Middleware
             $coverMedia   = $user->getFirstMedia(COVER_IMG_ROOT_PATH);
             $imagesMedia  = $user->getMedia(ACTIVITY_IMG_ROOT_PATH);
             $videosMedia  = $user->getMedia(ACTIVITY_VIDEO_ROOT_PATH);
+            $vcardMedia= $user->getFirstMedia('vcards');
         }
 
         $allowedPlans = Plan::whereIn('name', ['entreprise'])
@@ -60,7 +62,8 @@ class HandleInertiaRequests extends Middleware
                 'avatar'  => $avatarMedia ? MediaPresenter::item($avatarMedia, ['thumb','large']) : null,
                 'cover'   => $coverMedia  ? MediaPresenter::item($coverMedia,  ['large'])        : null,
                 'images'  => MediaPresenter::collection($imagesMedia, ['thumb','large']),
-                'videos'  => MediaPresenter::collection($videosMedia, []), // pas de conv nécessaires
+                'videos'  => MediaPresenter::collection($videosMedia, []),
+                'vcard' =>   $vcardMedia  ? MediaPresenter::item($vcardMedia,  []) : null,
             ],
             'sftp_root_path' => config('app.env') === 'local' ? FILES_APP_URL_TEST: FILES_APP_URL,
             'translations' => $this->loadAllTranslations(App::getLocale()),

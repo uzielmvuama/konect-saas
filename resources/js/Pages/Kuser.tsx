@@ -8,7 +8,8 @@ import { UserProfile } from "@/Types/types";
 export default function Kuser() {
   const user = usePage().props.user as unknown as UserProfile;
 
-  return (
+
+    return (
     <GuestLayout
       title={`Kuser - ${ucfirst(user.firstname)} ${ucfirst(user.name)}`}
       showFooter={false}
@@ -18,6 +19,9 @@ export default function Kuser() {
       <div className="flex justify-center">
         <div className="h-screen w-full">
           <ContactCard
+              onSave={(e) => {
+
+              }}
             user={user}
             subtitle={"Graphisme et Design"}
             about="American actor, comedian, musician and writer..."

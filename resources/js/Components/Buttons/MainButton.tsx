@@ -47,7 +47,6 @@ const MainButton: React.FC<MainButtonProps> = ({
       </a>
     );
   }
-
   if (asType === "button") {
     return (
       <button className={baseClass + " " + customClassName + paddindClassYX} {...rest}>
