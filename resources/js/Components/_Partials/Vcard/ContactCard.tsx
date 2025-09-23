@@ -50,7 +50,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
   const { vinfo, firstname, name, profile_photo_path } = user;
   const props_= usePage().props as unknown as any;
   const ROOT_FILES_URL = props_.sftp_root_path as string;
-  const vcard_file= props_.medias.vcard.urls.original as string;
+  const vcard_file= props_.medias.vcard ? props_.medias.vcard.urls.original as string : null;
   const [profilImg, setProfilImg] = useState<string>("/assets/images/icons/user.jpg");
 
   useEffect(() => {
@@ -121,7 +121,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
               onClick={onSave}
               title={"Save"}
               asType={"link"}
-              href={ROOT_FILES_URL + "/" + vcard_file}
+              href={vcard_file ? ROOT_FILES_URL + "/" + vcard_file : "#"}
               paddindClassYX={" py-3 px-1.5"}
               customClassName={"!bg-neutral-900 text-yellow-600 font-bold"}
               icon={Save}
