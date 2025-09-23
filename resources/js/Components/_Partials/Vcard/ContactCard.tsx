@@ -87,7 +87,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
   ];
 
   return (
-    <div className="w-full flex items-center justify-center bg-neutral-900/95 p-6">
+    <div className="w-full flex items-center justify-center bg-neutral-900/95 md:p-6 p-0">
       {/* Phone body */}
       <div className="min-h-screen w-[360px] max-w-[92vw] rounded-[38px] bg-neutral-50 shadow-[0_40px_120px_rgba(0,0,0,.55)] ring-1 ring-black/10 overflow-hidden">
         {/* Hero */}
