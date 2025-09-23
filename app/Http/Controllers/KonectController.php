@@ -32,8 +32,6 @@ class KonectController extends Controller
      */
     public function store(Request $request)
     {
-
-
         $validator = Validator::make(
             $request->only([
                 'uuid',

@@ -6,6 +6,8 @@ import SecuritySettings from "@/Components/_Partials/Profil/Settings/SecuritySet
 import MediaSettings from "@/Components/_Partials/Profil/Settings/MediaSettings";
 import ImageCropper from "@/Components/Image/ImageCropper";
 import {usePage} from "@inertiajs/react";
+import CoverUploader from "@/Components/Image/CoverUploader";
+import AvatarUploader from "@/Components/Image/AvatarUploader";
 
 interface ProfilSettingsProps {
   user: any;
@@ -33,7 +35,7 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
 
   const [currentTab, setCurrentTab] = React.useState<number>(0);
   const {medias, sftp_root_path } = usePage().props as any;
-    console.log(medias, sftp_root_path)
+    // console.log(medias, sftp_root_path)
 
   // useEffect(() => {
   //     initializePreline();
@@ -42,20 +44,21 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
   return (
     <>
       <div className="mb-4">
-        {/* User Profile Card */}
         <div className="p-3 md:p-5 bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
-          <ImageCropper
-            type={"profile"}
-            initialImage={medias.avatar.urls.thumb}
-            onImageCropped={(image) => {
-              console.log(image);
-            }}
-            translations={{
-              Text: {
-                choose_image: "Choisir une image",
-              },
-            }}
-          />
+            <div className="space-y-6">
+                {/* Cover */}
+                <CoverUploader
+                    initialCover={medias.cover ? (medias.cover.urls.thumb ?? null) : null}
+                    sftpRootPath={sftp_root_path}
+                />
+
+                {/* Avatar */}
+                <AvatarUploader
+                    initialImage={medias.avatar.urls.thumb ?? null}
+                    sftpRootPath={sftp_root_path}
+                    user={user}
+                />
+            </div>
 
           {/* Header */}
           <div className="mt-4 md:mt-7 -mb-0.5 flex flex-col md:flex-row md:justify-between md:items-center gap-3">
@@ -83,6 +86,7 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
           </div>
           {/* End Header */}
         </div>
+
         {/* End User Profile Card */}
       </div>
       <div>
