@@ -36,12 +36,19 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $user = $request->user()->load('media'); // évite un 2nd hit DB
+        $user = $request->user();
+        $avatarMedia  = null;
+        $coverMedia   = null;
+        $imagesMedia  = null;
+        $videosMedia  = null;
 
-        $avatarMedia  = $user->getFirstMedia(PROFILE_IMG_ROOT_PATH);
-        $coverMedia   = $user->getFirstMedia(COVER_IMG_ROOT_PATH);
-        $imagesMedia  = $user->getMedia(ACTIVITY_IMG_ROOT_PATH);
-        $videosMedia  = $user->getMedia(ACTIVITY_VIDEO_ROOT_PATH);
+        if(!empty($user)) {
+            $user = $user->load('media');
+            $avatarMedia  = $user->getFirstMedia(PROFILE_IMG_ROOT_PATH);
+            $coverMedia   = $user->getFirstMedia(COVER_IMG_ROOT_PATH);
+            $imagesMedia  = $user->getMedia(ACTIVITY_IMG_ROOT_PATH);
+            $videosMedia  = $user->getMedia(ACTIVITY_VIDEO_ROOT_PATH);
+        }
 
         $allowedPlans = Plan::whereIn('name', ['entreprise'])
             ->pluck('stripe_product_id')
