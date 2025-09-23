@@ -89,7 +89,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
   return (
     <div className="w-full flex items-center justify-center bg-neutral-900/95 md:p-6 p-0">
       {/* Phone body */}
-      <div className="min-h-screen w-[360px] max-w-[92vw] rounded-[38px] bg-neutral-50 shadow-[0_40px_120px_rgba(0,0,0,.55)] ring-1 ring-black/10 overflow-hidden">
+      <div className="min-h-screen md:w-[360px] md:max-w-[92vw] w-full md:rounded-[38px] bg-neutral-50 shadow-[0_40px_120px_rgba(0,0,0,.55)] ring-1 ring-black/10 overflow-hidden">
         {/* Hero */}
         <div className="relative rounded-br-4xl overflow-hidden">
           <img src={profilImg} alt={"Profil Image"} className="h-[400px] w-full object-cover" />
@@ -122,7 +122,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
               title={"Save"}
               asType={"link"}
               href={vcard_file ? ROOT_FILES_URL + "/" + vcard_file : "#"}
-              paddindClassYX={" py-3 px-1.5"}
+              paddindClassYX={" py-4 px-1.5"}
               customClassName={"!bg-neutral-900 text-yellow-600 font-bold"}
               icon={Save}
               iconClass={"h-6.5 w-6.5 p-1 rounded-full bg-yellow-800 text-black"}
@@ -133,7 +133,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
               title={"Exchange"}
               asType={"link"}
               href={"/products"}
-              paddindClassYX={" py-3 px-1.5"}
+              paddindClassYX={" py-4 px-1.5"}
               customClassName={"!bg-neutral-900 text-white"}
               icon={Share2}
               iconClass={"h-4 w-4"}
