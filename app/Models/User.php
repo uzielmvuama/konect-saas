@@ -20,7 +20,10 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\File;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use App\Observers\UserObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
+#[ObservedBy([UserObserver::class])]
 class User extends Authenticatable implements HasMedia
 {
     use HasApiTokens, Billable, Pointable;
@@ -45,6 +48,20 @@ class User extends Authenticatable implements HasMedia
         'name',
         'email',
         'password',
+        'uuid',
+        'title',
+        'kpoint',
+        'referal_code',
+        'referal_from',
+        'provider_name',
+        'provider_id',
+        'stripe_id',
+        'pm_type',
+        'pm_last_four',
+        'trial_ends_at',
+        'vconfig',
+        'current_team_id',
+        'role'
     ];
 
     /**

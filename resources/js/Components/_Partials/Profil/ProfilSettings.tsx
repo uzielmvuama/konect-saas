@@ -54,7 +54,7 @@ const ProfilSettings: React.FC<ProfilSettingsProps> = ({ user }) => {
 
                 {/* Avatar */}
                 <AvatarUploader
-                    initialImage={medias.avatar.urls.thumb ?? null}
+                    initialImage={medias.avatar ? medias.avatar.urls.thumb : null}
                     sftpRootPath={sftp_root_path}
                     user={user}
                 />

@@ -28,7 +28,6 @@ class SocialAuthController extends Controller
                 'firstname' => explode(" ",$socialUser->getName() ?? $socialUser->getNickname())[0],
                 'provider_id' => $socialUser->getId(),
                 'provider_name' => $provider,
-
                 // Formal
                 'password' => Hash::make(Str::random(24)), // mot de passe inutilisé, mais requis
             ]

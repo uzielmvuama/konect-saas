@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fortify;
 
+use App\Helpers\Core\Utils;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -50,5 +51,11 @@ class CreateNewUser implements CreatesNewUsers
             'name' => explode(' ', $user->firstname, 2)[0]."'s Team",
             'personal_team' => true,
         ]));
+    }
+
+    protected function createReferalCode(User $user): void
+    {
+        $user->referal_code= Utils::generateReferralCode(url());
+        $user->save();
     }
 }
