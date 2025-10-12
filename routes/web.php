@@ -38,7 +38,8 @@ Route::get('/kuser/{uuid}', function (\App\Models\User $user) {
     }
 
     return Inertia::render('Kuser', [
-        'user' => $user->load('konects.user')->toResource()
+        'user' => $user->load('konects.user')->toResource(),
+        'vcard_path' => $user->getFirstMedia(VCARD_ROOT_PATH)->getPath()
     ]);
 });
 

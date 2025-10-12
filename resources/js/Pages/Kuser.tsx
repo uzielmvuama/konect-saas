@@ -5,10 +5,7 @@ import { ucfirst } from "@/Utils/Functions/globals";
 import ContactCard from "@/Components/_Partials/Vcard/ContactCard";
 import { UserProfile } from "@/Types/types";
 
-export default function Kuser() {
-  const user = usePage().props.user as unknown as UserProfile;
-
-
+export default function Kuser({user, vcard_path}: {user: UserProfile; vcard_path: string;}) {
     return (
     <GuestLayout
       title={`Kuser - ${ucfirst(user.firstname)} ${ucfirst(user.name)}`}
@@ -23,6 +20,7 @@ export default function Kuser() {
 
               }}
             user={user}
+              vcard_path={vcard_path}
             subtitle={"Graphisme et Design"}
             about="American actor, comedian, musician and writer..."
           />

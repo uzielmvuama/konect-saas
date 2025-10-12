@@ -36,14 +36,15 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $user = $request->user();
+        $user= null;
         $avatarMedia  = null;
         $coverMedia   = null;
         $imagesMedia  = null;
         $videosMedia  = null;
         $vcardMedia= null;
 
-        if(!empty($user)) {
+        if(!empty( $request->user())) {
+            $user = $request->user();
             $user = $user->load('media');
             $avatarMedia  = $user->getFirstMedia(PROFILE_IMG_ROOT_PATH);
             $coverMedia   = $user->getFirstMedia(COVER_IMG_ROOT_PATH);
