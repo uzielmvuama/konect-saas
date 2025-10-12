@@ -66,7 +66,7 @@ class HandleInertiaRequests extends Middleware
                 'videos'  => MediaPresenter::collection($videosMedia, []),
                 'vcard' =>   $vcardMedia  ? MediaPresenter::item($vcardMedia,  []) : null,
             ],
-            'sftp_root_path' => config('app.env') === 'local' ? FILES_APP_URL_TEST: FILES_APP_URL,
+            'sftp_root_path' => config('app.env') === 'local' ? FILES_APP_URL_TEST: FILES_APP_URL_LIVE,
             'translations' => $this->loadAllTranslations(App::getLocale()),
             'app_email' => config('mail.from.address'),
             'flash' => [
