@@ -49,7 +49,7 @@ class HandleInertiaRequests extends Middleware
             $coverMedia   = $user->getFirstMedia(COVER_IMG_ROOT_PATH);
             $imagesMedia  = $user->getMedia(ACTIVITY_IMG_ROOT_PATH);
             $videosMedia  = $user->getMedia(ACTIVITY_VIDEO_ROOT_PATH);
-            $vcardMedia= $user->getFirstMedia('vcards');
+            $vcardMedia= $user->getFirstMedia(VCARD_ROOT_PATH);
         }
 
         $allowedPlans = Plan::whereIn('name', ['entreprise'])

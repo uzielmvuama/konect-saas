@@ -207,6 +207,7 @@ class UserService
 
         // --- Photo: URL de la miniature de 'profile'
         $photoUrl = $this->getVcardPhotoUrlFromSpatie($user);
+
         if ($photoUrl) {
             $clean_url= \normalize_url(SFTP_ROOT_PATH. DIRECTORY_SEPARATOR. $photoUrl);
             // La lib supporte une URL (HTTP/HTTPS) ou un path
@@ -216,7 +217,6 @@ class UserService
         // --- Sauvegarde en collection 'vcards' (Spatie)
         $filename = $user->uuid . '.vcf';
         $content  = (string) $vcard->getOutput();
-
         // singleFile() sur la collection 'vcards' => remplace l’ancienne
         $user->addMediaFromString($content)
             ->usingFileName($filename)

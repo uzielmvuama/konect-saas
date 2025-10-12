@@ -53,7 +53,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
   const vcard_file= props_.medias.vcard ? props_.medias.vcard.urls.original as string : null;
   const [profilImg, setProfilImg] = useState<string>("/assets/images/icons/user.jpg");
 
-  useEffect(() => {
+    useEffect(() => {
     if (profile_photo_path) {
       setProfilImg(ROOT_FILES_URL + "/" + profile_photo_path);
     }

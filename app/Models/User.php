@@ -198,10 +198,11 @@ class User extends Authenticatable implements HasMedia
           ->onlyKeepLatest(3)
           ->acceptsMimeTypes(['video/mp4', 'video/quicktime']);
 
-        $this->addMediaCollection('vcards')
+        $this->addMediaCollection(VCARD_ROOT_PATH)
             ->useDisk('sftp')
             ->acceptsMimeTypes(['text/vcard', 'text/x-vcard', 'text/plain'])
             ->singleFile(); // Remplace toujours l'ancienne
+
 
     }
 

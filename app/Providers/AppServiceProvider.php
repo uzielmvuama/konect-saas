@@ -22,6 +22,15 @@ class AppServiceProvider extends ServiceProvider
     {
         require_once base_path('app/constants.php');
         require_once base_path('app/functions.php');
+
+        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+
+            $this->app->register(TelescopeServiceProvider::class);
+
+        }
+
         Route::bind('uuid', function (string $value) {
             return User::where('uuid', $value)->firstOrFail();
         });
