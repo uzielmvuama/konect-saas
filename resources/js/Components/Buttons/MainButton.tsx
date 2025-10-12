@@ -39,7 +39,6 @@ const MainButton: React.FC<MainButtonProps> = ({
       <a
         className={baseClass + " " + customClassName + paddindClassYX}
         href={href}
-        target="_blank"
         {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
       >
         {processing && <Spinner />}
