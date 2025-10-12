@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\Services\UserService;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -29,6 +30,13 @@ Route::middleware('guest')->group(function () {
 
 
 Route::get('/kuser/{uuid}', function (\App\Models\User $user) {
+    $media= $user->getMedia(VCARD_ROOT_PATH);
+
+    if (empty($media)) {
+        $service= new UserService();
+        $service->vcardGenerate($user);
+    }
+
     return Inertia::render('Kuser', [
         'user' => $user->load('konects.user')->toResource()
     ]);
