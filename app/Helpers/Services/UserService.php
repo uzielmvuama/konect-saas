@@ -318,4 +318,9 @@ class UserService
             return Utils::json_res(false, "Notifications marked as read", [], Constants::NO_CONTENT_STATUS_CODE);
         }
     }
+
+    public function vcardFormatSetUpstream(User $user)
+    {
+
+    }
 }

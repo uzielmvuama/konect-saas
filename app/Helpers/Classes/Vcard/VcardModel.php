@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Classes\Vcard;
 
+use App\Helpers\Traits\Vcard\VcardNormalizable;
 use App\Helpers\Classes\Vcard\VcardProperty\Properties\{EmailVcard,
     ImageLinkVcard,
     LocationVcard,
@@ -14,6 +15,8 @@ use App\Helpers\Classes\Vcard\VcardProperty\Properties\VideoLinkVcard;
 
 abstract class VcardModel
 {
+    use VcardNormalizable;
+
     public NameVcard $names;
     public array $emails = [];
     public SocialVcardItemAll $socialProfils;
