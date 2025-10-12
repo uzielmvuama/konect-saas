@@ -98,8 +98,8 @@ abstract class VcardModel
             currency: $vinfo->location->currency,
             deFault: $vinfo->location->deFault
         );
-        $this->videoLinks = array_map(fn($video) => new VideoLinkVcard(type: $video->type, uri: $video->uri), $vinfo->videoLinks);
-        $this->imageLinks = array_map(fn($image) => new ImageLinkVcard(type: $image->type, uri: $image->uri), $vinfo->imageLinks);
+        $this->videoLinks = array_map(fn($video) => new VideoLinkVcard(type: $video->type, uri: $video->uri), $vinfo->videoLinks ?? []);
+        $this->imageLinks = array_map(fn($image) => new ImageLinkVcard(type: $image->type, uri: $image->uri), $vinfo->imageLinks ?? []);
     }
 
     public function array_gen(): array
