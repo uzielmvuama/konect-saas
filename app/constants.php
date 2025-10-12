@@ -12,4 +12,4 @@ define("ACTIVITY_IMG_ROOT_PATH", "activity-photos");
 define("ACTIVITY_VIDEO_ROOT_PATH", "activity-videos");
 define("COMP_PROFILE_IMG_ROOT_PATH", "compressed-photo");
 define("COMP_COMPANY_IMG_ROOT_PATH", "compressed-companies-photo");
-define("SFTP_ROOT_PATH", config('app.env') === 'local' ? FILES_APP_URL_TEST: FILES_APP_URL);
+define("SFTP_ROOT_PATH", config('app.env') === 'local' ? FILES_APP_URL_TEST: FILES_APP_URL_LIVE);
