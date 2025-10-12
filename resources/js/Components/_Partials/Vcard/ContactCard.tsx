@@ -25,6 +25,8 @@ import { ucfirst } from "@/Utils/Functions/globals";
 type ContactCardProps = {
   user: UserProfile;
   vcard_path?: string;
+  avatar_path?: string;
+  cover_path?: string;
   domain?: string;
   logoText?: string;
   ctaText?: string;
@@ -39,6 +41,8 @@ type ContactCardProps = {
 const ContactCard: React.FC<ContactCardProps> = ({
   user,
     vcard_path,
+    cover_path,
+    avatar_path,
   domain = "tapr.ca",
   logoText = "tapr",
   ctaText = "Get your card",
@@ -56,8 +60,8 @@ const ContactCard: React.FC<ContactCardProps> = ({
   const [profilImg, setProfilImg] = useState<string>("/assets/images/icons/user.jpg");
 
     useEffect(() => {
-    if (profile_photo_path) {
-      setProfilImg(ROOT_FILES_URL + "/" + profile_photo_path);
+    if (avatar_path) {
+      setProfilImg(ROOT_FILES_URL + "/" + avatar_path);
     }
   }, []);
 
