@@ -14,7 +14,7 @@ class FixVcardFormat extends Command
      *
      * @var string
      */
-    protected $signature = 'user:fix-vcard {user* : The ID(s) of the user(s)}';
+    protected $signature = 'user:fix-vcard {user?* : The ID(s) of the user(s)} {--all : Fix all vcard format}';
 
     /**
      * The console command description.
@@ -29,7 +29,22 @@ class FixVcardFormat extends Command
     public function handle()
     {
         $arguments = $this->argument("user");
+        $all= $this->option('all');
+        if($all){
+            $users= User::all();
+            foreach ($users as $user) {
+                try {
+                    $vinfo= json_decode($user->vinfo);
 
+                    $normalized=  VcardModel::normalize($vinfo);
+                    $user->vinfo= json_encode($normalized);
+                    $user->save();
+                    $this->info("Vcard format successfully fixed for user $user->firstname");
+                } catch (\Throwable $th) {
+                    $this->fail("No user was found for id $id: [ ". $th->getMessage()." ].");
+                }
+            }
+        }
         foreach ($arguments as $id) {
             try {
                 $user = User::findOrFail($id);

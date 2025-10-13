@@ -25,7 +25,7 @@ class ViewsController extends Controller
         }
 
         $title = ucfirst($user->firstname).' - ' . ($vinfo->title ?? 'Kuser');
-        $description = Str::limit(strip_tags($vinfo->note->text ?? ''), 160);
+        $description = Str::limit(strip_tags(ucfirst($vinfo->note->text ?? '')), 160);
 
         $imageUrl = SFTP_ROOT_PATH.'/'. ($avatar_path_thumb ?? $avatar_path);
 
