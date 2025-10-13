@@ -8,7 +8,6 @@ use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Session;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -36,21 +35,21 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $user= null;
-        $avatarMedia  = null;
-        $coverMedia   = null;
-        $imagesMedia  = null;
-        $videosMedia  = null;
-        $vcardMedia= null;
+        $user = null;
+        $avatarMedia = null;
+        $coverMedia = null;
+        $imagesMedia = null;
+        $videosMedia = null;
+        $vcardMedia = null;
 
-        if(!empty( $request->user())) {
+        if (!empty($request->user())) {
             $user = $request->user();
             $user = $user->load('media');
-            $avatarMedia  = $user->getFirstMedia(PROFILE_IMG_ROOT_PATH);
-            $coverMedia   = $user->getFirstMedia(COVER_IMG_ROOT_PATH);
-            $imagesMedia  = $user->getMedia(ACTIVITY_IMG_ROOT_PATH);
-            $videosMedia  = $user->getMedia(ACTIVITY_VIDEO_ROOT_PATH);
-            $vcardMedia= $user->getFirstMedia(VCARD_ROOT_PATH);
+            $avatarMedia = $user->getFirstMedia(PROFILE_IMG_ROOT_PATH);
+            $coverMedia = $user->getFirstMedia(COVER_IMG_ROOT_PATH);
+            $imagesMedia = $user->getMedia(ACTIVITY_IMG_ROOT_PATH);
+            $videosMedia = $user->getMedia(ACTIVITY_VIDEO_ROOT_PATH);
+            $vcardMedia = $user->getFirstMedia(VCARD_ROOT_PATH);
         }
 
         $allowedPlans = Plan::whereIn('name', ['entreprise'])
@@ -60,13 +59,13 @@ class HandleInertiaRequests extends Middleware
         return [
             'locale' => App::getLocale(),
             'medias' => [
-                'avatar'  => $avatarMedia ? MediaPresenter::item($avatarMedia, ['thumb','large']) : null,
-                'cover'   => $coverMedia  ? MediaPresenter::item($coverMedia,  ['large'])        : null,
-                'images'  => MediaPresenter::collection($imagesMedia, ['thumb','large']),
-                'videos'  => MediaPresenter::collection($videosMedia, []),
-                'vcard' =>   $vcardMedia  ? MediaPresenter::item($vcardMedia,  []) : null,
+                'avatar' => $avatarMedia ? MediaPresenter::item($avatarMedia, ['thumb', 'large']) : null,
+                'cover' => $coverMedia ? MediaPresenter::item($coverMedia, ['large']) : null,
+                'images' => MediaPresenter::collection($imagesMedia, ['thumb', 'large']),
+                'videos' => MediaPresenter::collection($videosMedia, []),
+                'vcard' => $vcardMedia ? MediaPresenter::item($vcardMedia, []) : null,
             ],
-            'sftp_root_path' => config('app.env') === 'local' ? FILES_APP_URL_TEST: FILES_APP_URL_LIVE,
+            'sftp_root_path' => SFTP_ROOT_PATH,
             'translations' => $this->loadAllTranslations(App::getLocale()),
             'app_email' => config('mail.from.address'),
             'flash' => [

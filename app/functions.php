@@ -55,3 +55,15 @@ function normalize_url(string $url, string $defaultScheme = 'https'): ?string
     // 7) validation finale
     return filter_var($normalized, FILTER_VALIDATE_URL) ? $normalized : null;
 }
+
+function generateSimplePassword($length = 8)
+{
+    $letters = 'abcdefghijklmnopqrstuvwxyz';
+    $result = '';
+
+    for ($i = 0; $i < $length; $i++) {
+        $result .= $letters[random_int(0, strlen($letters) - 1)];
+    }
+
+    return $result;
+}
