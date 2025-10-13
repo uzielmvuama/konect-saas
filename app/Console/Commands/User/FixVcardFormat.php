@@ -14,7 +14,7 @@ class FixVcardFormat extends Command
      *
      * @var string
      */
-    protected $signature = 'user:fix-vcard {user?* : The ID(s) of the user(s)} {--all : Fix all vcard format}';
+    protected $signature = 'user:fix-vcard {user?* : The ID(s) of the user(s)} {--a|all : Fix all vcard format}';
 
     /**
      * The console command description.

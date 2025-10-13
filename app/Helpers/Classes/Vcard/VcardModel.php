@@ -68,10 +68,10 @@ abstract class VcardModel
         if (isset($vinfo->emails)) {
             if (is_array($vinfo->emails)) {
                 foreach ((array) $vinfo->emails as $em) {
-                    $this->emails[] = new EmailVcard(type: $em->type, text: $em->text);
+                    $this->emails[] = new EmailVcard(type: $em->type ?? '', text: $em->text ?? '');
                 }
             } elseif (is_object($vinfo->emails)) {
-                $this->emails[] = new EmailVcard(type: $vinfo->emails->type, text: $vinfo->email->text);
+                $this->emails[] = new EmailVcard(type: $vinfo->emails->type ?? '', text: $vinfo->email->text ?? '');
             }
         }
 
