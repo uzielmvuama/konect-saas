@@ -39,7 +39,7 @@ class ViewsController extends Controller
 
         return Inertia::render('Kuser', [
             'user' => $user->load('konects.user')->toResource(),
-            'vcard_path' => $user->getFirstMedia(VCARD_ROOT_PATH)->getPath(),
+            'vcard_path' => $user->getFirstMedia(VCARD_ROOT_PATH)?->getPath(),
             'cover_path' => $user->getFirstMedia(COVER_IMG_ROOT_PATH)?->getPath(),
             'avatar_path' => $avatar_path,
             'meta' => $meta,
