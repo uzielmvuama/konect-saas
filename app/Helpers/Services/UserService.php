@@ -211,7 +211,6 @@ class UserService
 
         if ($photoUrl) {
             $clean_url= \normalize_url(SFTP_ROOT_PATH. DIRECTORY_SEPARATOR. $photoUrl);
-            dd($clean_url);
             // La lib supporte une URL (HTTP/HTTPS) ou un path
             $vcard->addPhoto($clean_url);
         }
