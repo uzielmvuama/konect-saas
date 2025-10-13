@@ -14,7 +14,7 @@ class ResetPassword extends Command
      *
      * @var string
      */
-    protected $signature = 'user:generate-vcard {user* : The ID(s) of the user(s)} {--emailed : Send email to user} {--no-default= : Disable default laravel password}';
+    protected $signature = 'user:reset-password {user* : The ID(s) of the user(s)} {--emailed : Send email to user} {--no-default= : Disable default laravel password}';
 
     /**
      * The console command description.
