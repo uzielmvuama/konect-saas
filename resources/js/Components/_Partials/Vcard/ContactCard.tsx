@@ -133,7 +133,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
               asType={"link"}
               href={"#"}
               paddindClassYX={" py-4 px-1.5"}
-              customClassName={"!bg-neutral-900 text-white"}
+              customClassName={"!bg-transparent !shadow-none border-2 border-neutral-400 text-neutral-800"}
               icon={Share2}
               iconClass={"h-4 w-4"}
             />
