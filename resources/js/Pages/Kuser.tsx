@@ -4,8 +4,23 @@ import {Head, usePage} from "@inertiajs/react";
 import { ucfirst } from "@/Utils/Functions/globals";
 import ContactCard from "@/Components/_Partials/Vcard/ContactCard";
 import { UserProfile } from "@/Types/types";
+import {useShare} from "@/Hooks/useShare";
 
 export default function Kuser({user, vcard_path, cover_path, avatar_path, meta}: {user: UserProfile; vcard_path: string; cover_path: string; avatar_path: string; meta: any;}) {
+    const { share } = useShare();
+    const [copied, setCopied] = React.useState(false);
+
+    async function onShare(e: React.FormEvent) {
+        e.preventDefault();
+        const res = await share({ title:meta.title, text: meta.description, url: meta.url });
+        console.log(meta)
+
+        if (!res.native) {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }
+    }
+
     return (
     <GuestLayout
       title={`Kuser - ${ucfirst(user.firstname)} ${ucfirst(user.name)}`}
@@ -27,6 +42,7 @@ export default function Kuser({user, vcard_path, cover_path, avatar_path, meta}:
               onSave={(e) => {
 
               }}
+              onShare={onShare}
             user={user}
               vcard_path={vcard_path}
               cover_path={cover_path}

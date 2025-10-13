@@ -105,7 +105,8 @@ function extractLinesFromUser(user: UserProfile): ContactItem[] {
   if (Array.isArray(user.vinfo?.emails)) {
     for (const e of user.vinfo.emails) {
       const value = e?.text?.trim();
-      if (!value) continue;
+
+        if (!value) continue;
       out.push({ type: "email", value, label: e.type || "Mail" });
     }
   }
@@ -235,65 +236,71 @@ export default function ContactInfoCard({
   const groups = buildGroups(allItems);
 
   return (
-    <div className={"rounded-2xl bg-white/95 backdrop-blur p-4 md:p-5 " + className}>
-      <h2 className="text-[11px] font-extrabold tracking-[0.15em] text-neutral-800 mb-2">
-        {title}
-      </h2>
+   <>
+       {
+           allItems.length > 0 && (
+               <div className={"rounded-2xl bg-white/95 backdrop-blur p-4 md:p-5 " + className}>
+                   <h2 className="text-[11px] font-extrabold tracking-[0.15em] text-neutral-800 mb-2">
+                       {title}
+                   </h2>
 
-      <ul role="list" className="divide-y divide-neutral-200">
-        {groups.map((g, gi) => (
-          <li key={g.key + "-" + gi} className="first:pt-1 last:pb-1">
-            <div className="flex items-start gap-3 py-3">
-              {/* Icône du groupe (unique) */}
-              <div className="flex-shrink-0 rounded-xl bg-neutral-100 ring-1 ring-black/5 h-10 w-10 flex items-center justify-center">
-                {g.icon}
-              </div>
+                   <ul role="list" className="divide-y divide-neutral-200">
+                       {groups.map((g, gi) => (
+                           <li key={g.key + "-" + gi} className="first:pt-1 last:pb-1">
+                               <div className="flex items-start gap-3 py-3">
+                                   {/* Icône du groupe (unique) */}
+                                   <div className="flex-shrink-0 rounded-xl bg-neutral-100 ring-1 ring-black/5 h-10 w-10 flex items-center justify-center">
+                                       {g.icon}
+                                   </div>
 
-              {/* Contenu du groupe */}
-              <div className="min-w-0 flex-1">
-                <div className="text-[11px] font-bold tracking-[0.14em] text-neutral-500 mb-1">
-                  {g.title}
-                </div>
+                                   {/* Contenu du groupe */}
+                                   <div className="min-w-0 flex-1">
+                                       <div className="text-[11px] font-bold tracking-[0.14em] text-neutral-500 mb-2">
+                                           {g.title}
+                                       </div>
 
-                {/* Lignes du groupe */}
-                <div className="flex flex-col gap-1">
-                  {g.rows.map((r, ri) => {
-                    const common = (
-                      <span className="text-[15px] leading-6 text-neutral-900 truncate">
+                                       {/* Lignes du groupe */}
+                                       <div className="flex flex-col gap-2">
+                                           {g.rows.map((r, ri) => {
+                                               const common = (
+                                                   <span className="text-[15px] leading-6 text-neutral-900 truncate">
                         {r.value}
                       </span>
-                    );
-                    return (
-                      <div key={`${g.key}-row-${ri}`} className="flex items-center gap-2">
-                        {r.label && (
-                          <span className="text-[12px] font-medium text-neutral-500">
-                            {r.label}:
+                                               );
+                                               return (
+                                                   <div key={`${g.key}-row-${ri}`} className="flex items-center gap-2">
+                                                       {r.label && (
+                                                           <span className="text-[12px] font-medium text-neutral-500">
+                            {r.label} :
                           </span>
-                        )}
-                        {r.href ? (
-                          <a
-                            href={r.href}
-                            target={g.isExternal ? "_blank" : undefined}
-                            rel={g.isExternal ? "noopener noreferrer" : undefined}
-                            className="truncate hover:underline"
-                          >
-                            {common}
-                          </a>
-                        ) : (
-                          common
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+                                                       )}
+                                                       {r.href ? (
+                                                           <a
+                                                               href={r.href}
+                                                               target={g.isExternal ? "_blank" : undefined}
+                                                               rel={g.isExternal ? "noopener noreferrer" : undefined}
+                                                               className="truncate hover:underline"
+                                                           >
+                                                               {common}
+                                                           </a>
+                                                       ) : (
+                                                           common
+                                                       )}
+                                                   </div>
+                                               );
+                                           })}
+                                       </div>
+                                   </div>
 
-              {/* Chevron (au niveau du groupe) */}
-              {showChevron && <ChevronRight className="mt-1 h-5 w-5 text-neutral-400" />}
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+                                   {/* Chevron (au niveau du groupe) */}
+                                   {showChevron && <ChevronRight className="mt-1 h-5 w-5 text-neutral-400" />}
+                               </div>
+                           </li>
+                       ))}
+                   </ul>
+               </div>
+           )
+       }
+   </>
   );
 }

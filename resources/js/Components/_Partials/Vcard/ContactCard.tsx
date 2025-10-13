@@ -1,26 +1,16 @@
 // src/components/MobileContactCard.tsx
-import React, { useEffect, useState } from "react";
-import {
-  Download,
-  Share2,
-  Repeat2,
-  ChevronLeft,
-  ChevronRight,
-  Plus,
-  MoreHorizontal,
-  Save,
-} from "lucide-react";
+import React, {useEffect, useState} from "react";
+import {Save, Share2,} from "lucide-react";
 import AppLogo from "@/Components/_Partials/AppLogo";
 import MainButton from "@/Components/Buttons/MainButton";
 import SocialLinksCard from "@/Components/_Partials/Vcard/SocialLinksCard";
-import ContactInfoCard, { ContactItem } from "@/Components/_Partials/Vcard/ContactInfoCard";
+import ContactInfoCard, {ContactItem} from "@/Components/_Partials/Vcard/ContactInfoCard";
 import BioCard from "@/Components/_Partials/Vcard/BioCard";
 import CustomizableLinksCard from "@/Components/_Partials/Vcard/CustomizableLinksCard";
 import ImageGalleryCarousel from "@/Components/_Partials/Vcard/ImageGalleryCarousel";
-import { UserProfile } from "@/Types/types";
-import { usePage } from "@inertiajs/react";
-import { FaWhatsapp } from "react-icons/fa6";
-import { ucfirst } from "@/Utils/Functions/globals";
+import {UserProfile} from "@/Types/types";
+import {usePage} from "@inertiajs/react";
+import {ucfirst} from "@/Utils/Functions/globals";
 
 type ContactCardProps = {
   user: UserProfile;
@@ -35,7 +25,7 @@ type ContactCardProps = {
   pagesCount?: number;
   onSave?: (e: React.FormEvent) => void;
   onExchange?: () => void;
-  onShare?: () => void;
+  onShare?: (e: React.FormEvent) => void;
 };
 
 const ContactCard: React.FC<ContactCardProps> = ({
@@ -59,11 +49,14 @@ const ContactCard: React.FC<ContactCardProps> = ({
   const vcard_file= vcard_path;
   const [profilImg, setProfilImg] = useState<string>("/assets/images/icons/user.jpg");
 
+
+
     useEffect(() => {
     if (avatar_path) {
       setProfilImg(ROOT_FILES_URL + "/" + avatar_path);
     }
   }, []);
+
 
   const extras: ContactItem[] = [
     // Groupe custom "WhatsApp" avec son icône, deux lignes
@@ -116,7 +109,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
             <h1 className="text-white text-[28px] leading-7 font-black drop-shadow">
               {ucfirst(firstname) + " " + ucfirst(name)}
             </h1>
-            <p className="mt-1 text-neutral-200 text-sm">{subtitle}</p>
+              { vinfo.title && <p className="mt-1 text-neutral-200 text-sm">{vinfo.title}</p>}
           </div>
         </div>
 
@@ -135,10 +128,10 @@ const ContactCard: React.FC<ContactCardProps> = ({
             />
 
             <MainButton
-              onClick={onExchange}
-              title={"Exchange"}
+              onClick={onShare}
+              title={"Share"}
               asType={"link"}
-              href={"/products"}
+              href={"#"}
               paddindClassYX={" py-4 px-1.5"}
               customClassName={"!bg-neutral-900 text-white"}
               icon={Share2}
@@ -155,10 +148,10 @@ const ContactCard: React.FC<ContactCardProps> = ({
 
         <ImageGalleryCarousel
           images={[
-            { src: "/images/gorman.jpg", alt: "Amanda Gorman" },
-            { src: "/images/tower.jpg", alt: "Skyscraper" },
-            { src: "/images/event.jpg", alt: "Conference" },
-            { src: "/images/city.jpg", alt: "City" },
+            // { src: "/images/gorman.jpg", alt: "Amanda Gorman" },
+            // { src: "/images/tower.jpg", alt: "Skyscraper" },
+            // { src: "/images/event.jpg", alt: "Conference" },
+            // { src: "/images/city.jpg", alt: "City" },
           ]}
           // loop pour slider infini
           options={{ loop: true, align: "start" }}
