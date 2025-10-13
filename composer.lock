@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b398030229d2293519019278a4aaefe2",
+    "content-hash": "408cde506587d0a139e3c6278a1662b9",
     "packages": [
         {
             "name": "archtechx/enums",
@@ -1982,16 +1982,16 @@
         },
         {
             "name": "jeroendesloovere/vcard",
-            "version": "v1.7.4",
+            "version": "dev-feature/public-property",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jeroendesloovere/vcard.git",
-                "reference": "11a1cc62ffc2074838b138e9ae0790951004dd8e"
+                "url": "https://github.com/uzielmvuama/vcard.git",
+                "reference": "a3a225c7ac4dc75ceb4c71fd428141a1eb7214e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jeroendesloovere/vcard/zipball/11a1cc62ffc2074838b138e9ae0790951004dd8e",
-                "reference": "11a1cc62ffc2074838b138e9ae0790951004dd8e",
+                "url": "https://api.github.com/repos/uzielmvuama/vcard/zipball/a3a225c7ac4dc75ceb4c71fd428141a1eb7214e2",
+                "reference": "a3a225c7ac4dc75ceb4c71fd428141a1eb7214e2",
                 "shasum": ""
             },
             "require": {
@@ -2007,7 +2007,11 @@
                     "JeroenDesloovere\\VCard\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "JeroenDesloovere\\VCard\\": "tests/"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -2025,13 +2029,12 @@
                 ".vcf",
                 "generator",
                 "php",
-                "vCard"
+                "vcard"
             ],
             "support": {
-                "issues": "https://github.com/jeroendesloovere/vcard/issues",
-                "source": "https://github.com/jeroendesloovere/vcard/tree/v1.7.4"
+                "source": "https://github.com/uzielmvuama/vcard/tree/feature/public-property"
             },
-            "time": "2023-09-07T19:46:46+00:00"
+            "time": "2025-10-12T11:21:16+00:00"
         },
         {
             "name": "laravel-lang/actions",
@@ -13280,9 +13283,18 @@
             "time": "2024-03-03T12:36:25+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "jeroendesloovere/vcard",
+            "version": "dev-feature/public-property",
+            "alias": "1.7.99",
+            "alias_normalized": "1.7.99.0"
+        }
+    ],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "jeroendesloovere/vcard": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

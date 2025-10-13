@@ -8,10 +8,16 @@
         "framework"
     ],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/uzielmvuama/vcard.git"
+        }
+    ],
     "require": {
         "php": "^8.2",
         "inertiajs/inertia-laravel": "^2.0",
-        "jeroendesloovere/vcard": "^1.7",
+        "jeroendesloovere/vcard": "dev-feature/public-property as 1.7.99",
         "laravel-lang/common": "^6.7",
         "laravel/cashier": "^15.6",
         "laravel/framework": "^12.0",

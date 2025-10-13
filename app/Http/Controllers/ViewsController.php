@@ -24,7 +24,7 @@ class ViewsController extends Controller
             $service->vcardGenerate($user);
         }
 
-        $title = ucfirst($user->firstname).' — ' . ($vinfo->title ?? 'Kuser');
+        $title = ucfirst($user->firstname).' - ' . ($vinfo->title ?? 'Kuser');
         $description = Str::limit(strip_tags($vinfo->note->text ?? ''), 160);
 
         $imageUrl = SFTP_ROOT_PATH.'/'. ($avatar_path_thumb ?? $avatar_path);
