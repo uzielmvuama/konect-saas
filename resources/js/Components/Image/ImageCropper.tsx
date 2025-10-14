@@ -28,10 +28,9 @@ const ImageCropper = ({
   translations,
 }: ImageCropperProps) => {
   const { user, medias, sftp_root_path } = usePage().props as any;
-    console.log(medias, sftp_root_path)
+  console.log(medias, sftp_root_path);
 
-
-    // --- UI state
+  // --- UI state
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -224,11 +223,11 @@ const ImageCropper = ({
                 alt="Avatar"
               />
             ) : (
-                <img
-                    className="object-cover size-full rounded-full"
-                    src="/assets/images/icons/user.jpg"
-                    alt="Avatar"
-                />
+              <img
+                className="object-cover size-full rounded-full"
+                src="/assets/images/icons/user.jpg"
+                alt="Avatar"
+              />
             )}
 
             <div className="absolute bottom-0 -end-2">
@@ -251,11 +250,11 @@ const ImageCropper = ({
                         alt="Avatar"
                       />
                     ) : (
-                        <img
-                            className="object-cover size-full rounded-full"
-                            src="/assets/images/icons/user.jpg"
-                            alt="Avatar"
-                        />
+                      <img
+                        className="object-cover size-full rounded-full"
+                        src="/assets/images/icons/user.jpg"
+                        alt="Avatar"
+                      />
                     )}
                   </div>
 

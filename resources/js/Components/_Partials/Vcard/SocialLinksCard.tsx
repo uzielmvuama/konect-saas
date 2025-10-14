@@ -236,44 +236,44 @@ export default function SocialLinksCard({
 
   return (
     <>
-        {merged.length > 0 && (
-            <div className={"rounded-2xl bg-white/95 backdrop-blur p-4 md:p-5 " + className}>
-                <h2 className="text-[11px] font-extrabold tracking-[0.15em] text-neutral-800 mb-2">
-                    {title}
-                </h2>
+      {merged.length > 0 && (
+        <div className={"rounded-2xl bg-white/95 backdrop-blur p-4 md:p-5 " + className}>
+          <h2 className="text-[11px] font-extrabold tracking-[0.15em] text-neutral-800 mb-2">
+            {title}
+          </h2>
 
-                <div className="flex items-center gap-3 overflow-hidden overflow-x-auto">
-                    {merged.map(({ name, href, icon, label }) => {
-                        const tooltipId = `tip-${name}`;
-                        return (
-                            <a
-                                key={name}
-                                href={href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label={label ?? name}
-                                className={
-                                    "relative min-h-12 min-w-12 rounded-2xl flex items-center justify-center shadow-sm" +
-                                    " ring-1 ring-black/5 " +
-                                    "transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0 " +
-                                    bgClass[name]
-                                }
-                                data-hs-tooltip={`#${tooltipId}`}
-                            >
-                                {icon ?? defaultIcons[name]}
-                                <span
-                                    id={tooltipId}
-                                    className="hs-tooltip-content opacity-0 invisible transition-opacity hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible absolute z-10 -mt-12 rounded-md bg-neutral-900 px-2 py-1 text-[11px] font-medium text-white shadow-lg"
-                                    role="tooltip"
-                                >
-                {(label ?? name).charAt(0).toUpperCase() + (label ?? name).slice(1)}
-              </span>
-                            </a>
-                        );
-                    })}
-                </div>
-            </div>
-        )}
+          <div className="flex items-center gap-3 overflow-hidden overflow-x-auto">
+            {merged.map(({ name, href, icon, label }) => {
+              const tooltipId = `tip-${name}`;
+              return (
+                <a
+                  key={name}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label ?? name}
+                  className={
+                    "relative min-h-12 min-w-12 rounded-2xl flex items-center justify-center shadow-sm" +
+                    " ring-1 ring-black/5 " +
+                    "transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0 " +
+                    bgClass[name]
+                  }
+                  data-hs-tooltip={`#${tooltipId}`}
+                >
+                  {icon ?? defaultIcons[name]}
+                  <span
+                    id={tooltipId}
+                    className="hs-tooltip-content opacity-0 invisible transition-opacity hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible absolute z-10 -mt-12 rounded-md bg-neutral-900 px-2 py-1 text-[11px] font-medium text-white shadow-lg"
+                    role="tooltip"
+                  >
+                    {(label ?? name).charAt(0).toUpperCase() + (label ?? name).slice(1)}
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </>
   );
 }

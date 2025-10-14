@@ -10,6 +10,7 @@ use App\Models\Konect;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use phpDocumentor\Reflection\Types\True_;
 use Symfony\Component\HttpFoundation\Response;
 
 class KonectController extends Controller
@@ -50,6 +51,7 @@ class KonectController extends Controller
 
             $rs = (new KonectService)->makeConnection($validsData);
 
+            return true;
             // return response()->json($rs, status: $rs["status"]);
         } else {
             return back()->withErrors($validator)

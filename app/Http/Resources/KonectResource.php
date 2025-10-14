@@ -16,8 +16,9 @@ class KonectResource extends JsonResource
     public function toArray(Request $request): array
     {
         $ko_user= json_decode($this->ko_user_info);
-        $kuser = User::where('email', $ko_user->email);
-        $ko_user->kuser= $kuser->exists() ? $kuser->first() : null;
+//        dd($this);
+//        $kuser = User::where('email', $ko_user->email);
+//        $ko_user->kuser= $kuser->exists() ? $kuser->first() : null;
 
         return [
             "ko_ip_konect" => $this->ko_ip_konect,

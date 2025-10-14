@@ -1,16 +1,16 @@
 // src/components/MobileContactCard.tsx
-import React, {useEffect, useState} from "react";
-import {Save, Share2,} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Save, Share2 } from "lucide-react";
 import AppLogo from "@/Components/_Partials/AppLogo";
 import MainButton from "@/Components/Buttons/MainButton";
 import SocialLinksCard from "@/Components/_Partials/Vcard/SocialLinksCard";
-import ContactInfoCard, {ContactItem} from "@/Components/_Partials/Vcard/ContactInfoCard";
+import ContactInfoCard, { ContactItem } from "@/Components/_Partials/Vcard/ContactInfoCard";
 import BioCard from "@/Components/_Partials/Vcard/BioCard";
 import CustomizableLinksCard from "@/Components/_Partials/Vcard/CustomizableLinksCard";
 import ImageGalleryCarousel from "@/Components/_Partials/Vcard/ImageGalleryCarousel";
-import {UserProfile} from "@/Types/types";
-import {usePage} from "@inertiajs/react";
-import {ucfirst} from "@/Utils/Functions/globals";
+import { UserProfile } from "@/Types/types";
+import { usePage } from "@inertiajs/react";
+import { ucfirst } from "@/Utils/Functions/globals";
 
 type ContactCardProps = {
   user: UserProfile;
@@ -30,9 +30,9 @@ type ContactCardProps = {
 
 const ContactCard: React.FC<ContactCardProps> = ({
   user,
-    vcard_path,
-    cover_path,
-    avatar_path,
+  vcard_path,
+  cover_path,
+  avatar_path,
   domain = "tapr.ca",
   logoText = "tapr",
   ctaText = "Get your card",
@@ -44,19 +44,16 @@ const ContactCard: React.FC<ContactCardProps> = ({
   onShare,
 }) => {
   const { vinfo, firstname, name, profile_photo_path } = user;
-  const props_= usePage().props as unknown as any;
+  const props_ = usePage().props as unknown as any;
   const ROOT_FILES_URL = props_.sftp_root_path as string;
-  const vcard_file= vcard_path;
+  const vcard_file = vcard_path;
   const [profilImg, setProfilImg] = useState<string>("/assets/images/icons/user.jpg");
 
-
-
-    useEffect(() => {
+  useEffect(() => {
     if (avatar_path) {
       setProfilImg(ROOT_FILES_URL + "/" + avatar_path);
     }
   }, []);
-
 
   const extras: ContactItem[] = [
     // Groupe custom "WhatsApp" avec son icône, deux lignes
@@ -109,7 +106,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
             <h1 className="text-white text-[28px] leading-7 font-black drop-shadow">
               {ucfirst(firstname) + " " + ucfirst(name)}
             </h1>
-              { vinfo.title && <p className="mt-1 text-neutral-200 text-sm">{vinfo.title}</p>}
+            {vinfo.title && <p className="mt-1 text-neutral-200 text-sm">{vinfo.title}</p>}
           </div>
         </div>
 
@@ -133,7 +130,9 @@ const ContactCard: React.FC<ContactCardProps> = ({
               asType={"link"}
               href={"#"}
               paddindClassYX={" py-4 px-1.5"}
-              customClassName={"!bg-transparent !shadow-none border-2 border-neutral-400 text-neutral-800"}
+              customClassName={
+                "!bg-transparent !shadow-none border-2 border-neutral-400 text-neutral-800"
+              }
               icon={Share2}
               iconClass={"h-4 w-4"}
             />
@@ -147,12 +146,14 @@ const ContactCard: React.FC<ContactCardProps> = ({
         <CustomizableLinksCard items={vinfo.urls} />
 
         <ImageGalleryCarousel
-          images={[
-            // { src: "/images/gorman.jpg", alt: "Amanda Gorman" },
-            // { src: "/images/tower.jpg", alt: "Skyscraper" },
-            // { src: "/images/event.jpg", alt: "Conference" },
-            // { src: "/images/city.jpg", alt: "City" },
-          ]}
+          images={
+            [
+              // { src: "/images/gorman.jpg", alt: "Amanda Gorman" },
+              // { src: "/images/tower.jpg", alt: "Skyscraper" },
+              // { src: "/images/event.jpg", alt: "Conference" },
+              // { src: "/images/city.jpg", alt: "City" },
+            ]
+          }
           // loop pour slider infini
           options={{ loop: true, align: "start" }}
         />
