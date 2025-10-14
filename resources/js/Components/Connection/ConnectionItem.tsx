@@ -3,13 +3,13 @@ import React from "react";
 interface ConnectionItemProps {
   keyId?: number | string;
   type: "grid" | "list";
-  firstname: string;
-  name: string;
+  firstname?: string;
+  name?: string;
   email?: string;
   avatarUrl: string;
   connectionsCount?: number;
   status: boolean;
-  description: string;
+  description?: string;
 }
 
 const ConnectionItem: React.FC<ConnectionItemProps> = ({
@@ -76,7 +76,7 @@ const ConnectionItem: React.FC<ConnectionItemProps> = ({
             <div className="grow flex flex-col">
               <div className="inline-flex items-center gap-x-2">
                 <h3 className="font-medium text-gray-800 dark:text-neutral-200">
-                  {firstname + " " + name}
+                  {(firstname && name) ? firstname + " " + name : "Unknown"}
                 </h3>
                 {status && (
                   <span className="hidden md:inline-flex items-center gap-x-1.5 py-1 px-2.5 text-xs font-medium bg-gray-100 text-gray-800 rounded-full dark:bg-neutral-700 dark:text-neutral-200">
@@ -193,7 +193,7 @@ const ConnectionItem: React.FC<ConnectionItemProps> = ({
 
       <div className="p-3 pt-0 md:px-5 md:pb-5 text-center">
         <h3 className="md:text-lg font-medium text-gray-800 dark:text-neutral-200">
-          {firstname + " " + name}
+            {(firstname && name) ? firstname + " " + name : "Unknown"}
         </h3>
         <div className="inline-flex justify-center items-center gap-x-2">
           <p className="text-sm text-gray-500 dark:text-neutral-500">{description}</p>

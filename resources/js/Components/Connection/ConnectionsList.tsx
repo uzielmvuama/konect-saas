@@ -52,21 +52,22 @@ const ConnectionList: React.FC<ConnectionListProps> = ({ initialDisplayType, kon
             {displayType === "list" ? (
               <div className="space-y-3">
                 {konects.map((konect, index) => {
-                  const isUser = konect.ko_user_info.kuser != null ? true : false;
+                  const isUser = konect.ko_user_info ? konect.ko_user_info.kuser != null ? true : false : false;
+
                   return (
                     <ConnectionItem
                       key={index}
                       keyId={index}
                       type={displayType}
                       firstname={
-                        isUser ? konect.ko_user_info.kuser.firstname : konect.ko_user_info.firstname
+                        isUser ? konect.ko_user_info.kuser.firstname : konect.ko_user_info?.firstname
                       }
-                      name={isUser ? konect.ko_user_info.kuser.name : konect.ko_user_info.name}
-                      email={isUser ? konect.ko_user_info.kuser.email : konect.ko_user_info.email}
+                      name={isUser ? konect.ko_user_info.kuser.name : konect.ko_user_info?.name}
+                      email={isUser ? konect.ko_user_info.kuser.email : konect.ko_user_info?.email}
                       avatarUrl={isUser ? konect.ko_user_info.kuser?.profile_photo_url : ""}
                       connectionsCount={isUser ? konect.ko_user_info.kuser?.konects.length : null}
                       status={isUser}
-                      description={isUser ? konect.ko_user_info.kuser?.title : ""}
+                      description={isUser ? konect.ko_user_info?.kuser?.title : ""}
                     />
                   );
                 })}
@@ -74,19 +75,20 @@ const ConnectionList: React.FC<ConnectionListProps> = ({ initialDisplayType, kon
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-3 xl:gap-5">
                 {konects.map((konect, index) => {
-                  const isUser = konect.ko_user_info.kuser != null ? true : false;
+                    const isUser = konect.ko_user_info ? konect.ko_user_info.kuser != null ? true : false : false;
+
                   return (
                     <ConnectionItem
                       key={index}
                       keyId={index}
                       type={displayType}
                       firstname={
-                        isUser ? konect.ko_user_info.kuser.firstname : konect.ko_user_info.firstname
+                        isUser ? konect.ko_user_info.kuser.firstname : konect.ko_user_info?.firstname
                       }
-                      name={isUser ? konect.ko_user_info.kuser.name : konect.ko_user_info.name}
-                      email={isUser ? konect.ko_user_info.kuser.email : konect.ko_user_info.email}
-                      avatarUrl={isUser ? konect.ko_user_info.kuser?.profile_photo_url : ""}
-                      connectionsCount={isUser ? konect.ko_user_info.kuser?.konects.length : null}
+                      name={isUser ? konect.ko_user_info.kuser.name : konect.ko_user_info?.name}
+                      email={isUser ? konect.ko_user_info.kuser.email : konect.ko_user_info?.email}
+                      avatarUrl={isUser ? konect.ko_user_info?.kuser?.profile_photo_url : ""}
+                      connectionsCount={isUser ? konect.ko_user_info?.kuser?.konects.length : null}
                       status={isUser}
                       description={isUser ? konect.ko_user_info.kuser?.title : ""}
                     />
