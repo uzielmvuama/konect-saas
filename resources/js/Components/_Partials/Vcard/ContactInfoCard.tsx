@@ -64,7 +64,7 @@ function defaultLineLabel(t: BuiltInType): string {
 function buildHrefFromBuiltIn(t: BuiltInType, value: string): string | undefined {
   switch (t) {
     case "phone":
-      return `tel:${value.replace(/\s+/g, "")}`;
+      return `tel:+${value.replace(/\s+/g, "")}`;
     case "email":
       return `mailto:${value}`;
     case "website": {

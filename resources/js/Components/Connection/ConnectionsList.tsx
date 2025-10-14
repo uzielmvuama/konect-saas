@@ -16,7 +16,7 @@ const ConnectionList: React.FC<ConnectionListProps> = ({ initialDisplayType, kon
 
   const activeClass =
     "bg-gray-100 focus:bg-gray-200 focus:text-gray-800 dark:focus:text-neutral-200 dark:bg-neutral-700 dark:focus:bg-neutral-600";
-  console.log(konects);
+  // console.log(konects);
 
   return (
     <>

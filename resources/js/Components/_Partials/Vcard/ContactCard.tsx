@@ -106,7 +106,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
             <h1 className="text-white text-[28px] leading-7 font-black drop-shadow">
               {ucfirst(firstname) + " " + ucfirst(name)}
             </h1>
-            {vinfo.title && <p className="mt-1 text-neutral-200 text-sm">{vinfo.title}</p>}
+            {vinfo.title && <p className="mt-1 text-neutral-200 text-sm">{ucfirst(vinfo.title)}</p>}
           </div>
         </div>
 
