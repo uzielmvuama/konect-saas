@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\UserDoKonectData;
+use App\Data\UserFeedData;
 use App\Helpers\Core\Utils;
 use App\Helpers\Services\KonectService;
-use App\Http\Resources\KoGadgetResource;
 use App\Models\CompanyMember;
 use App\Models\Konect;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use phpDocumentor\Reflection\Types\True_;
 use Symfony\Component\HttpFoundation\Response;
 
 class KonectController extends Controller
@@ -31,59 +30,16 @@ class KonectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserDoKonectData $data)
     {
-        $validator = Validator::make(
-            $request->only([
-                'uuid',
-                'way',
-            ]),
-            [
-                'uuid' => ['required', 'uuid'],
-                'way' => ['required', 'integer'],
-            ]
-        );
-
-        if (!$validator->fails()) {
-            $validsData = $validator->validated();
-
-            $validsData["ip"] = $request->header('X-Forwarded-For') ?? $request->ip();
-
-            $rs = (new KonectService)->makeConnection($validsData);
-
-            return true;
-            // return response()->json($rs, status: $rs["status"]);
-        } else {
-            return back()->withErrors($validator)
-                ->withInput();
-        }
+        $data->setIp(request()->header('X-Forwarded-For') ?? request()->ip());
+        $rs = (new KonectService)->makeConnection($data->toArray());
+        return true;
     }
 
-    public function feed(User $user)
+    public function feed(User $user, UserFeedData $data)
     {
-        $validator = Validator::make(
-            request()->only([
-                'name',
-                'firstname',
-                'phone',
-                'email',
-            ]),
-            [
-                'name' => ['required', 'string'],
-                'firstname' => ['required', 'string'],
-                'phone' => ['required', 'string',],
-                'email' => ['required', 'email'],
-            ]
-        );
-
-        if (!$validator->fails()) {
-            $validsData = $validator->validated();
-            $rs = $this->service->feedbackResponse($validsData["name"], $validsData["firstname"], $validsData["email"], $validsData["phone"], $user);
-            // return response()->json($rs, status: $rs["status"]);
-        } else {
-            return back()->withErrors($validator)
-                ->withInput();
-        }
+        $rs = $this->service->feedbackResponse($data->name, $data->firstname, $data->email, $data->phone, $user);
     }
     /**
      * Display the specified resource.
