@@ -2,7 +2,7 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -11,35 +11,36 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js (pour React/Vite)
+      # Build front en CI (optionnel mais rapide côté serveur)
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install JS dependencies & build assets
+      - name: Build assets (CI)
         run: |
           npm ci
           npm run build
 
-      - name: Setup PHP (composer côté runner)
+      - name: Setup PHP (Composer in CI)
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
           extensions: mbstring, xml, bcmath, zip, curl, exif, intl
           tools: composer
 
-      - name: Install PHP dependencies
-        run: composer install --no-dev --optimize-autoloader
+      - name: Install PHP dependencies (CI)
+        run: composer install --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader
 
-      # (Optionnel) Vérifier que le .env chiffré est bien suivi par git
-      - name: Check encrypted env in repo (CI-side)
+      # (optionnel) vérifier présence d'un .env chiffré suivi par git
+      - name: Check encrypted env in repo (CI)
         run: |
-          echo "[CI] Listing encrypted env files tracked by git:"
-          git ls-files | grep -E '(^|/)\.env(\.production)?\.encrypt(ed)?$' || (echo "❌ Aucun .env chiffré n'est suivi par git"; exit 1)
+          echo "[CI] Encrypted env files:"
+          git ls-files | grep -E '(^|/)\.env(\.production)?\.encrypt(ed)?$' || echo "No encrypted env tracked."
 
-      - name: Deploy via SSH (with decryption + auto-structure)
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -54,157 +55,119 @@ jobs:
             RELEASE_DIR="$APP_DIR/releases/$RELEASE"
             SHARED_DIR="$APP_DIR/shared"
 
-            echo "→ Ensure base folders (releases/shared/storage/.env)"
-            if sudo -n true 2>/dev/null; then
-              sudo mkdir -p "$APP_DIR/releases" "$SHARED_DIR/storage" "$SHARED_DIR/bootstrap/cache"
-              sudo chown -R $USER:www-data "$APP_DIR" || true
-              sudo chmod -R 775 "$APP_DIR" || true
-            else
-              mkdir -p "$APP_DIR/releases" "$SHARED_DIR/storage" "$SHARED_DIR/bootstrap/cache"
-              chown -R "$USER":www-data "$APP_DIR" || true
-              chmod -R 775 "$APP_DIR" || true
+            echo "→ Ensure base folders"
+            sudo mkdir -p "$APP_DIR/releases" \
+                         "$SHARED_DIR/storage/app/public" \
+                         "$SHARED_DIR/storage/framework/cache" \
+                         "$SHARED_DIR/storage/framework/sessions" \
+                         "$SHARED_DIR/storage/framework/views" \
+                         "$SHARED_DIR/storage/logs" \
+                         "$SHARED_DIR/bootstrap/cache"
+
+            # Ownership & perms: web user = www-data (adapte si nginx/apache)
+            sudo chown -R www-data:www-data "$SHARED_DIR"
+            sudo chmod -R 775 "$SHARED_DIR"
+
+            # ACL (si setfacl dispo) – partage accès avec l'user de déploiement
+            if command -v setfacl >/dev/null 2>&1; then
+              sudo setfacl -R -m u:${USER}:rwx,u:www-data:rwx "$SHARED_DIR" || true
+              sudo setfacl -d -m u:${USER}:rwx,u:www-data:rwx "$SHARED_DIR" || true
             fi
 
-            echo "→ Create release dir & clone"
+            # Assurer le fichier de log utilisable
+            sudo touch "$SHARED_DIR/storage/logs/laravel.log"
+            sudo chown www-data:www-data "$SHARED_DIR/storage/logs/laravel.log"
+            sudo chmod 664 "$SHARED_DIR/storage/logs/laravel.log"
+
+            echo "→ Create release dir & fetch code"
             mkdir -p "$RELEASE_DIR"
             cd "$RELEASE_DIR"
             git clone https://github.com/${{ github.repository }} . --depth=1
 
             echo "→ Composer install (server)"
-            composer install --no-dev --optimize-autoloader
+            composer install --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader
 
-            echo "→ npm install & build (server)"
+            echo "→ Node build (server) if needed"
             if ! command -v npm >/dev/null 2>&1; then
-              echo "Node/npm absent → installation rapide"
-              curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - || true
-              (sudo apt-get install -y nodejs || true)
+              curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+              sudo apt-get install -y nodejs
             fi
-            npm install
+            # Si tu veux re-builder côté serveur:
+            npm ci
             npm run build
 
-            echo "→ Link shared storage & cache"
+            echo "→ Link shared directories"
             ln -sfn "$SHARED_DIR/storage" "$RELEASE_DIR/storage"
             ln -sfn "$SHARED_DIR/bootstrap/cache" "$RELEASE_DIR/bootstrap/cache"
 
             echo "→ Handle .env (decrypt if needed)"
             if [ ! -f "$SHARED_DIR/.env" ] || [ ! -s "$SHARED_DIR/.env" ]; then
               export LARAVEL_ENV_ENCRYPTION_KEY="${{ secrets.ENV_DECRYPT_KEY }}"
-
-              mapfile -t CANDIDATES < <( \
-                find . -maxdepth 4 -type f \
-                  \( -name ".env.production.encrypted" -o -name ".env.production.encrypt" -o -name ".env.encrypted" \) \
-                  -print 2>/dev/null \
-              )
-
-              echo "→ Encrypted env candidates found: ${#CANDIDATES[@]}"
-              printf '%s\n' "${CANDIDATES[@]:-}"
-
-              if [ "${#CANDIDATES[@]}" -eq 0 ]; then
-                echo "❌ Aucun fichier .env chiffré trouvé dans la release."
-                echo "   - Nom attendu: .env.production.encrypted (recommandé)"
-                echo "   - Dans .gitignore: ajouter '!.env.production.encrypted'"
-                exit 1
-              fi
-
-              ENC_FILE="${CANDIDATES[0]}"
-              ENC_DIR="$(dirname "$ENC_FILE")"
-              echo "→ Using encrypted env: $ENC_FILE"
-              pushd "$ENC_DIR" >/dev/null
-
-              if php artisan env:decrypt --env=production --key="${{ secrets.ENV_DECRYPT_KEY }}" --force 2>/dev/null; then
-                :
-              elif php artisan env:decrypt --env=production --force 2>/dev/null; then
-                :
-              elif php artisan env:decrypt --key="${{ secrets.ENV_DECRYPT_KEY }}" --force 2>/dev/null; then
-                :
-              elif php artisan env:decrypt --force 2>/dev/null; then
-                :
-              else
-                echo "❌ Échec du déchiffrement. Vérifie ENV_DECRYPT_KEY = LARAVEL_ENV_ENCRYPTION_KEY (format base64:...)"
+              mapfile -t CANDIDATES < <(find . -maxdepth 4 -type f \( -name ".env.production.encrypted" -o -name ".env.encrypted" -o -name ".env.production.encrypt" \) -print || true)
+              echo "Candidates: ${#CANDIDATES[@]}"
+              if [ "${#CANDIDATES[@]}" -gt 0 ]; then
+                ENC_FILE="${CANDIDATES[0]}"
+                ENC_DIR="$(dirname "$ENC_FILE")"
+                pushd "$ENC_DIR" >/dev/null
+                  php artisan env:decrypt --env=production --key="${{ secrets.ENV_DECRYPT_KEY }}" --force \
+                  || php artisan env:decrypt --env=production --force \
+                  || php artisan env:decrypt --key="${{ secrets.ENV_DECRYPT_KEY }}" --force \
+                  || php artisan env:decrypt --force
+                  if [ -f ".env.production" ]; then
+                    mv .env.production "$SHARED_DIR/.env"
+                  elif [ -f ".env" ]; then
+                    mv .env "$SHARED_DIR/.env"
+                  else
+                    echo "❌ .env file not produced after decrypt"; exit 1
+                  fi
                 popd >/dev/null
-                exit 1
-              fi
-
-              if [ -f ".env.production" ]; then
-                mv .env.production "$SHARED_DIR/.env"
-              elif [ -f ".env" ]; then
-                mv .env "$SHARED_DIR/.env"
               else
-                echo "❌ Déchiffrement effectué mais .env introuvable."
-                popd >/dev/null
-                exit 1
+                echo "⚠️ No encrypted env found; expecting SHARED_DIR/.env to exist."
               fi
-
-              popd >/dev/null
-              chmod 640 "$SHARED_DIR/.env"
-              echo "→ .env installed at $SHARED_DIR/.env"
+              sudo chown www-data:www-data "$SHARED_DIR/.env" || true
+              sudo chmod 640 "$SHARED_DIR/.env" || true
             fi
 
-            echo "→ Link .env into release"
+            echo "→ Symlink .env into release"
             ln -sfn "$SHARED_DIR/.env" "$RELEASE_DIR/.env"
 
-            echo "→ Ensure DB driver before migrate (sqlite/mysql)"
-            if grep -q '^DB_CONNECTION=sqlite' "$SHARED_DIR/.env"; then
-              echo "→ Detected sqlite"
-              if sudo -n true 2>/dev/null; then
-                sudo apt-get update -y
-                (sudo apt-get install -y php8.4-sqlite3 || sudo apt-get install -y php-sqlite3) || true
-              else
-                echo "(pas de sudo) impossible d'installer php-sqlite3 automatiquement"
-              fi
-              if ! grep -q '^DB_DATABASE=' "$SHARED_DIR/.env"; then
-                echo "DB_DATABASE=$SHARED_DIR/database/database.sqlite" >> "$SHARED_DIR/.env"
-              fi
-              mkdir -p "$SHARED_DIR/database"
-              [ -f "$SHARED_DIR/database/database.sqlite" ] || install -m 664 -o "$USER" -g www-data /dev/null "$SHARED_DIR/database/database.sqlite"
-            elif grep -q '^DB_CONNECTION=mysql' "$SHARED_DIR/.env"; then
-              echo "→ Detected mysql"
-              if sudo -n true 2>/dev/null; then
-                sudo apt-get update -y
-                (sudo apt-get install -y php8.4-mysql || sudo apt-get install -y php-mysql) || true
-              else
-                echo "(pas de sudo) impossible d'installer php-mysql automatiquement"
-              fi
+            echo "→ Pre-flight: ensure index.php exists"
+            if [ ! -f "$RELEASE_DIR/public/index.php" ]; then
+              echo "❌ public/index.php missing"; exit 1
             fi
 
-            echo "→ Permissions"
-            if sudo -n true 2>/dev/null; then
-              sudo chown -R www-data:www-data "$RELEASE_DIR"
-              sudo chmod -R 775 "$RELEASE_DIR"
-            else
-              chown -R "$USER":www-data "$RELEASE_DIR" || true
-              chmod -R 775 "$RELEASE_DIR" || true
-            fi
-
-            echo "→ Artisan caches & migrate"
+            echo "→ Optimize & migrate"
             php artisan config:clear || true
             php artisan view:clear || true
             php artisan route:clear || true
 
-            # NEW: sanity check — s'assurer que public/index.php existe AVANT de migrer/basculer
-            if [ ! -f "public/index.php" ]; then
-              echo "❌ public/index.php manquant dans la release. Abort pour éviter un 'File not found'."
-              exit 1
+            # DB drivers (light sanity)
+            if grep -q '^DB_CONNECTION=sqlite' "$SHARED_DIR/.env"; then
+              mkdir -p "$SHARED_DIR/database"
+              [ -f "$SHARED_DIR/database/database.sqlite" ] || sudo -u www-data install -m 664 -o www-data -g www-data /dev/null "$SHARED_DIR/database/database.sqlite"
             fi
 
             php artisan migrate --force
             php artisan config:cache
             php artisan event:cache || true
-            php artisan storage:link || true   # NEW: utile pour assets/upload
+            php artisan storage:link || true
 
             echo "→ Switch current symlink"
             ln -sfn "$RELEASE_DIR" "$APP_DIR/current"
+            echo "current -> $(readlink -f "$APP_DIR/current")"
 
-            # NEW: vérif du symlink après bascule (log)
-            echo "→ current -> $(readlink -f "$APP_DIR/current")"
-            ls -la "$APP_DIR/current/public/index.php" >/dev/null || { echo "❌ current/public/index.php introuvable"; exit 1; }
+            echo "→ Final permissions on release"
+            sudo chown -R www-data:www-data "$RELEASE_DIR"
+            sudo chmod -R 775 "$RELEASE_DIR"
 
-            echo "→ Reload services"
-            if sudo -n true 2>/dev/null; then
-              sudo systemctl reload ${{ secrets.PHP_FPM_SERVICE }} || true
-              sudo systemctl reload nginx || true
-            else
-              echo "(pas de sudo) skip reload services"
+            echo "→ Reload PHP-FPM & Nginx (if present)"
+            sudo systemctl reload ${{ secrets.PHP_FPM_SERVICE }} || true
+            sudo systemctl reload nginx || true
+
+            echo "→ Restart queues"
+            php artisan queue:restart || true
+            if [ -n "${{ secrets.HORIZON_SERVICE }}" ]; then
+              sudo systemctl restart "${{ secrets.HORIZON_SERVICE }}" || true
             fi
 
-            echo "✅ Deployment complete!"
+            echo "✅ Deployment complete"
