@@ -14,6 +14,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class KonectController extends Controller
 {
+    /**
+     * @param KonectService $konectService
+     */
     public function __construct(KonectService $konectService)
     {
         parent::__construct($konectService);
@@ -39,7 +42,10 @@ class KonectController extends Controller
 
     public function feed(User $user, UserFeedData $data)
     {
-        $rs = $this->service->feedbackResponse($data->name, $data->firstname, $data->email, $data->phone, $user);
+        $rs = $this->service->feedbackResponse($data->name, $data->firstname, $data->email, $data->phone,
+            $data->comment,
+        $user);
+        return Utils::json_res(true, "Feedback successfully sent", $rs, Response::HTTP_OK);
     }
     /**
      * Display the specified resource.

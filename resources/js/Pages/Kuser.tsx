@@ -6,6 +6,7 @@ import ContactCard from "@/Components/_Partials/Vcard/ContactCard";
 import {UserProfile} from "@/Types/types";
 import {useShare} from "@/Hooks/useShare";
 import axios from "axios";
+import KonectFeeback from "@/Components/_Partials/KonectFeeback";
 
 export default function Kuser({
   user,
@@ -22,7 +23,8 @@ export default function Kuser({
 }) {
   const { share } = useShare();
   const [isLoading, setIsLoading] = React.useState(false);
-  const [copied, setCopied] = React.useState(false);
+    const [showFeedback, setShowFeedback] = React.useState(false);
+    const [copied, setCopied] = React.useState(false);
     const props_ = usePage().props as unknown as any;
     const ROOT_FILES_URL = props_.sftp_root_path as string;
   async function onShare(e: React.FormEvent) {
@@ -36,17 +38,36 @@ export default function Kuser({
     }
   }
 
-  async function onSave(e: React.FormEvent) {
-      e.preventDefault();
-      window.location.assign(vcard_path ? ROOT_FILES_URL + "/" + vcard_path : "#");
-      setIsLoading(true);
-      await axios.post('/add-konect', {
-          uuid: user.uuid,
-          way:1
-      }).then(res => setIsLoading(false)
-      )
-  }
+    async function onSave(e: React.FormEvent) {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            // Téléchargement du vCard
+            window.location.assign(vcard_path ? ROOT_FILES_URL + "/" + vcard_path : "#");
 
+            // Ajout côté backend
+            await axios.post("/add-konect", { uuid: user.uuid, way: 1 });
+
+            // Ouvre la modale feedback
+            setShowFeedback(true);
+        } catch (error) {
+            console.error(error);
+            // (optionnel) notifier l'erreur
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    async function onContactFeed({ firstname, name, email, phone, comment } : { firstname: string, name: string, email: string, phone: string, comment: string }) {
+        await axios.post("/add-feed/" + user.uuid, {
+            uuid: user.uuid,
+            firstname,
+            name,
+            email,
+            phone,
+            comment
+        });
+    }
   return (
     <GuestLayout
       title={`Kuser - ${ucfirst(user.firstname)} ${ucfirst(user.name)}`}
@@ -74,6 +95,16 @@ export default function Kuser({
             subtitle={"Graphisme et Design"}
             about="American actor, comedian, musician and writer..."
           />
+
+            <KonectFeeback
+                open={showFeedback}
+                onClose={() => setShowFeedback(false)}
+                defaultFirstname={""}
+                defaultName={""}
+                defaultEmail={""}
+                defaultPhone={""}
+                onSubmit={onContactFeed}
+            />
         </div>
       </div>
     </GuestLayout>

@@ -11,6 +11,6 @@ class UserFeedData extends Data
         public string $name,
         public string $email,
         public string $phone,
-        public int $konect_id
+        public ?string $comment
     ) {}
 }

@@ -24,6 +24,9 @@ class ContactFeed extends Model
         "konect_id"
     ];
 
+    protected $casts = [
+        'feed_info' => 'array',
+    ];
     public function target()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');

@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 #[ObservedBy([UserObserver::class])]
 class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, Billable, Pointable;
+    use HasApiTokens, Billable, Pointable, Notifiable;
 
     /** @use HasFactory<UserFactory> */
     use HasFactory;

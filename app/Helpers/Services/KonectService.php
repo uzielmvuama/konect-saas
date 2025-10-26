@@ -2,8 +2,8 @@
 
 namespace App\Helpers\Services;
 
+use App\Events\ContactFeedEvent;
 use App\Events\KonectFeedbackDoneEvent;
-use App\Helpers\Classes\Kpoint;
 use App\Helpers\Core\Constants;
 use App\Helpers\Core\Utils;
 use App\Helpers\Enums\PointActions;
@@ -94,20 +94,45 @@ class KonectService
         }
     }
 
-    public function feedbackResponse(string $name, string $firstname, string $email, string $phone, User $user)
+    public function feedbackResponse(string $name, string $firstname, string $email, string $phone, ?string $comment,
+                                     User
+    $user)
     {
-        $cf = new ContactFeed;
-        $cf->feed_info = json_encode([
+        // On vérifie si l’entrée existe déjà
+        $alreadyExists = ContactFeed::where('user_id', $user->id)
+            ->whereJsonContains('feed_info->email', $email)
+            ->exists();
+
+        if ($alreadyExists) {
+            return Utils::json_res(
+                false,
+                __("This contact was already shared."),
+                false,
+                Response::HTTP_CONFLICT // 409
+            );
+        }
+
+        // Création du feed
+        $cf = new ContactFeed();
+        $cf->feed_info = [
             "name" => $name,
             "firstname" => $firstname,
             "email" => $email,
-            "phone" => $phone
-        ]);
-
+            "phone" => $phone,
+            "comment" => $comment ?? "",
+        ];
         $cf->user_id = $user->id;
         $cf->save();
-        KonectFeedbackDoneEvent::dispatch(User::find($user->id), $name, $firstname, $email, $phone, $cf->id);
 
-        return Utils::json_res(true, "Konect feed successfully done", true, Response::HTTP_CREATED);
+        // Event
+        ContactFeedEvent::dispatch($cf);
+
+        return Utils::json_res(
+            true,
+            __("Konect feed successfully done"),
+            true,
+            Response::HTTP_CREATED
+        );
     }
+
 }

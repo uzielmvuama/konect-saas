@@ -302,7 +302,7 @@ export default function AppNavHeader({
 
                             <div className="p-1 border-t border-stone-200 dark:border-neutral-800">
                               <Link
-                                href={"/teams/create"}
+                                href={"/team_user/create"}
                                 className="w-full flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-stone-800 hover:bg-stone-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-stone-100 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                               >
                                 <svg
